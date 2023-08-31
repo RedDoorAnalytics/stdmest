@@ -3,7 +3,6 @@
 program define stdmest
     version 18
 
-
 	// Check that we run stdmest after mestreg
 	if "`e(cmd2)'" != "mestreg" {
 		display as error "This only works after fitting an mestreg model."
