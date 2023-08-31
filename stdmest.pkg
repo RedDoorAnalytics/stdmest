@@ -1,0 +1,6 @@
+v 3
+d STDMEST: Regression standardisation post-estimation for hierarchical survival models fitted using mestreg
+d Author: Alessandro Gasparini
+d Distribution-Date: 20230831
+f stdmest/stdmest.ado
+e
