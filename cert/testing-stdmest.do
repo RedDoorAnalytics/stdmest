@@ -3,7 +3,7 @@ clear all
 cd "~/Stata-dev/stdmest"
 adopath ++ "stdmest"
 clear all
-set trace on
+// set trace on
 
 // Two-levels model:
 
@@ -12,7 +12,8 @@ webuse catheter
 mestreg age i.female || patient:, distribution(weibull)
 ereturn list
 
-// stdmest aaa
+capture drop aaa
+stdmest aaa, ci dots
 // stdmest aaa2, contrast
 
 predict b, reffects reses(bse)
@@ -29,7 +30,6 @@ twoway ///
 	(line S_zero_contrast tt, sort) ///
 	(line S_max_contrast tt, sort) ///
 	, legend(order(1 "Min b" 2 "Zero b" 3 "Max b"))
-
 
 // predict b, reffects
 // mestreg age female || patient:, distribution(weibull) time
