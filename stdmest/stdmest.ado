@@ -12,6 +12,9 @@ program define stdmest, sortpreserve
 		REATSERef(real 0.0) ///
 		TIMEvar(varname) ///
 		CONTRast ///
+		CI ///
+		REPs(real 100) ///
+		DOTS ///
 		]
 
 	marksample touse, novarlist
@@ -57,14 +60,16 @@ program define stdmest, sortpreserve
 		quietly generate double `tv' = `timevar'
 	}
 
-	/* // Create matrices that will be used later on
-		   tempname eb eV eX
-		   matrix `eb' = e(b)
-		   matrix `eV' = e(V)
-		   xi: mkmat `e(covariates)' if e(sample), matrix(`eX')
-		   matrix list `eb'
-		   matrix list `eV'
-	   matrix list `eX' */
+	/*
+	// Create matrices that will be used later on
+	tempname eb eV eX
+	matrix `eb' = e(b)
+	matrix `eV' = e(V)
+	xi: mkmat `e(covariates)' if e(sample), matrix(`eX')
+	matrix list `eb'
+	matrix list `eV'
+	matrix list `eX'
+	*/
 
 	// Test
 	tempvar xbname
@@ -89,6 +94,18 @@ program define stdmest, sortpreserve
 		}
 		// Calculate contrast
 		quietly generate `newvarname'_contrast = `newvarname' - `newvarname'_ref
+	}
+
+	// Confidence intervals using bootstrap-like procedure
+	if ("`ci'" != "") {
+		display "Confidence intervals created: [...]"
+		display "Using `reps' repetitions..."
+		if ("`dots'" != "") {
+			noisily _dots 0, reps(`reps')
+			forval b = 1/`reps' {
+				noisily _dots `b' 0
+			}
+		}
 	}
 
 end
