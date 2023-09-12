@@ -2,7 +2,7 @@
 
 program define stdmest, sortpreserve
 	// Version
-	version 18
+	version 18.0
 
 	// Syntax
 	syntax newvarname [if] [in], [ ///
@@ -10,8 +10,7 @@ program define stdmest, sortpreserve
 		REATRef(real 0.0) ///
 		REATSE(real 0.0) ///
 		REATSERef(real 0.0) ///
-		TIMEVAR(string) ///
-		FRAME(string) ///
+		TIMEvar(varname) ///
 		]
 
 	marksample touse, novarlist
@@ -70,79 +69,49 @@ program define stdmest, sortpreserve
 	display "reat: `reat'"
 
 	if ("`e(distribution)'" == "exponential") {
-		mata: surv_exp("`newvarname'", "`xbname'", "`timevar'", `reat')
+		mata: std_surv("`newvarname'", "`xbname'", "`timevar'", `reat', 0.0, 1)
 	}
 	else if ("`e(distribution)'" == "weibull") {
 		local lnp = _b["/:ln_p"]
-		mata: surv_wei("`newvarname'", "`xbname'", "`timevar'", `reat', `lnp')
+		mata: std_surv("`newvarname'", "`xbname'", "`timevar'", `reat', `lnp', 2)
 	}
-
-
-/*
-	for t in timevar {
-
-	S(t, xb, bs, ancillary)
-
-	surv_to_use = switch (e(distribution)) {
-		"exp" = &surv_exp;
-		"wei" = &surv_wei;
-	}
-
-	integrate &surv_to_use
-
-	post to frame t S
-
-	}
-	// pass xb to mata
-	// pass */
-
-	/*
-	// Create new frame for predictions
-	if ("`frame'" == "") {
-		local framename = "stdmest_pred"
-	}
-	else {
-		local framename = "`frame'"
-	}
-	display "Frame name: `framename'"
-
-	// Post timevar to new frame
-	frame put `timevar', into(`framename')
-	*/
 
 end
 
 version 18
 mata:
 
-void surv_exp (
-	string scalar out,
-	string scalar xb,
-	string scalar timevar,
-	real scalar reat)
-{
-	t = st_data(., timevar)
-	xbb = st_data(., xb) :+ reat
-	S = exp(-exp(xbb) :* t)
-	// return
-	outi = st_addvar("float", out)
-	st_store(., outi, S)
-}
-
-void surv_wei (
+void std_surv (
 	string scalar out,
 	string scalar xb,
 	string scalar timevar,
 	real scalar reat,
-	real scalar ln_p)
+	real scalar anc,
+	real scalar distr
+	)
 {
-	p = exp(ln_p)
 	t = st_data(., timevar)
 	xbb = st_data(., xb) :+ reat
-	S = exp(-exp(xbb) :* (t:^p))
-	// return
+	t = st_data(., timevar)
+	Savg = J(length(t), 1, .)
+	for (i = 1; i <= length(t); i++) {
+		Savg[i] = mean(survfun(xbb, t[i], anc, distr))
+	}
 	outi = st_addvar("float", out)
-	st_store(., outi, S)
+	st_store(., outi, Savg)
+}
+
+real vector survfun (real vector xb, real scalar t, real scalar anc, real scalar distr)
+{
+/*	if (distr == 1) {*/
+		S = exp(-exp(xb) :* t)
+/*	}
+	else if (distr == 2) {
+		p = exp(anc)
+		S = exp(-exp(xb) :* (t:^p))
+	}
+	*/
+	return(S)
 }
 
 end
