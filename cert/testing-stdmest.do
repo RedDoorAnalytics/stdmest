@@ -12,9 +12,10 @@ webuse catheter
 mestreg age i.female || patient:, distribution(weibull)
 ereturn list
 
-capture drop aaa
+capture drop aaa aaa2 aaa3*
 stdmest aaa, ci dots
-// stdmest aaa2, contrast
+stdmest aaa2, ci dots cipercentile
+stdmest aaa3, contrast
 
 predict b, reffects reses(bse)
 range tt 0 365 100

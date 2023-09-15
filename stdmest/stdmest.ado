@@ -1,4 +1,4 @@
-*! version 0.0.0-9000 Alessandro Gasparini 07Sep2023
+*! version 0.0.0-9000 Alessandro Gasparini 15Sep2023
 
 program define stdmest, sortpreserve
 	// Version
@@ -13,6 +13,7 @@ program define stdmest, sortpreserve
 		TIMEvar(varname) ///
 		CONTRast ///
 		CI ///
+		CIPERCentile ///
 		REPs(real 100) ///
 		DOTS ///
 		]
@@ -98,6 +99,12 @@ program define stdmest, sortpreserve
 
 	// Confidence intervals using bootstrap-like procedure
 	if ("`ci'" != "") {
+		if ("`cipercentile'" == "") {
+			display "CIs with normal approximation method."
+		}
+		else {
+			display "CIs with percentile method."
+		}
 		display "Confidence intervals created: [...]"
 		display "Using `reps' repetitions..."
 		if ("`dots'" != "") {
