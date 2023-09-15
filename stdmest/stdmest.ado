@@ -117,7 +117,7 @@ program define stdmest, sortpreserve
 
 end
 
-version 18
+version 18.0
 mata:
 
 void std_surv (
