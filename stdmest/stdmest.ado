@@ -71,6 +71,8 @@ program define stdmest, sortpreserve
 		local lnp = _b["/:ln_p"]
 		mata: std_surv("`newvarname'", "`xbname'", "`timevar'", `reat', `lnp', 2)
 	}
+	// Back to natural scale (inverse cloglog)
+	quietly replace `newvarname' = 1 - exp(-exp(`newvarname'))
 
 	// Create contrast if requested
 	if ("`contrast'" != "") {
@@ -82,6 +84,9 @@ program define stdmest, sortpreserve
 			local lnp = _b["/:ln_p"]
 			mata: std_surv("`newvarname'_ref", "`xbname'", "`timevar'", `reatref', `lnp', 2)
 		}
+		// Back to natural scale (inverse cloglog)
+		quietly replace `newvarname'_ref = 1 - exp(-exp(`newvarname'_ref))
+
 		// Calculate contrast
 		quietly generate `newvarname'_contrast = `newvarname' - `newvarname'_ref
 	}
@@ -120,6 +125,7 @@ program define stdmest, sortpreserve
 				local lnp = _b["/:ln_p"]
 				mata: std_surv("tmp`newvarname'_b`b'", "`new_xbname'", "`timevar'", `thisreat', `lnp', 2)
 			}
+			// Contrasts
 			if 	("`contrast'" != "") {
 				// Reference
 				if ("`e(distribution)'" == "exponential") {
@@ -129,7 +135,9 @@ program define stdmest, sortpreserve
 					local lnp = _b["/:ln_p"]
 					mata: std_surv("tmp`newvarname'_ref_b`b'", "`new_xbname'", "`timevar'", `thisreatref', `lnp', 2)
 				}
-				quietly generate tmp`newvarname'_contrast_b`b' = tmp`newvarname'_b`b' - tmp`newvarname'_ref_b`b'
+				// Contrast
+				// For this, we need to get back to natural scale for the terms)
+				quietly generate tmp`newvarname'_contrast_b`b' = (1 - exp(-exp(tmp`newvarname'_b`b'))) - (1 - exp(-exp(tmp`newvarname'_ref_b`b')))
 			}
 			if ("`dots'" != "") {
 				noisily _dots `b' 0
@@ -170,6 +178,21 @@ program define stdmest, sortpreserve
 		capture drop tmp`newvarname'_b*
 		capture drop tmp`newvarname'_ref_b*
 		capture drop tmp`newvarname'_contrast_b*
+		// If CIs with normal method, drop SEs
+		if ("`cipercentile'" == "") {
+			drop `newvarname'_se
+			if ("`contrast'" != "") {
+				drop `newvarname'_ref_se
+				drop `newvarname'_contrast_se
+			}
+		}
+		// Back to natural scale for lower, upper (inverse cloglog) where needed
+		quietly replace `newvarname'_lower = 1 - exp(-exp(`newvarname'_lower))
+		quietly replace `newvarname'_upper = 1 - exp(-exp(`newvarname'_upper))
+		if ("`contrast'" != "") {
+			quietly replace `newvarname'_ref_lower = 1 - exp(-exp(`newvarname'_ref_lower))
+			quietly replace `newvarname'_ref_upper = 1 - exp(-exp(`newvarname'_ref_upper))
+		}
 	}
 
 	// Restore estimation results
@@ -209,6 +232,8 @@ mata:
 			p = exp(anc)
 			S = exp(-exp(xb) :* (t:^p))
 		}
+		// cloglog
+		S = cloglog(S)
 		return(S)
 	}
 
