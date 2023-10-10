@@ -9,10 +9,10 @@ clear all
 use "data/data3CIA", clear
 
 // stset
-stset follow_up_months, failure(alive1_death2 == 2)
+stset months, failure(status == 1)
 
 // mestreg Weibull model adjusting for age, FEV1, and dyspnea score
-mestreg c.age c.fev1pp ib0.mmrc0_4 || cohort: , dist(weibull) nohr
+mestreg c.age c.fev1pp ib0.mmrc || cohort: , dist(weibull) nohr
 
 // predict random effect
 predict b, reffects reses(bse)
@@ -29,8 +29,8 @@ list b bse if _n == 1 | _n == _N
 range tt 0 200 5
 
 // 
-stdmest Smin, reat(-1.006262) reatse(.2222539) timevar(tt) contrast ci cipercentile dots reps(200)
-stdmest Smax, reat(.995125) reatse(.1405887) timevar(tt) contrast ci cipercentile dots reps(200)
+stdmest Smin, reat(-1.006262) reatse(.2222539) timevar(tt) contrast cipercentile dots reps(500)
+stdmest Smax, reat(.995125) reatse(.1405887) timevar(tt) contrast cipercentile dots reps(500)
 
 // R results:
 // > out.test.preds
