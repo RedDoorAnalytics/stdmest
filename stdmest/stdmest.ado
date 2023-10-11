@@ -1,4 +1,4 @@
-*! version 0.0.0-9000 Alessandro Gasparini 15Sep2023
+*! version 0.0.0-9000 Alessandro Gasparini 11Oct2023
 
 program define stdmest, sortpreserve
 	// Version
@@ -14,6 +14,7 @@ program define stdmest, sortpreserve
 		CONTRast ///
 		CI ///
 		CIPERCentile ///
+		CILEVel(real 0.95) ///
 		REPs(real 100) ///
 		DOTS ///
 		]
@@ -60,33 +61,32 @@ program define stdmest, sortpreserve
 	else {
 		quietly generate double `tv' = `timevar'
 	}
+	// Mark timevar rows to use
+	tempvar timevartouse
+	mark `timevartouse'
+	markout `timevartouse' `timevar'
 
-	// Test
+	// Point estimates
 	tempvar xbname
 	predict double `xbname', xb
 	if ("`e(distribution)'" == "exponential") {
-		mata: std_surv("`newvarname'", "`xbname'", "`timevar'", `reat', 0.0, 1)
+		mata: std_surv("`newvarname'", "`xbname'", "`timevar'", "`timevartouse'", `reat', 0.0, 1)
 	}
 	else if ("`e(distribution)'" == "weibull") {
 		local lnp = _b["/:ln_p"]
-		mata: std_surv("`newvarname'", "`xbname'", "`timevar'", `reat', `lnp', 2)
+		mata: std_surv("`newvarname'", "`xbname'", "`timevar'", "`timevartouse'", `reat', `lnp', 2)
 	}
-	// Back to natural scale (inverse cloglog)
-	quietly replace `newvarname' = 1 - exp(-exp(`newvarname'))
 
 	// Create contrast if requested
 	if ("`contrast'" != "") {
 		// Reference
 		if ("`e(distribution)'" == "exponential") {
-			mata: std_surv("`newvarname'_ref", "`xbname'", "`timevar'", `reatref', 0.0, 1)
+			mata: std_surv("`newvarname'_ref", "`xbname'", "`timevar'", "`timevartouse'", `reatref', 0.0, 1)
 		}
 		else if ("`e(distribution)'" == "weibull") {
 			local lnp = _b["/:ln_p"]
-			mata: std_surv("`newvarname'_ref", "`xbname'", "`timevar'", `reatref', `lnp', 2)
+			mata: std_surv("`newvarname'_ref", "`xbname'", "`timevar'", "`timevartouse'", `reatref', `lnp', 2)
 		}
-		// Back to natural scale (inverse cloglog)
-		quietly replace `newvarname'_ref = 1 - exp(-exp(`newvarname'_ref))
-
 		// Calculate contrast
 		quietly generate `newvarname'_contrast = `newvarname' - `newvarname'_ref
 	}
@@ -119,25 +119,24 @@ program define stdmest, sortpreserve
 			predict double `new_xbname', xb
 			// Predict using new xb and pars
 			if ("`e(distribution)'" == "exponential") {
-				mata: std_surv("tmp`newvarname'_b`b'", "`new_xbname'", "`timevar'", `thisreat', 0.0, 1)
+				mata: std_surv("tmp`newvarname'_b`b'", "`new_xbname'", "`timevar'", "`timevartouse'", `thisreat', 0.0, 1)
 			}
 			else if ("`e(distribution)'" == "weibull") {
 				local lnp = _b["/:ln_p"]
-				mata: std_surv("tmp`newvarname'_b`b'", "`new_xbname'", "`timevar'", `thisreat', `lnp', 2)
+				mata: std_surv("tmp`newvarname'_b`b'", "`new_xbname'", "`timevar'", "`timevartouse'", `thisreat', `lnp', 2)
 			}
 			// Contrasts
 			if 	("`contrast'" != "") {
 				// Reference
 				if ("`e(distribution)'" == "exponential") {
-					mata: std_surv("tmp`newvarname'_ref_b`b'", "`new_xbname'", "`timevar'", `thisreatref', 0.0, 1)
+					mata: std_surv("tmp`newvarname'_ref_b`b'", "`new_xbname'", "`timevar'", "`timevartouse'", `thisreatref', 0.0, 1)
 				}
 				else if ("`e(distribution)'" == "weibull") {
 					local lnp = _b["/:ln_p"]
-					mata: std_surv("tmp`newvarname'_ref_b`b'", "`new_xbname'", "`timevar'", `thisreatref', `lnp', 2)
+					mata: std_surv("tmp`newvarname'_ref_b`b'", "`new_xbname'", "`timevar'", "`timevartouse'", `thisreatref', `lnp', 2)
 				}
 				// Contrast
-				// For this, we need to get back to natural scale for the terms)
-				quietly generate tmp`newvarname'_contrast_b`b' = (1 - exp(-exp(tmp`newvarname'_b`b'))) - (1 - exp(-exp(tmp`newvarname'_ref_b`b')))
+				quietly generate tmp`newvarname'_contrast_b`b' = tmp`newvarname'_b`b' - tmp`newvarname'_ref_b`b'
 			}
 			if ("`dots'" != "") {
 				noisily _dots `b' 0
@@ -145,33 +144,38 @@ program define stdmest, sortpreserve
 		}
 		if ("`cipercentile'" == "") {
 			display "CIs with normal approximation method."
+			// Process critical values
+			local crit = invnormal(1 - (1 - `cilevel') / 2)
 			// Point estimate
 			quietly egen `newvarname'_se = rowsd(tmp`newvarname'_b*)
-			quietly gen `newvarname'_lower = `newvarname' - 1.96 * `newvarname'_se
-			quietly gen `newvarname'_upper = `newvarname' + 1.96 * `newvarname'_se
+			quietly gen `newvarname'_lower = `newvarname' - `crit' * `newvarname'_se
+			quietly gen `newvarname'_upper = `newvarname' + `crit' * `newvarname'_se
 			if 	("`contrast'" != "") {
 				// Ref
 				quietly egen `newvarname'_ref_se = rowsd(tmp`newvarname'_ref_b*)
-				quietly gen `newvarname'_ref_lower = `newvarname'_ref - 1.96 * `newvarname'_ref_se
-				quietly gen `newvarname'_ref_upper = `newvarname'_ref + 1.96 * `newvarname'_ref_se
+				quietly gen `newvarname'_ref_lower = `newvarname'_ref - `crit' * `newvarname'_ref_se
+				quietly gen `newvarname'_ref_upper = `newvarname'_ref + `crit' * `newvarname'_ref_se
 				// Contrast
 				quietly egen `newvarname'_contrast_se = rowsd(tmp`newvarname'_contrast_b*)
-				quietly gen `newvarname'_contrast_lower = `newvarname'_contrast - 1.96 * `newvarname'_contrast_se
-				quietly gen `newvarname'_contrast_upper = `newvarname'_contrast + 1.96 * `newvarname'_contrast_se
+				quietly gen `newvarname'_contrast_lower = `newvarname'_contrast - `crit' * `newvarname'_contrast_se
+				quietly gen `newvarname'_contrast_upper = `newvarname'_contrast + `crit' * `newvarname'_contrast_se
 			}
 		}
 		else {
 			display "CIs with percentile method."
+			// Process ps
+			local plower = 100 * ((1 - `cilevel') / 2)
+			local pupper = 100 * (1 - (1 - `cilevel') / 2)
 			// Point estimate
-			quietly egen `newvarname'_lower = rowpctile(tmp`newvarname'_b*), p(2.5)
-			quietly egen `newvarname'_upper = rowpctile(tmp`newvarname'_b*), p(97.5)
+			quietly egen `newvarname'_lower = rowpctile(tmp`newvarname'_b*), p(`plower')
+			quietly egen `newvarname'_upper = rowpctile(tmp`newvarname'_b*), p(`pupper')
 			if 	("`contrast'" != "") {
 				// Ref
-				quietly egen `newvarname'_ref_lower = rowpctile(tmp`newvarname'_ref_b*), p(2.5)
-				quietly egen `newvarname'_ref_upper = rowpctile(tmp`newvarname'_ref_b*), p(97.5)
+				quietly egen `newvarname'_ref_lower = rowpctile(tmp`newvarname'_ref_b*), p(`plower')
+				quietly egen `newvarname'_ref_upper = rowpctile(tmp`newvarname'_ref_b*), p(`pupper')
 				// Contrast
-				quietly egen `newvarname'_contrast_lower = rowpctile(tmp`newvarname'_contrast_b*), p(2.5)
-				quietly egen `newvarname'_contrast_upper = rowpctile(tmp`newvarname'_contrast_b*), p(97.5)
+				quietly egen `newvarname'_contrast_lower = rowpctile(tmp`newvarname'_contrast_b*), p(`plower')
+				quietly egen `newvarname'_contrast_upper = rowpctile(tmp`newvarname'_contrast_b*), p(`pupper')
 			}
 		}
 		// Drop tmp variables
@@ -186,17 +190,9 @@ program define stdmest, sortpreserve
 				drop `newvarname'_contrast_se
 			}
 		}
-		// Back to natural scale for lower, upper (inverse cloglog) where needed
-		quietly replace `newvarname'_lower = 1 - exp(-exp(`newvarname'_lower))
-		quietly replace `newvarname'_upper = 1 - exp(-exp(`newvarname'_upper))
-		if ("`contrast'" != "") {
-			quietly replace `newvarname'_ref_lower = 1 - exp(-exp(`newvarname'_ref_lower))
-			quietly replace `newvarname'_ref_upper = 1 - exp(-exp(`newvarname'_ref_upper))
-		}
+		// Finally, restore estimation results
+		erepost b = `eb'
 	}
-
-	// Restore estimation results
-	erepost b = `eb'
 
 end
 
@@ -207,20 +203,25 @@ mata:
 	string scalar out,
 	string scalar xb,
 	string scalar timevar,
+	string scalar touse,
 	real scalar reat,
 	real scalar anc,
 	real scalar distr
 	)
 	{
-		t = st_data(., timevar)
-		xbb = st_data(., xb) :+ reat
-		t = st_data(., timevar)
+		// view on timevar
+		st_view(t = ., ., timevar, touse)
+		// view on linear predictor
+		st_view(xbb = ., ., xb)
+		// add fixed value of random intercept
+		xbb = xbb :+ reat
+		// do calculations for the std. survival, looping over time points
 		Savg = J(length(t), 1, .)
 		for (i = 1; i <= length(t); i++) {
 			Savg[i] = mean(survfun(xbb, t[i], anc, distr))
 		}
-		outi = st_addvar("float", out)
-		st_store(., outi, Savg)
+		outi = st_addvar("double", out)
+		st_store(., outi, touse, Savg)
 	}
 
 	real vector survfun (real vector xb, real scalar t, real scalar anc, real scalar distr)
@@ -232,8 +233,6 @@ mata:
 			p = exp(anc)
 			S = exp(-exp(xb) :* (t:^p))
 		}
-		// cloglog
-		S = cloglog(S)
 		return(S)
 	}
 
