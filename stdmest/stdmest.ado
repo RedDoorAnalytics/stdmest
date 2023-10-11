@@ -69,24 +69,12 @@ program define stdmest, sortpreserve
 	// Point estimates
 	tempvar xbname
 	predict double `xbname', xb
-	if ("`e(distribution)'" == "exponential") {
-		mata: std_surv("`newvarname'", "`xbname'", "`timevar'", "`timevartouse'", `reat', 0.0, 1)
-	}
-	else if ("`e(distribution)'" == "weibull") {
-		local lnp = _b["/:ln_p"]
-		mata: std_surv("`newvarname'", "`xbname'", "`timevar'", "`timevartouse'", `reat', `lnp', 2)
-	}
+	mata: std_surv("`newvarname'", "`xbname'", "`timevar'", "`timevartouse'", `reat')
 
 	// Create contrast if requested
 	if ("`contrast'" != "") {
 		// Reference
-		if ("`e(distribution)'" == "exponential") {
-			mata: std_surv("`newvarname'_ref", "`xbname'", "`timevar'", "`timevartouse'", `reatref', 0.0, 1)
-		}
-		else if ("`e(distribution)'" == "weibull") {
-			local lnp = _b["/:ln_p"]
-			mata: std_surv("`newvarname'_ref", "`xbname'", "`timevar'", "`timevartouse'", `reatref', `lnp', 2)
-		}
+		mata: std_surv("`newvarname'_ref", "`xbname'", "`timevar'", "`timevartouse'", `reatref')
 		// Calculate contrast
 		quietly generate `newvarname'_contrast = `newvarname' - `newvarname'_ref
 	}
@@ -118,23 +106,11 @@ program define stdmest, sortpreserve
 			tempvar new_xbname
 			predict double `new_xbname', xb
 			// Predict using new xb and pars
-			if ("`e(distribution)'" == "exponential") {
-				mata: std_surv("tmp`newvarname'_b`b'", "`new_xbname'", "`timevar'", "`timevartouse'", `thisreat', 0.0, 1)
-			}
-			else if ("`e(distribution)'" == "weibull") {
-				local lnp = _b["/:ln_p"]
-				mata: std_surv("tmp`newvarname'_b`b'", "`new_xbname'", "`timevar'", "`timevartouse'", `thisreat', `lnp', 2)
-			}
+			mata: std_surv("tmp`newvarname'_b`b'", "`new_xbname'", "`timevar'", "`timevartouse'", `thisreat')
 			// Contrasts
 			if 	("`contrast'" != "") {
 				// Reference
-				if ("`e(distribution)'" == "exponential") {
-					mata: std_surv("tmp`newvarname'_ref_b`b'", "`new_xbname'", "`timevar'", "`timevartouse'", `thisreatref', 0.0, 1)
-				}
-				else if ("`e(distribution)'" == "weibull") {
-					local lnp = _b["/:ln_p"]
-					mata: std_surv("tmp`newvarname'_ref_b`b'", "`new_xbname'", "`timevar'", "`timevartouse'", `thisreatref', `lnp', 2)
-				}
+				mata: std_surv("tmp`newvarname'_ref_b`b'", "`new_xbname'", "`timevar'", "`timevartouse'", `thisreatref')
 				// Contrast
 				quietly generate tmp`newvarname'_contrast_b`b' = tmp`newvarname'_b`b' - tmp`newvarname'_ref_b`b'
 			}
@@ -183,9 +159,7 @@ program define stdmest, sortpreserve
 		capture drop tmp`newvarname'_ref_b*
 		capture drop tmp`newvarname'_contrast_b*
 		// If CIs with normal method, drop SEs
-		if ("`cinormal'" == "") {
-		}
-		else {
+		if ("`cinormal'" != "") {
 			drop `newvarname'_se
 			if ("`contrast'" != "") {
 				drop `newvarname'_ref_se
@@ -206,35 +180,42 @@ mata:
 	string scalar xb,
 	string scalar timevar,
 	string scalar touse,
-	real scalar reat,
-	real scalar anc,
-	real scalar distr
+	real scalar reat
 	)
 	{
+		// process ancillary parameter
+		// (depending on baseline hazard distribution)
+		distribution = st_global("e(distribution)")
+		if (distribution == "exponential") {
+			ln_p = 0.0
+		}
+		else {
+			eb = st_matrix("e(b)")
+			clabels = st_matrixcolstripe("e(b)")
+			s = (clabels[,2] :== "ln_p")
+			s = s'
+			ln_p = select(eb, s)
+		}
 		// view on timevar
 		st_view(t = ., ., timevar, touse)
 		// view on linear predictor
 		st_view(xbb = ., ., xb)
 		// add fixed value of random intercept
 		xbb = xbb :+ reat
-		// do calculations for the std. survival, looping over time points
+		// do calculations for the std. survival, looping over timevar
 		Savg = J(length(t), 1, .)
 		for (i = 1; i <= length(t); i++) {
-			Savg[i] = mean(survfun(xbb, t[i], anc, distr))
+			Savg[i] = mean(survfun(xbb, t[i], ln_p))
 		}
+		// write out results
 		outi = st_addvar("double", out)
 		st_store(., outi, touse, Savg)
 	}
 
-	real vector survfun (real vector xb, real scalar t, real scalar anc, real scalar distr)
+	real vector survfun (real vector xb, real scalar t, real scalar anc)
 	{
-		if (distr == 1) {
-			S = exp(-exp(xb) :* t)
-		}
-		else if (distr == 2) {
-			p = exp(anc)
-			S = exp(-exp(xb) :* (t:^p))
-		}
+		p = exp(anc)
+		S = exp(-exp(xb) :* (t:^p))
 		return(S)
 	}
 

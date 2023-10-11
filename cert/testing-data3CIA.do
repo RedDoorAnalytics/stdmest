@@ -12,7 +12,7 @@ use "data/data3CIA", clear
 stset months, failure(status == 1)
 
 // mestreg Weibull model adjusting for age, FEV1, and dyspnea score
-mestreg c.age c.fev1pp ib0.mmrc || cohort: , dist(weibull) nohr
+mestreg c.age c.fev1pp ib0.mmrc || cohort: , dist(wei) nohr
 
 // predict random effect
 predict b, reffects reses(bse)
@@ -26,12 +26,12 @@ list b bse if _n == 1 | _n == _N
 //       +----------------------+
 
 // timevar
-range tt 0 200 200
+range tt 0 200 30
 
 // 
 timer on 1
-stdmest Smin, reat(-1.006262) reatse(.2222539) timevar(tt) contrast dots reps(50) ci
-stdmest Smin2, reat(-1.006262) reatse(.2222539) timevar(tt) contrast cinormal dots reps(50) ci
+stdmest Smin, reat(-1.006262) reatse(.2222539) timevar(tt) contrast dots reps(300) ci
+stdmest Smin2, reat(-1.006262) reatse(.2222539) timevar(tt) contrast cinormal dots reps(300) ci
 timer off 1
 timer list 1
 
@@ -39,4 +39,5 @@ list Smin Smin_ref Smin_contrast if tt != .
 twoway ///
 	(rarea Smin2_contrast_lower Smin2_contrast_upper tt, sort color(red%10)) ///
 	(rarea Smin_contrast_lower Smin_contrast_upper tt, sort color(blue%10)) ///
+	(line Smin2_contrast tt, sort lcolor(red)) ///
 	(line Smin_contrast tt, sort lcolor(blue))
