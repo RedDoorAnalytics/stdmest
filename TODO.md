@@ -1,11 +1,22 @@
 Things to implement/add:
 
-* Do all calculations for survival on the c-log-log scale to ensure predictions are bounded between 0-1
-* Allow setting the confidence level (currently hard-coded at 5%)
-* It is horribly slow... but it seems to work
+* Consider doing some calculations on the cloglog scale.
+  But:
+    1. Make sure the order of operations is correct (e.g., take the avg. on the natural vs transformed scale)
+    2. Can also just return SEs
+    3. Can also "clip" values to be in the [0,1] range
 
-Some points to optimise code:
+* Sketch functions signatures:
+  - function 1:
+    + does this: [...]
+    + syntax: stdmest var, ci() cipercentile [...]
+  - function 2:
+    + [...]
+    + [...]
+  - [...]
 
-* Can definitely write more sub-routines
-* Can probably use matrices and not add to data, summarise, and then drop
-* Use views instead of copying data from Stata to Mata
+* Start documenting code:
+  - Start from existing help file
+  - E.g., see `sthlp` files from other packages
+  - `help smcl`
+  - `help help`
