@@ -13,7 +13,7 @@ program define stdmest, sortpreserve
 		TIMEvar(varname) ///
 		CONTRast ///
 		CI ///
-		CIPERCentile ///
+		CINORMal ///
 		CILEVel(real 0.95) ///
 		REPs(real 100) ///
 		DOTS ///
@@ -142,7 +142,24 @@ program define stdmest, sortpreserve
 				noisily _dots `b' 0
 			}
 		}
-		if ("`cipercentile'" == "") {
+		if ("`cinormal'" == "") {
+			display "CIs with percentile method."
+			// Process ps
+			local plower = 100 * ((1 - `cilevel') / 2)
+			local pupper = 100 * (1 - (1 - `cilevel') / 2)
+			// Point estimate
+			quietly egen `newvarname'_lower = rowpctile(tmp`newvarname'_b*), p(`plower')
+			quietly egen `newvarname'_upper = rowpctile(tmp`newvarname'_b*), p(`pupper')
+			if 	("`contrast'" != "") {
+				// Ref
+				quietly egen `newvarname'_ref_lower = rowpctile(tmp`newvarname'_ref_b*), p(`plower')
+				quietly egen `newvarname'_ref_upper = rowpctile(tmp`newvarname'_ref_b*), p(`pupper')
+				// Contrast
+				quietly egen `newvarname'_contrast_lower = rowpctile(tmp`newvarname'_contrast_b*), p(`plower')
+				quietly egen `newvarname'_contrast_upper = rowpctile(tmp`newvarname'_contrast_b*), p(`pupper')
+			}
+		}
+		else {
 			display "CIs with normal approximation method."
 			// Process critical values
 			local crit = invnormal(1 - (1 - `cilevel') / 2)
@@ -161,29 +178,14 @@ program define stdmest, sortpreserve
 				quietly gen `newvarname'_contrast_upper = `newvarname'_contrast + `crit' * `newvarname'_contrast_se
 			}
 		}
-		else {
-			display "CIs with percentile method."
-			// Process ps
-			local plower = 100 * ((1 - `cilevel') / 2)
-			local pupper = 100 * (1 - (1 - `cilevel') / 2)
-			// Point estimate
-			quietly egen `newvarname'_lower = rowpctile(tmp`newvarname'_b*), p(`plower')
-			quietly egen `newvarname'_upper = rowpctile(tmp`newvarname'_b*), p(`pupper')
-			if 	("`contrast'" != "") {
-				// Ref
-				quietly egen `newvarname'_ref_lower = rowpctile(tmp`newvarname'_ref_b*), p(`plower')
-				quietly egen `newvarname'_ref_upper = rowpctile(tmp`newvarname'_ref_b*), p(`pupper')
-				// Contrast
-				quietly egen `newvarname'_contrast_lower = rowpctile(tmp`newvarname'_contrast_b*), p(`plower')
-				quietly egen `newvarname'_contrast_upper = rowpctile(tmp`newvarname'_contrast_b*), p(`pupper')
-			}
-		}
 		// Drop tmp variables
 		capture drop tmp`newvarname'_b*
 		capture drop tmp`newvarname'_ref_b*
 		capture drop tmp`newvarname'_contrast_b*
 		// If CIs with normal method, drop SEs
-		if ("`cipercentile'" == "") {
+		if ("`cinormal'" == "") {
+		}
+		else {
 			drop `newvarname'_se
 			if ("`contrast'" != "") {
 				drop `newvarname'_ref_se
