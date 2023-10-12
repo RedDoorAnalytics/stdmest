@@ -1,12 +1,12 @@
-*! version 0.0.0-9000  31aug2023 AG
+*! version 0.0.0-9000  12Oct2023 AG
 
 program define mestreg_export
     version 18
-	syntax , filename(string) [replace]
+	syntax , FILEName(string) [replace]
 
 	// Check that we run stdmest after mestreg
 	if "`e(cmd2)'" != "mestreg" {
-		display as error "This only works after fitting an mestreg model."
+		display as error "This only works after fitting a model with {cmd: mestreg}."
 		exit 198
 	}
 
@@ -17,7 +17,7 @@ program define mestreg_export
 	matrix `b' = e(b)
 	capture putexcel set "`filename'", `replace' sheet("e(b)", replace)
 	if _rc {
-		display as error "file {cmd:`filename'} already exists; you might want to specify the option {cmd:replace}"
+		display as error "File {cmd:`filename'} already exists; you might want to specify the {cmd:replace} option."
 		exit 602
 	}
 	putexcel A1 = matrix(`b'), names
