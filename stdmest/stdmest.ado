@@ -72,7 +72,6 @@ program define stdmest, sortpreserve
 	// Doing the following because predict, xb after mestreg does not respect the if statement
 	// If a bug in predict, this will be unnecessary once fixed
 	quietly replace `xbname' = . if `touse' != 1
-	summ `xbname'
 	mata: std_surv("`newvarname'", "`xbname'", "`touse'", "`timevar'", "`timevartouse'", `reat')
 
 	// Create contrast if requested
@@ -85,6 +84,7 @@ program define stdmest, sortpreserve
 
 	// Confidence intervals using bootstrap-like procedure
 	if ("`ci'" != "") {
+		display "Calculating CIs..."
 		// Store original estimation results
 		tempname eb eV neweb newreat newreatref
 		matrix `eb' = e(b)
@@ -126,7 +126,7 @@ program define stdmest, sortpreserve
 			}
 		}
 		if ("`cinormal'" == "") {
-			display "CIs with percentile method."
+			display _newline "CIs calculated using the percentile method."
 			// Process ps
 			local plower = 100 * ((1 - `cilevel') / 2)
 			local pupper = 100 * (1 - (1 - `cilevel') / 2)
@@ -143,7 +143,7 @@ program define stdmest, sortpreserve
 			}
 		}
 		else {
-			display "CIs with normal approximation method."
+			display _newline "CIs calculated using the normal approximation method."
 			// Process critical values
 			local crit = invnormal(1 - (1 - `cilevel') / 2)
 			// Point estimate
@@ -165,14 +165,6 @@ program define stdmest, sortpreserve
 		capture drop tmp`newvarname'_b*
 		capture drop tmp`newvarname'_ref_b*
 		capture drop tmp`newvarname'_contrast_b*
-		// If CIs with normal method, drop SEs
-		if ("`cinormal'" != "") {
-			drop `newvarname'_se
-			if ("`contrast'" != "") {
-				drop `newvarname'_ref_se
-				drop `newvarname'_contrast_se
-			}
-		}
 		// Finally, restore estimation results
 		erepost b = `eb'
 	}
