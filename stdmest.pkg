@@ -4,4 +4,5 @@ d Author: Alessandro Gasparini
 d Distribution-Date: 20230831
 f stdmest/stdmest.ado
 f mestreg_export/mestreg_export.ado
+f mestreg_export/mestreg_export.sthlp
 e
