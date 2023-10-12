@@ -1,4 +1,4 @@
-*! version 0.0.0-9000 Alessandro Gasparini 11Oct2023
+*! version 0.0.0-9000 Alessandro Gasparini 12Oct2023
 
 program define stdmest, sortpreserve
 	// Version
@@ -56,7 +56,7 @@ program define stdmest, sortpreserve
 	if "`timevar'" == "" {
 		display "'timevar' not specified, _t will be used instead"
 		local timevar _t
-		quietly generate double `tv' = _t
+		quietly generate double `tv' = _t if `touse' == 1
 	}
 	else {
 		quietly generate double `tv' = `timevar'
@@ -68,13 +68,17 @@ program define stdmest, sortpreserve
 
 	// Point estimates
 	tempvar xbname
-	predict double `xbname', xb
-	mata: std_surv("`newvarname'", "`xbname'", "`timevar'", "`timevartouse'", `reat')
+	predict double `xbname' if `touse' == 1, xb
+	// Doing the following because predict, xb after mestreg does not respect the if statement
+	// If a bug in predict, this will be unnecessary once fixed
+	quietly replace `xbname' = . if `touse' != 1
+	summ `xbname'
+	mata: std_surv("`newvarname'", "`xbname'", "`touse'", "`timevar'", "`timevartouse'", `reat')
 
 	// Create contrast if requested
 	if ("`contrast'" != "") {
 		// Reference
-		mata: std_surv("`newvarname'_ref", "`xbname'", "`timevar'", "`timevartouse'", `reatref')
+		mata: std_surv("`newvarname'_ref", "`xbname'", "`touse'", "`timevar'", "`timevartouse'", `reatref')
 		// Calculate contrast
 		quietly generate `newvarname'_contrast = `newvarname' - `newvarname'_ref
 	}
@@ -90,7 +94,7 @@ program define stdmest, sortpreserve
 		mata: draw_newpars(`reps', "`neweb'")
 		mata: draw_newreat(`reps', `reat', `reatse', "`newreat'")
 		mata: draw_newreat(`reps', `reatref', `reatseref', "`newreatref'")
-		//
+		// Iterate with dots (if required by the user)
 		if ("`dots'" != "") {
 			noisily _dots 0, reps(`reps')
 		}
@@ -104,13 +108,16 @@ program define stdmest, sortpreserve
 			matrix colnames `this_eb' = `eb_coln'
 			erepost b = `this_eb'
 			tempvar new_xbname
-			predict double `new_xbname', xb
+			predict double `new_xbname' if `touse' == 1, xb
+			// Doing the following because predict, xb after mestreg does not respect the if statement
+			// If a bug in predict, this will be unnecessary once fixed
+			quietly replace `new_xbname' = . if `touse' != 1
 			// Predict using new xb and pars
-			mata: std_surv("tmp`newvarname'_b`b'", "`new_xbname'", "`timevar'", "`timevartouse'", `thisreat')
+			mata: std_surv("tmp`newvarname'_b`b'", "`new_xbname'", "`touse'", "`timevar'", "`timevartouse'", `thisreat')
 			// Contrasts
 			if 	("`contrast'" != "") {
 				// Reference
-				mata: std_surv("tmp`newvarname'_ref_b`b'", "`new_xbname'", "`timevar'", "`timevartouse'", `thisreatref')
+				mata: std_surv("tmp`newvarname'_ref_b`b'", "`new_xbname'", "`touse'", "`timevar'", "`timevartouse'", `thisreatref')
 				// Contrast
 				quietly generate tmp`newvarname'_contrast_b`b' = tmp`newvarname'_b`b' - tmp`newvarname'_ref_b`b'
 			}
@@ -178,8 +185,9 @@ mata:
 	void std_surv (
 	string scalar out,
 	string scalar xb,
+	string scalar xbtouse,
 	string scalar timevar,
-	string scalar touse,
+	string scalar timevartouse,
 	real scalar reat
 	)
 	{
@@ -197,9 +205,9 @@ mata:
 			ln_p = select(eb, s)
 		}
 		// view on timevar
-		st_view(t = ., ., timevar, touse)
+		st_view(t = ., ., timevar, timevartouse)
 		// view on linear predictor
-		st_view(xbb = ., ., xb)
+		st_view(xbb = ., ., xb, xbtouse)
 		// add fixed value of random intercept
 		xbb = xbb :+ reat
 		// do calculations for the std. survival, looping over timevar
@@ -209,7 +217,7 @@ mata:
 		}
 		// write out results
 		outi = st_addvar("double", out)
-		st_store(., outi, touse, Savg)
+		st_store(., outi, timevartouse, Savg)
 	}
 
 	real vector survfun (real vector xb, real scalar t, real scalar anc)

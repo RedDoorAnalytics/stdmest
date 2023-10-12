@@ -26,16 +26,18 @@ list b bse if _n == 1 | _n == _N
 //       +----------------------+
 
 // timevar
-range tt 0 200 30
+range tt 0 200 5
 
 // 
 timer on 1
-stdmest Smin, reat(-1.006262) reatse(.2222539) timevar(tt) contrast dots reps(300) ci
-stdmest Smin2, reat(-1.006262) reatse(.2222539) timevar(tt) contrast cinormal dots reps(300) ci
+stdmest Smin, reat(-1.006262) reatse(.2222539) timevar(tt) contrast dots ci reps(10)
+stdmest Smin2 if cohort == 18, reat(-1.006262) reatse(.2222539) timevar(tt) contrast dots ci reps(10)
 timer off 1
 timer list 1
 
-list Smin Smin_ref Smin_contrast if tt != .
+list Smin Smin2 if tt != .
+
+// list Smin Smin_ref Smin_contrast if tt != .
 twoway ///
 	(rarea Smin2_contrast_lower Smin2_contrast_upper tt, sort color(red%10)) ///
 	(rarea Smin_contrast_lower Smin_contrast_upper tt, sort color(blue%10)) ///
