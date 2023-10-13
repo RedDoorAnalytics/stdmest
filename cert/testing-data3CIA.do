@@ -32,8 +32,8 @@ set seed 348756389
 capture drop Smin*
 capture drop Smin2*
 timer on 1
-stdmest Smin, reat(-1.006262) reatse(.2222539) contrast dots ci reps(30)
-stdmest Smin2 if cohort == 18, reat(-1.006262) reatse(.2222539) contrast dots ci reps(30)
+stdmest Smin, reat(-1.006262) reatse(.2222539) contrast dots ci reps(100) cinormal
+stdmest Smin2 if cohort == 18, reat(-1.006262) reatse(.2222539) contrast dots ci reps(100) cinormal
 timer off 1
 timer list 1
 
@@ -46,14 +46,14 @@ twoway ///
 	, name("no_timevar", replace)
 
 // with timevar
-range tt 0 200 10
+range tt 0 260.88 20
 
 // 
 capture drop Smintt*
 capture drop Smintt2*
 timer on 1
-stdmest Smintt, reat(-1.006262) reatse(.2222539) timevar(tt) contrast dots ci reps(30)
-stdmest Smintt2 if cohort == 18, reat(-1.006262) reatse(.2222539) timevar(tt) contrast dots ci reps(30)
+stdmest Smintt, reat(-1.006262) reatse(.2222539) timevar(tt) contrast dots ci reps(100) cinormal
+stdmest Smintt2 if cohort == 18, reat(-1.006262) reatse(.2222539) timevar(tt) contrast dots ci reps(100) cinormal
 timer off 1
 timer list 1
 

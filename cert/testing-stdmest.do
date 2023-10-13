@@ -19,8 +19,8 @@ mestreg education njobs prestige i.female || id:, distribution(weibull)
 capture drop aaa* 
 capture drop aaa2*
 local B = 1000
-stdmest aaa, ci reps(`B') dots cinormal
-stdmest aaa2, ci reps(`B') dots
+stdmest aaa, reps(`B') dots cinormal
+stdmest aaa2, reps(`B') dots
 
 twoway ///
 	(line aaa _t, sort lcolor(stblue)) ///
