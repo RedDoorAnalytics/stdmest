@@ -221,15 +221,29 @@ mata:
 		}
 		// view on timevar
 		st_view(t = ., ., timevar, timevartouse)
+		order_of_t = order(t, 1)
+		invorder_of_t = invorder(order_of_t)
+		unique_t = uniqrows(t, 1)
 		// view on linear predictor
 		st_view(xbb = ., ., xb, xbtouse)
 		// add fixed value of random intercept
 		xbb = xbb :+ reat
 		// do calculations for the std. survival, looping over timevar
-		Savg = J(length(t), 1, .)
-		for (i = 1; i <= length(t); i++) {
-			Savg[i] = mean(survfun(xbb, t[i], ln_p))
+		// actually, we loop over _unique_ values of timevar to be more efficient,
+		unique_Savg = J(rows(unique_t), 1, .)
+		for (i = 1; i <= rows(unique_Savg); i++) {
+			unique_Savg[i] = mean(survfun(xbb, unique_t[i,1], ln_p))
 		}
+		// Return to original size
+		Savg = J(rows(t), 1, .)
+		counter = 1
+		for (i = 1; i <= rows(unique_Savg); i++) {
+			for (j = 1; j <= unique_t[i,2]; j++) {
+				Savg[counter] = unique_Savg[i]
+				counter++
+			}
+		}
+		Savg = Savg[invorder_of_t]
 		// write out results
 		outi = st_addvar("double", out)
 		st_store(., outi, timevartouse, Savg)
