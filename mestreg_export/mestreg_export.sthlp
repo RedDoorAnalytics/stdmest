@@ -1,5 +1,6 @@
 {smcl}
 {* *! version 1.0.0}{...}
+{vieweralsosee "mestreg" "help mestreg"}{...}
 {viewerjumpto "Syntax" "mestreg_export##syntax"}{...}
 {viewerjumpto "Description" "mestreg_export##description"}{...}
 {viewerjumpto "Options" "mestreg_export##options"}{...}
