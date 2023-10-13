@@ -160,6 +160,16 @@ program define stdmest, sortpreserve
 				quietly gen `newvarname'_contrast_lower = `newvarname'_contrast - `crit' * `newvarname'_contrast_se
 				quietly gen `newvarname'_contrast_upper = `newvarname'_contrast + `crit' * `newvarname'_contrast_se
 			}
+			// Check if lower, upper outside of the correct bounds
+			if 	("`contrast'" == "") {
+				quietly count if `newvarname'_lower < 0 | `newvarname'_upper > 1
+			}
+			else {
+				quietly count if `newvarname'_lower < 0 | `newvarname'_ref_lower < 0 | `newvarname'_contrast_lower < 0 | `newvarname'_upper > 1 | `newvarname'_ref_upper > 1 | `newvarname'_contrast_upper > 1
+			}
+			if (`r(N)' > 0) {
+				display as error "Warning: some CIs have a lower/upper bound outsixde of the range [0, 1]."
+			}
 		}
 		// Drop tmp variables
 		capture drop tmp`newvarname'_b*
