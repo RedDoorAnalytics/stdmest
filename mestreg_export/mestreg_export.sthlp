@@ -4,8 +4,8 @@
 {viewerjumpto "Syntax" "mestreg_export##syntax"}{...}
 {viewerjumpto "Description" "mestreg_export##description"}{...}
 {viewerjumpto "Options" "mestreg_export##options"}{...}
-{viewerjumpto "Remarks" "mestreg_export##remarks"}{...}
 {viewerjumpto "Examples" "mestreg_export##examples"}{...}
+{viewerjumpto "Author" "mestreg_export##author"}{...}
 
 {synopt :{cmd: mestreg_export} {hline 2} Export estimation results of {cmd: mestreg} models to an Excel file}
 
@@ -30,12 +30,14 @@ Export results of {cmd: mestreg} models to an Excel file:
 
 {pstd}See {helpb putexcel}, which is used under-the-hood, for more details.
 
+{marker description}{...}
 {title: Description}
 
 {pstd}
 {cmd: mestreg_export} can be used to export an Excel file with estimated coefficients and their variance-covariance matrix of {cmd: mestreg} models.
 Specifically, {cmd: e(b)} and {cmd: e(V)} that are stored in {cmd: ereturn} by {cmd: mestreg} are exported in separate tabs of the Excel file specified with {opt filename(string)}.
 
+{marker options}{...}
 {title: Options}
 
 {phang}
@@ -46,6 +48,7 @@ The name must be a string, potentially including the path to a location other th
 {phang}
 {opt replace} overwrites the specified Excel file, if needed.
 
+{marker examples}{...}
 {title: Examples}
 
 {pstd}
@@ -65,6 +68,7 @@ We can overcome this by using the {opt replace} option:
 
 {phang}{stata mestreg_export, filename("test.xlsx") replace: . mestreg_export, filename("test.xlsx") replace}{p_end}
 
+{marker author}{...}
 {title: Author}
 
 {pstd}Alessandro Gasparini{p_end}
