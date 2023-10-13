@@ -19,11 +19,16 @@ program define stdmest, sortpreserve
 		DOTS ///
 		]
 
+	// Mark which rows to use
+	// (useful to standardise to a subset of the study data)
 	marksample touse, novarlist
 	local newvarname `varlist'
 
 	// Also want to check that dataset is still stset
 	st_is 2 analysis
+
+	// Now, force `touse' to be zero if _st == 0
+	quietly replace `touse' = 0 if _st == 0
 
 	// Check that we run stdmest after mestreg
 	if "`e(cmd2)'" != "mestreg" {
