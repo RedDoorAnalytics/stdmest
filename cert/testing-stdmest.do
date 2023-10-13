@@ -5,6 +5,9 @@ adopath ++ "stdmest"
 clear all
 // set trace on
 
+// helpfile
+// help stdmest
+
 // Two-levels model:
 clear all
 webuse jobhistory
@@ -15,10 +18,13 @@ mestreg education njobs prestige i.female || id:, distribution(weibull)
 
 capture drop aaa* 
 capture drop aaa2*
-capture drop aaa3*
 local B = 1000
-stdmest aaa, ci reps(`B') dots
-stdmest aaa2, ci reps(`B') dots cipercentile
+stdmest aaa, ci reps(`B') dots cinormal
+stdmest aaa2, ci reps(`B') dots
+
+twoway ///
+	(line aaa _t, sort lcolor(stblue)) ///
+	(line aaa2 _t, sort lcolor(stred))
 
 twoway ///
 	(rarea aaa_lower aaa_upper _t, sort color(stblue%10)) ///
@@ -29,12 +35,12 @@ twoway ///
 
 // Actual test
 predict b, reffects reses(bse)
-range tt 0 365 50
+range tt 0 365 100
 summ b
 
-stdmest S_min, reat(-2.152631) reatse(.5868556) timevar(tt) contrast ci reps(`B') dots
-stdmest S_zero, reat(0) reatse(0) timevar(tt) contrast ci reps(`B') dots
-stdmest S_max, reat(2.49625) reatse(.4376849) timevar(tt) contrast ci reps(`B') dots
+stdmest S_min, reat(-2.152631) reatse(.5868556) timevar(tt) contrast ci cinormal reps(`B') dots
+stdmest S_zero, reat(0) reatse(0) timevar(tt) contrast ci cinormal reps(`B') dots
+stdmest S_max, reat(2.49625) reatse(.4376849) timevar(tt) contrast ci cinormal reps(`B') dots
 
 twoway ///
 	(rarea S_min_contrast_lower S_min_contrast_upper tt, sort color(stblue%10)) ///
@@ -45,9 +51,9 @@ twoway ///
 	(line S_max_contrast tt, sort lcolor(stgreen)) ///
 	, legend(order(4 "Min b" 5 "Zero b" 6 "Max b")) name("Scontrast", replace)
 
-stdmest S_min_q, reat(-2.152631) reatse(.5868556) timevar(tt) contrast ci cipercentile reps(`B') dots
-stdmest S_zero_q, reat(0) reatse(0) timevar(tt) contrast ci cipercentile reps(`B') dots
-stdmest S_max_q, reat(2.49625) reatse(.4376849) timevar(tt) contrast ci cipercentile reps(`B') dots
+stdmest S_min_q, reat(-2.152631) reatse(.5868556) timevar(tt) contrast ci reps(`B') dots
+stdmest S_zero_q, reat(0) reatse(0) timevar(tt) contrast ci reps(`B') dots
+stdmest S_max_q, reat(2.49625) reatse(.4376849) timevar(tt) contrast ci reps(`B') dots
 
 twoway ///
 	(rarea S_min_q_contrast_lower S_min_q_contrast_upper tt, sort color(stblue%10)) ///
@@ -57,19 +63,3 @@ twoway ///
 	(line S_zero_q_contrast tt, sort lcolor(stred)) ///
 	(line S_max_q_contrast tt, sort lcolor(stgreen)) ///
 	, legend(order(4 "Min b" 5 "Zero b" 6 "Max b"))  name("Scontrast_q", replace)
-
-// predict b, reffects
-// mestreg age female || patient:, distribution(weibull) time
-// stdmest
-// mestreg age female || patient:, distribution(exponential) 
-// stdmest
-// mestreg age female || patient:, distribution(lognormal) 
-// stdmest
-
-// // Three-levels model:
-// clear all
-// webuse jobhistory
-// gen t = tend - tstart
-// stset t, fail(failure)
-// mestreg education njobs prestige i.female || birthyear: || id:, distribution(weibull)
-// stdmest
