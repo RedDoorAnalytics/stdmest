@@ -6,7 +6,7 @@ clear all
 // set trace on
 
 // helpfile
-// help stdmest
+help stdmest
 
 // Two-levels model:
 clear all
