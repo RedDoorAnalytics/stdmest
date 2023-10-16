@@ -92,23 +92,98 @@ The algorithm runs for {opt reps} iterations, which can be controlled by the use
 {opt cinormal} denotes to use the normal approximation method within the algorithm used to obtain confidence intervals; this method calculates the standard deviation of the predictions, across repetitions, and uses it to produce confidence intervals that are symmetric and centered around the point estimates.
 If not specified, the algorithm will use the percentile method, which will take percentiles of the distribution of the predictions as the confidence intervals.
 Note that the normal approximation method might yield confidence intervals that are beyond the boundaries of a survival function (e.g., above 1 or below 0): {cmd: stdmest} does not fix this issues and only displays a warning when this happens.
-This is never the case with the percentile method, but this may require more iterations to converge.
+This is never the case with the percentile method, but this may require more iterations (e.g., a higher number of {cmd: reps}) to converge.
 {p_end}
 
 {phang}
-{opt cilevel(#)}
+{opt cilevel(#)} denotes the confidence level for the confidence intervals.
+Defaults to 0.95, for 95% confidence intervals.
 {p_end}
 
 {phang}
-{opt reps(#)}
+{opt reps(#)} denotes the number of repetitions to use for the confidence intervals algorithm.
+Defaults to 100.
+Note that a larger number of repetitions yields more accurate confidence intervals, at the cost of an increased computational costs.
 {p_end}
 
 {phang}
-{opt dots}
+{opt dots} if provided, progress of the algorithm for the confidence intervals is displayed visually.
 {p_end}
 
 {marker examples}{...}
 {title: Examples}
+
+{pstd}
+We start by replicating one of the examples from the {helpb mestreg} help file:
+
+{phang}{stata webuse catheter: . webuse catheter}{p_end}
+{phang}{stata "mestreg age female || patient:, distribution(weibull)": . mestreg age female || patient:, distribution(weibull)}{p_end}
+
+{pstd}
+Then, we obtain the BLUPs for the random effects:
+
+{phang}{stata predict b, reffects reses(bse): . predict b, reffects reses(bse)}{p_end}
+
+{pstd}
+For the first example, we calculate standardised survival probabilities using the default options:
+
+{phang}{stata stdmest S1: . stdmest S1}{p_end}
+
+{pstd}
+This calculates standardised survival probabilities, using all values of {cmd: _t}, and fixing the random intercept to the value of zero.
+This can be interpeted as the standardised survival probability for a theoretical average patient, standardising over the entire study population.
+We can plot this with the following code:
+
+{phang}{stata twoway line S1 _t, sort: . twoway line S1 _t, sort}{p_end}
+
+{pstd}
+Next, if we pass the {opt ci} option to {cmd: stdmest} we obtain confidence intervals too:
+
+{phang}{stata stdmest S2, ci: . stdmest S2, ci}{p_end}
+{phang}{stata twoway (rarea S2_lower S2_upper _t, sort color(stblue%10)) (line S2 _t, sort lcolor(stblue)): . twoway (rarea S2_lower S2_upper _t, sort color(stblue%10)) (line S2 _t, sort lcolor(stblue))}
+
+{pstd}
+This uses the percentile method, and 100 repetitions for the confidence intervals algorithm.
+If we wanted to use the normal approximation method, we could use the {opt cinormal} option:
+
+{phang}{stata stdmest S3, ci cinormal: . stdmest S3, ci cinormal}{p_end}
+{phang}{stata twoway (rarea S3_lower S3_upper _t, sort color(stgreen%10)) (line S3 _t, sort lcolor(stgreen)): . twoway (rarea S3_lower S3_upper _t, sort color(stgreen%10)) (line S3 _t, sort lcolor(stgreen))}{p_end}
+
+{pstd}
+We can also define custom time points to obtain predictions at:
+
+{phang}{stata range tt 0 100 5: . range tt 0 100 5}{p_end}
+
+{pstd}
+Then, we can pass this to {cmd: stdmest} via the {opt timevar} option:
+
+{phang}{stata stdmest S4, ci timevar(tt) reps(1000) dots: . stdmest S4, ci timevar(tt) reps(1000) dots}{p_end}
+{phang}{stata list tt S4* if tt != .: . list tt S4* if tt != .}{p_end}
+
+{pstd}
+We also pass the {opt reps(1000)} options to run 1,000 repetitions of the algorithm for the confidence intervals and the {opt dots} option to display progress in the Stata console.
+
+{pstd}
+Finally, we illustrate how to obtain contrasts of standardised survival probabilities.
+First, we identify the smallest predicted BLUP:
+
+{phang}{stata sort b: . sort b}{p_end}
+{phang}{stata list b bse if _n == 1: . list b bse if _n == 1}{p_end}
+
+{pstd}
+The smallest BLUP was predicted to be -2.098768, with a standard error of 0.4285454; note that the smallest BLUP corresponds to the patient with the lowest risk (i.e., the lowest hazard).
+Then, we pass this to {cmd: stdmest} via the {opt reat} and {opt reatse} options:
+
+{phang}{stata stdmest S5, ci timevar(tt) reps(1000) dots contrast reat(-2.098768) reatse(.4285454): . stdmest S5, ci timevar(tt) reps(1000) dots contrast reat(-2.098768) reatse(.4285454)}{p_end}
+
+{pstd}
+Estimated contrasts values (and confidence intervals) can be displayed (and plotted) with the following Stata code:
+
+{phang}{stata sort tt: . sort tt}{p_end}
+{phang}{stata list tt S5* if tt != .: . list tt S5* if tt != .}{p_end}
+
+{pstd}
+These could also be plotted using {helpb twoway} graphs, as before.
 
 {marker author}{...}
 {title: Author}
