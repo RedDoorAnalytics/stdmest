@@ -19,6 +19,14 @@ program define stdmest, sortpreserve
 		DOTS ///
 		]
 
+	// Check that erepost is installed
+	capture which erepost
+	if _rc > 0 {
+		display as error "The -erepost- command is required for -stdmest- to function properly. You can install it using:"
+		display as error ". {stata ssc install erepost}"
+		exit  198
+	}
+
 	// Mark which rows to use
 	// (useful to standardise to a subset of the study data)
 	marksample touse, novarlist
