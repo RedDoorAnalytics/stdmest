@@ -83,7 +83,8 @@ program define stdmest, sortpreserve
 	tempvar xbname
 	predict double `xbname' if `touse' == 1, xb
 	// Doing the following because predict, xb after mestreg does not respect the if statement
-	// If a bug in predict, this will be unnecessary once fixed
+	// This is a bug in the -predict- post-estimation command for -mestreg-
+	// The following line will be unnecessary once fixed
 	quietly replace `xbname' = . if `touse' != 1
 	mata: std_surv("`newvarname'", "`xbname'", "`touse'", "`timevar'", "`timevartouse'", `reat')
 
@@ -106,12 +107,15 @@ program define stdmest, sortpreserve
 		local eb_coln: colfullnames e(b)
 		mata: draw_newpars(`reps', "`neweb'")
 		mata: draw_newreat(`reps', `reat', `reatse', "`newreat'")
-		mata: draw_newreat(`reps', `reatref', `reatseref', "`newreatref'")
+		if ("`contrast'" != "") {
+			mata: draw_newreat(`reps', `reatref', `reatseref', "`newreatref'")
+		}
 		// Iterate with dots (if required by the user)
 		if ("`dots'" != "") {
 			noisily _dots 0, reps(`reps')
 		}
-		// Local macro with variables names, passed to -egen- later on
+		// Local macro with ALL variables names, passed to -egen- later on
+		// These will be concat'd in the loop below
 		local iter_names = ""
 		local iter_names_ref = ""
 		local iter_names_contrast = ""
@@ -119,16 +123,22 @@ program define stdmest, sortpreserve
 		forval b = 1/`reps' {
 			// Repost new results
 			tempname this_eb
+			// Setup iteration values
 			matrix `this_eb' = `neweb'[`b',....]
 			local thisreat = `newreat'[`b',1]
-			local thisreatref = `newreatref'[`b',1]
 			matrix rownames `this_eb' = `eb_rown'
 			matrix colnames `this_eb' = `eb_coln'
 			erepost b = `this_eb'
-			tempvar new_xbname iter_`newvarname'_b`b' iter_`newvarname'_ref_b`b' iter_`newvarname'_contrast_b`b'
+			tempvar new_xbname iter_`newvarname'_b`b'
+			if ("`contrast'" != "") {
+				local thisreatref = `newreatref'[`b',1]
+				tempvar iter_`newvarname'_ref_b`b' iter_`newvarname'_contrast_b`b'
+			}
+			// Now, do stuff
 			predict double `new_xbname' if `touse' == 1, xb
 			// Doing the following because predict, xb after mestreg does not respect the if statement
-			// If a bug in predict, this will be unnecessary once fixed
+			// This is a bug in the -predict- post-estimation command for -mestreg-
+			// The following line will be unnecessary once fixed
 			quietly replace `new_xbname' = . if `touse' != 1
 			// Predict using new xb and pars
 			mata: std_surv("`iter_`newvarname'_b`b''", "`new_xbname'", "`touse'", "`timevar'", "`timevartouse'", `thisreat')
@@ -268,8 +278,13 @@ mata:
 	{
 		eb = st_matrix("e(b)")
 		eV = st_matrix("e(V)")
-		sds = sqrt(diagonal(eV))'
-		neweb = rnormal(B, 1, eb, sds)
+		svd(eV, U = ., s = ., Vt = .)
+		C = U * (diag(s):^(1/2))
+		draw = rnormal(B, cols(eb), 0, 1)
+		neweb = draw * C'
+		for (i = 1; i <= cols(eb); i++) {
+			neweb[.,i] = neweb[.,i] :+ eb[i]
+		}
 		st_matrix(newebname, neweb)
 	}
 
