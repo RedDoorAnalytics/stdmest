@@ -1,4 +1,4 @@
-*! version 0.0.0-9000 Alessandro Gasparini 13Oct2023
+*! version 0.0.0-9000 Alessandro Gasparini 26Oct2023
 
 program define stdmest, sortpreserve
 	// Version
@@ -6,10 +6,10 @@ program define stdmest, sortpreserve
 
 	// Syntax
 	syntax newvarname [if] [in], [ ///
-		REAT(real 0.0) ///
-		REATRef(real 0.0) ///
-		REATSE(real 0.0) ///
-		REATSERef(real 0.0) ///
+		REAT(numlist) ///
+		REATRef(numlist) ///
+		REATSE(numlist) ///
+		REATSERef(numlist) ///
 		TIMEvar(varname) ///
 		CONTRast ///
 		CI ///
@@ -41,7 +41,7 @@ program define stdmest, sortpreserve
 	// Check that we run stdmest after mestreg
 	if "`e(cmd2)'" != "mestreg" {
 		display as error "This only works after fitting an mestreg model."
-		exit 198
+		exit 301
 	}
 
 	// Only support PH models (for now)
@@ -58,10 +58,40 @@ program define stdmest, sortpreserve
 
 	// Number of levels for this specific model
 	local nlevels = wordcount("`e(ivars)'")
-	if (`nlevels' > 1) {
-		display as error "Too many hierarchical levels:" ///
-			_newline "Only models with two levels are supported."
+
+	// Check how many elements in reat, reatse, reatref, reatseref
+	local lreat = wordcount("`reat'")
+	local lreatse = wordcount("`reatse'")
+	local lreatref = wordcount("`reatref'")
+	local lreatseref = wordcount("`reatseref'")
+
+	// nlevels must be the same as lreat, lreatse, lreatref, lreatseref
+	if ("`contrast'" == "") {
+		if `nlevels' != `lreat' | `nlevels' != `lreatse' {
+			local numerr = 1
+		}
+	}
+	else {
+		if `nlevels' != `lreat' | `nlevels' != `lreatse' | `nlevels' != `lreatref' | `nlevels' != `lreatseref' {
+			local numerr = 1
+		}
+	}
+	if ("`numerr'" == "1") {
+		display as error "The mestreg model has more levels than the number of values passed to 'reat', 'reatse'." ///
+			_newline "Please check your input, they all must have the same number of elements as there are levels."
 		exit 198
+	}
+
+	// Process reat, reatref
+	local reat_sum = 0
+	foreach x of local reat {
+		local reat_sum = `reat_sum' + `x'
+	}
+	if ("`contrast'" != "") {
+		local reatref_sum = 0
+		foreach x of local reatref {
+			local reatref_sum = `reatref_sum' + `x'
+		}
 	}
 
 	// Process timevar
@@ -86,12 +116,12 @@ program define stdmest, sortpreserve
 	// This is a bug in the -predict- post-estimation command for -mestreg-
 	// The following line will be unnecessary once fixed
 	quietly replace `xbname' = . if `touse' != 1
-	mata: std_surv("`newvarname'", "`xbname'", "`touse'", "`timevar'", "`timevartouse'", `reat')
+	mata: std_surv("`newvarname'", "`xbname'", "`touse'", "`timevar'", "`timevartouse'", `reat_sum')
 
 	// Create contrast if requested
 	if ("`contrast'" != "") {
 		// Reference
-		mata: std_surv("`newvarname'_ref", "`xbname'", "`touse'", "`timevar'", "`timevartouse'", `reatref')
+		mata: std_surv("`newvarname'_ref", "`xbname'", "`touse'", "`timevar'", "`timevartouse'", `reatref_sum')
 		// Calculate contrast
 		quietly generate `newvarname'_contrast = `newvarname' - `newvarname'_ref
 	}
@@ -106,9 +136,13 @@ program define stdmest, sortpreserve
 		local eb_rown: rowfullnames e(b)
 		local eb_coln: colfullnames e(b)
 		mata: draw_newpars(`reps', "`neweb'")
-		mata: draw_newreat(`reps', `reat', `reatse', "`newreat'")
+		local vreat: subinstr local reat " " ", ", all
+		local vreatse: subinstr local reatse " " ", ", all
+		mata: draw_newreat(`reps', (`vreat'), (`vreatse'), "`newreat'")
 		if ("`contrast'" != "") {
-			mata: draw_newreat(`reps', `reatref', `reatseref', "`newreatref'")
+			local vreatref: subinstr local reatref " " ", ", all
+			local vreatrefse: subinstr local reatrefse " " ", ", all
+			mata: draw_newreat(`reps', (`vreatref'), (`vreatseref'), "`newreatref'")
 		}
 		// Iterate with dots (if required by the user)
 		if ("`dots'" != "") {
@@ -288,9 +322,13 @@ mata:
 		st_matrix(newebname, neweb)
 	}
 
-	void draw_newreat (real scalar B, real scalar reat, real scalar reatse, string scalar newreatname)
+	void draw_newreat (real scalar B, real vector reat, real vector reatse, string scalar newreatname)
 	{
-		newreat = rnormal(B, 1, reat, reatse)
+		fulldraw = J(B, cols(reat), .)
+		for (i = 1; i <= cols(reat); i++) {
+			fulldraw[.,i] = rnormal(B, 1, reat[i], reatse[i])
+		}
+		newreat = rowsum(fulldraw)
 		st_matrix(newreatname, newreat)
 	}
 
