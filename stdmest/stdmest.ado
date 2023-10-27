@@ -77,7 +77,7 @@ program define stdmest, sortpreserve
 		}
 	}
 	if ("`numerr'" == "1") {
-		display as error "The mestreg model has more levels than the number of values passed to 'reat', 'reatse'." ///
+		display as error "The mestreg model has more levels than the number of values passed to 'reat', 'reatse' (or 'reatref', 'reatseref' if you are trying to calculate contrasts)." ///
 			_newline "Please check your input, they all must have the same number of elements as there are levels."
 		exit 198
 	}
@@ -141,7 +141,7 @@ program define stdmest, sortpreserve
 		mata: draw_newreat(`reps', (`vreat'), (`vreatse'), "`newreat'")
 		if ("`contrast'" != "") {
 			local vreatref: subinstr local reatref " " ", ", all
-			local vreatrefse: subinstr local reatrefse " " ", ", all
+			local vreatseref: subinstr local reatseref " " ", ", all
 			mata: draw_newreat(`reps', (`vreatref'), (`vreatseref'), "`newreatref'")
 		}
 		// Iterate with dots (if required by the user)
