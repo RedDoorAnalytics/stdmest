@@ -1,4 +1,4 @@
-*! version 0.0.0-9000  12Oct2023 AG
+*! version 0.0.0-9000  27Oct2023 AG
 
 program define mestreg_export
     version 18
@@ -7,7 +7,7 @@ program define mestreg_export
 	// Check that we run stdmest after mestreg
 	if "`e(cmd2)'" != "mestreg" {
 		display as error "This only works after fitting a model with {cmd: mestreg}."
-		exit 198
+		exit 301
 	}
 
 	// Local names
