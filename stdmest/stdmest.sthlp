@@ -20,10 +20,10 @@
 {marker options_table}{...}
 {synopthdr: Option}
 {synoptline}
-{synopt: {cmdab: reat(#)}}Random intercept value to fix. Defaults to the value of 0.0 if not specified by the user{p_end}
-{synopt: {cmdab: reatr:ef(#)}}Random intercept value to fix as the reference. This is useful when calculating contrasts, and defaults to the value of 0.0{p_end}
-{synopt: {cmdab: reatse(#)}}Standard error of the random intercept value {opt reat}. This is used in the confidence intervals algorithm, and defaults to the value of 0.0{p_end}
-{synopt: {cmdab: reatser:ef(#)}}Standard error of the reference random intercept value {opt reatref}. This is used in the confidence intervals algorithm, and defaults to the value of 0.0{p_end}
+{synopt: {cmdab: reat(#)}}Random intercept value(s) to fix{p_end}
+{synopt: {cmdab: reatr:ef(#)}}Random intercept(s) value to fix as the reference. This is useful when calculating contrasts{p_end}
+{synopt: {cmdab: reatse(#)}}Standard error(s) of the random intercept value(s) {opt reat}. This is used in the confidence intervals algorithm{p_end}
+{synopt: {cmdab: reatser:ef(#)}}Standard error(s) of the reference random intercept value(s) {opt reatref}. This is used in the confidence intervals algorithm{p_end}
 {synopt: {cmdab: time:var(varname)}}Time variable to obtain predictions at. Defaults to all values in {it: _t} if not specified by the user{p_end}
 {synopt: {cmdab: contr:ast}}If defined, return contrasts of {opt reat} vs {opt reatref} for every value of {opt timevar}{p_end}
 {synopt: {cmdab: ci}}If defined, confidence intervals for each quantity are calculated{p_end}
@@ -38,37 +38,36 @@
 
 {phang}
 {cmd: stdmest} is a post-estimation command that can be used to estimate standardised survival probabilities (and contrasts thereof) after fitting {helpb mestreg} models, using regression standardisation.
-The goal is to obtain standardised survival probabilities, standardising over the observed covariates distributions (i.e., the fixed effects that were included in your {helpb mestreg} model) while fixing a certain value of the random intercept.
+The goal is to obtain standardised survival probabilities, standardising over the observed covariates distributions (i.e., the fixed effects that were included in your {helpb mestreg} model) while fixing certain random effect values.
 {p_end}
 
 {phang}
-Note that only {helpb mestreg} models with a single random intercept are supported at the moment.
-Moreover, only models using the proportional hazards metric and an exponential or Weibull baseline hazard distribution are supported.
+{helpb mestreg} models with random intercepts at any possible hierarchical level are supported.
+Examples with two- and three-levels models are included below.
+Note however that only models using the proportional hazards metric and assuming an exponential or Weibull baseline hazard distribution are supported, at the moment.
 {p_end}
 
 {marker options}{...}
 {title: Options}
 
 {phang}
-{opt reat(#)} is the value of the random effect (intercept) to be fixed and to calculate standardised survival probabilities for.
-This is usually the predicted BLUP for a certain hierarchical unit, obtained using the {helpb mestreg postestimation##predict:predict, reffects} post-estimation command of {helpb mestreg}.
-Defaults to the value of 0.0, which denotes a theoretical average unit (given that the distribution of the random effects is normal and centered on 0.0).
+{opt reat(#)} is a vector of values for the random effect (intercept) to be fixed at each level of the hierarchy, and to calculate standardised survival probabilities for.
+These are usually the predicted BLUPs, obtained using the {helpb mestreg postestimation##predict:predict, reffects} post-estimation command of {helpb mestreg}.
 {p_end}
 
 {phang}
-{opt reatref(#)} is the value of the random effect to be taken as the reference value.
-This is useful when calculating contrasts (e.g., {opt reat} vs the theoretical average), and it defaults to the value of 0.0.
+{opt reatref(#)} is a vector of values of the random effect to be taken as the reference.
 {p_end}
 
 {phang}
-{opt reatse(#)} is the standard error of {opt reat}, the BLUP for a certain hierarchical unit.
-This is usually obtained with the {helpb mestreg postestimation##predict:reses} option of {helpb mestreg postestimation##predict:predict, reffects}, a post-estimation command of {helpb mestreg}.
-It is used by the algorithm computing the confidence intervals, and defaults to the value of 0.0.
+{opt reatse(#)} is a vector of standard errors of {opt reat}, which are used by the algorithm computing the confidence intervals.
+Note that values in {opt reat} and {opt reatse} must be in the same order, as they are picked according to their position: the first value in {opt reat} has a standard error given by the first element in {opt reatse}, and so on.
+These are usually obtained with the {helpb mestreg postestimation##predict:reses} option of {helpb mestreg postestimation##predict:predict, reffects}, a post-estimation command of {helpb mestreg}.
 {p_end}
 
 {phang}
-{opt reatseref(#)} is the standard error of {opt reatref}, the reference BLUP.
-Defaults to the value of 0.0.
+{opt reatseref(#)} is a vector of standard erros of {opt reatref}.
+Note that the same considerations outlined above for {opt reatse} apply here as well.
 {p_end}
 
 {phang}
@@ -118,6 +117,9 @@ We start by replicating one of the examples from the {helpb mestreg} help file:
 
 {phang}{stata webuse catheter: . webuse catheter}{p_end}
 {phang}{stata "mestreg age female || patient:, distribution(weibull)": . mestreg age female || patient:, distribution(weibull)}{p_end}
+
+{pstd}
+This example covers the setting of two-level hierarchical models.
 
 {pstd}
 Then, we obtain the BLUPs for the random effects:
