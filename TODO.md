@@ -14,3 +14,7 @@ Things to implement/add:
 Notes:
 * I _think_ I have implemented using distinct values of _t only. Tested it a little and seemed okay!
 * Forcing rows with `_st == 0` to not be used in the standardisation process. Okay? Not okay?
+
+* Compare -if- with margin's if
+
+* Error checks can be standardised between `stdmest` and `stdmestm`, e.g., with a call to a certain ad-hoc function.
