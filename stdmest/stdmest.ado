@@ -4,20 +4,8 @@ program define stdmest, sortpreserve
 	// Version
 	version 18.0
 
-	// Syntax
-	syntax newvarname [if] [in], [ ///
-		REAT(numlist) ///
-		REATRef(numlist) ///
-		REATSE(numlist) ///
-		REATSERef(numlist) ///
-		TIMEvar(varname) ///
-		CONTRast ///
-		CI ///
-		CINORMal ///
-		CILEVel(real 0.95) ///
-		REPs(real 100) ///
-		DOTS ///
-		]
+	// Check that dataset is still stset
+	st_is 2 analysis
 
 	// Check that erepost is installed
 	capture which erepost
@@ -26,17 +14,6 @@ program define stdmest, sortpreserve
 		display as error ". {stata ssc install erepost}"
 		exit  198
 	}
-
-	// Mark which rows to use
-	// (useful to standardise to a subset of the study data)
-	marksample touse, novarlist
-	local newvarname `varlist'
-
-	// Also want to check that dataset is still stset
-	st_is 2 analysis
-
-	// Now, force `touse' to be zero if _st == 0
-	quietly replace `touse' = 0 if _st == 0
 
 	// Check that we run stdmest after mestreg
 	if "`e(cmd2)'" != "mestreg" {
@@ -55,6 +32,29 @@ program define stdmest, sortpreserve
 		display as error "Only exponential and Weibull baseline hazard distributions are supported."
 		exit 198
 	}
+
+	// Syntax
+	syntax newvarname [if] [in], [ ///
+		REAT(numlist) ///
+		REATRef(numlist) ///
+		REATSE(numlist) ///
+		REATSERef(numlist) ///
+		TIMEvar(varname) ///
+		CONTRast ///
+		CI ///
+		CINORMal ///
+		CILEVel(real 0.95) ///
+		REPs(real 100) ///
+		DOTS ///
+		]
+
+	// Mark which rows to use
+	// (useful to standardise to a subset of the study data)
+	marksample touse, novarlist
+	local newvarname `varlist'
+
+	// Now, force `touse' to be zero if _st == 0
+	quietly replace `touse' = 0 if _st == 0
 
 	// Number of levels for this specific model
 	local nlevels = wordcount("`e(ivars)'")
@@ -315,6 +315,10 @@ mata:
 		svd(eV, U = ., s = ., Vt = .)
 		C = U * (diag(s):^(1/2))
 		draw = rnormal(B, cols(eb), 0, 1)
+		if (missing(draw) > 0) {
+			errprintf("Invalid samples for the confidence intervals algorithm. Please try again.\n")
+			exit(198)
+		}
 		neweb = draw * C'
 		for (i = 1; i <= cols(eb); i++) {
 			neweb[.,i] = neweb[.,i] :+ eb[i]
