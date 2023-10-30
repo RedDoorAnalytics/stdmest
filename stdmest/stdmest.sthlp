@@ -129,27 +129,27 @@ Then, we obtain the BLUPs for the random effects:
 {pstd}
 For the first example, we calculate standardised survival probabilities using the default options:
 
-{phang}{stata . stdmest S1}{p_end}
+{phang}{stata . stdmest s1}{p_end}
 
 {pstd}
 This calculates standardised survival probabilities, using all values of {cmd: _t}, and fixing the random intercept to the value of zero.
 This can be interpreted as the standardised survival probability for a theoretical average patient, standardising over the entire study population.
 We can plot this with the following code:
 
-{phang}{stata . twoway line S1 _t, sort}{p_end}
+{phang}{stata . twoway line s1 _t, sort}{p_end}
 
 {pstd}
 Next, if we pass the {opt ci} option to {cmd: stdmest} we obtain confidence intervals too:
 
-{phang}{stata . stdmest S2, ci}{p_end}
-{phang}{stata . twoway (rarea S2_lower S2_upper _t, sort color(stblue%10)) (line S2 _t, sort lcolor(stblue))}{p_end}
+{phang}{stata . stdmest s2, ci}{p_end}
+{phang}{stata . twoway (rarea s2_lower s2_upper _t, sort color(stblue%10)) (line s2 _t, sort lcolor(stblue))}{p_end}
 
 {pstd}
 This uses the percentile method and 100 repetitions for the confidence intervals algorithm.
 If we wanted to use the normal approximation method, we could use the {opt cinormal} option:
 
-{phang}{stata . stdmest S3, ci cinormal}{p_end}
-{phang}{stata . twoway (rarea S3_lower S3_upper _t, sort color(stgreen%10)) (line S3 _t, sort lcolor(stgreen))}{p_end}
+{phang}{stata . stdmest s3, ci cinormal}{p_end}
+{phang}{stata . twoway (rarea s3_lower s3_upper _t, sort color(stgreen%10)) (line s3 _t, sort lcolor(stgreen))}{p_end}
 
 {pstd}
 We can also define custom time points to obtain predictions at:
@@ -159,8 +159,8 @@ We can also define custom time points to obtain predictions at:
 {pstd}
 Then, we can pass this to {cmd: stdmest} via the {opt timevar} option:
 
-{phang}{stata . stdmest S4, ci timevar(tt) reps(1000) dots}{p_end}
-{phang}{stata . list tt S4* if tt != .}{p_end}
+{phang}{stata . stdmest s4, ci timevar(tt) reps(1000) dots}{p_end}
+{phang}{stata . list tt s4* if tt != .}{p_end}
 
 {pstd}
 We also pass the {opt reps(1000)} options to run 1,000 repetitions of the algorithm for the confidence intervals and the {opt dots} option to display progress in the Stata console.
@@ -176,13 +176,14 @@ First, we identify the smallest predicted BLUP:
 The smallest BLUP was predicted to be -2.098768, with a standard error of 0.4285454; note that the smallest BLUP corresponds to the patient with the lowest risk (i.e., the lowest hazard).
 Then, we pass this to {cmd: stdmest} via the {opt reat} and {opt reatse} options:
 
-{phang}{stata . stdmest S5, ci timevar(tt) reps(1000) dots contrast reat(-2.098768) reatse(.4285454)}{p_end}
+{phang}{stata . stdmest s5, ci timevar(tt) reps(1000) dots contrast reat(-2.098768) reatse(.4285454) reatref(0.0) reatseref(0.0)}{p_end}
 
 {pstd}
+Note that we needed to set reference values to contrast against, defined by the {opt reatref} and {opt reatseref} options; values of 0.0 denote the theoretical average patient, with a fixed random intercept value of 0.0.
 Estimated contrast values (and confidence intervals) can be displayed (and plotted) with the following Stata code:
 
 {phang}{stata . sort tt}{p_end}
-{phang}{stata . list tt S5* if tt != .}{p_end}
+{phang}{stata . list tt s5* if tt != .}{p_end}
 
 {pstd}
 These could also be plotted using {helpb twoway} graphs, as before.
@@ -209,8 +210,8 @@ Then, we predict the random effects for both {cmd: birthyear} and {cmd: id} leve
 These values are for two distinct subjects (identified by {cmd: b2}) within a single birth year (identified by {cmd: b1}).
 We can pass more than one value to the {opt reat}, {opt reatse}, {opt reatref}, {opt reatseref} options:
 
-{phang}{stata . stdmest S1, reat(-.0795512 -1.39209) reatse(.1930458 .4813395) ci}{p_end}
-{phang}{stata . stdmest S2, reat(-.0795512 -.1309338) reatse(.1930458 .4605677) ci}{p_end}
+{phang}{stata . stdmest s1, reat(-.0795512 -1.39209) reatse(.1930458 .4813395) ci}{p_end}
+{phang}{stata . stdmest s2, reat(-.0795512 -.1309338) reatse(.1930458 .4605677) ci}{p_end}
 
 {pstd}
 These predictions can be plotted, once again, using {helpb twoway}.
@@ -218,7 +219,7 @@ These predictions can be plotted, once again, using {helpb twoway}.
 {pstd}
 If we wanted to calculate the standardised survival difference between the two subjects above, we can use {cmd: stdmest} as follows:
 
-{phang}{stata . stdmest S3, reat(-.0795512 -1.39209) reatse(.1930458 .4813395) reatref(-.0795512 -.1309338) reatseref(.1930458 .4605677) ci contrast}{p_end}
+{phang}{stata . stdmest s3, reat(-.0795512 -1.39209) reatse(.1930458 .4813395) reatref(-.0795512 -.1309338) reatseref(.1930458 .4605677) ci contrast}{p_end}
 
 {marker author}{...}
 {title: Author}
