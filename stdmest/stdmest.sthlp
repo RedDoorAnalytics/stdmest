@@ -42,7 +42,7 @@ The goal is to obtain standardised survival probabilities, standardising over th
 {p_end}
 
 {phang}
-{helpb mestreg} models with random intercepts at any possible hierarchical level are supported.
+{helpb mestreg} models with random intercepts at any possible hierarchical level are supported, as long as they are all fixed for prediction purposes.
 Examples with two- and three-level models are included below.
 Note however that only models using the proportional hazards metric and assuming an exponential or Weibull baseline hazard distribution are supported, at the moment.
 {p_end}
