@@ -6,5 +6,11 @@ clear all
 // set trace on
 
 // helpfile
-help stdmestm
+// help stdmestm
 
+webuse jobhistory
+gen tt = tend - tstart
+stset tt, fail(failure)
+quietly mestreg education njobs prestige i.female || birthyear: || id:, distribution(exponential)
+
+stdmestm S, varmargname(/:var(_cons[birthyear>id]))
