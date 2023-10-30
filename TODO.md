@@ -18,3 +18,4 @@ Notes:
 * Compare -if- with margin's if
 
 * Error checks can be standardised between `stdmest` and `stdmestm`, e.g., with a call to a certain ad-hoc function.
+  This needs a separate .ado file.
