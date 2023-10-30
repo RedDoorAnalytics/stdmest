@@ -1,14 +1,17 @@
 *! version 0.0.0-9000  27Oct2023 AG
 
 program define mestreg_export
+	// Version
     version 18
-	syntax , FILEName(string) [replace]
 
 	// Check that we run stdmest after mestreg
 	if "`e(cmd2)'" != "mestreg" {
 		display as error "This only works after fitting a model with {cmd: mestreg}."
 		exit 301
 	}
+
+	// Syntax
+	syntax , FILEName(string) [replace]
 
 	// Local names
 	tempname b V
