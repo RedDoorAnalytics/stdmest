@@ -44,7 +44,7 @@ program define stdmest, sortpreserve
 		CI ///
 		CINORMal ///
 		CILEVel(real 0.95) ///
-		REPs(real 100) ///
+		REPs(integer 100) ///
 		DOTS ///
 		]
 
