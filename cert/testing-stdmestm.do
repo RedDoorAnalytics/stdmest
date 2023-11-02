@@ -11,6 +11,8 @@ clear all
 webuse jobhistory
 gen tt = tend - tstart
 stset tt, fail(failure)
-quietly mestreg education njobs prestige i.female || birthyear: || id:, distribution(exponential)
+mestreg education njobs prestige i.female || birthyear: || id:, distribution(exponential)
+range tv 0 365 200
+stdmestm S, varmargname(birthyear>id) timevar(tv)
 
-stdmestm S, varmargname(/:var(_cons[birthyear>id]))
+twoway (line S tv, sort)
