@@ -8,8 +8,11 @@ Things to implement/add:
 
 * Discuss defaults – must be sensible, and I don't think percentile method + 100 reps is, at the moment
 
-* Started setting up the _partially marginal_ version of regression standardisation for 2 levels, in `stdmestm.ado`.
-  See R implementation for details...
+* Point estimates for partially marginal predictions done – need to do a bit more testing though.
+
+* Need to implement the contrasts logic.
+
+* Need to implement the CIs logic.
 
 Notes:
 * I _think_ I have implemented using distinct values of _t only. Tested it a little and seemed okay!
@@ -17,5 +20,6 @@ Notes:
 
 * Compare -if- with margin's if
 
-* Error checks can be standardised between `stdmest` and `stdmestm`, e.g., with a call to a certain ad-hoc function.
+* Error checks could be standardised between `stdmest` and `stdmestm`, e.g., with a call to a certain ad-hoc function.
   This needs a separate .ado file.
+
