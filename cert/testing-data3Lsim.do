@@ -24,6 +24,7 @@ range tt 0 10 5
 // # 2         397      2.65         0.407        3078     -0.298        0.522
 
 //
+set seed 123
 stdmest Sa1, reat(0.878 0.122) reatse(0.311 0.570) ci reps(1000) timevar(tt) dots
 stdmest Sa2, reat(2.65 -0.298) reatse(0.407 0.522) ci reps(1000) timevar(tt) dots
 list tt Sa1* Sa2* if tt != .
