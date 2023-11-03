@@ -10,10 +10,6 @@ Things to implement/add:
 
 * Point estimates for partially marginal predictions done – need to do a bit more testing though.
 
-* Need to implement the contrasts logic.
-
-* Need to implement the CIs logic.
-
 Notes:
 * I _think_ I have implemented using distinct values of _t only. Tested it a little and seemed okay!
 * Forcing rows with `_st == 0` to not be used in the standardisation process. Okay? Not okay?
