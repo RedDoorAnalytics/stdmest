@@ -6,7 +6,7 @@ clear all
 // set trace on
 
 // helpfile
-// help stdmestm
+help stdmestm
 
 webuse jobhistory
 gen tt = tend - tstart
