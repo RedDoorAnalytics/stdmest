@@ -72,7 +72,7 @@ Note that the same considerations outlined above for {opt reatse} apply here as 
 
 {phang}
 {opt timevar(varname)} denotes a variable containing the time points to predict at, either for standardised survival probabilities or contrasts thereof.
-If not supplied by the user, all values in {it: _t} are used by default.
+If not supplied by the user, all values in {it: _t} are used by default – which might be much more computationally intensive with large datasets.
 {p_end}
 
 {phang}
