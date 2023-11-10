@@ -126,6 +126,92 @@ Defaults to 7, which provided good results in our experience, but a higher numbe
 {marker examples}{...}
 {title: Examples}
 
+{pstd}
+To illustrate the functionality of {cmd: stdmestm} we adapt the {cmd: jobhistory} example from the {helpb mestreg} help file:
+
+{phang}{stata . webuse jobhistory}{p_end}
+{phang}{stata . generate tt = tend - tstart}{p_end}
+{phang}{stata . stset tt, fail(failure)}{p_end}
+{phang}{stata ". mestreg education njobs prestige i.female || birthyear: || id:, distribution(exponential)"}{p_end}
+
+{pstd}
+Note that, as in the examples for {helpb stdmest}, we calculate and use {cmd: tt} as the time variable to not have to deal with delayed entry, which is beyond the scope of this package and not currently considered.
+
+{pstd}
+Then, we predict the random effects and list BLUPs for a certain {cmd: birthyear}, say, 1930:
+
+{phang}{stata . predict b_by b_by_id, reffects reses(b_by_se b_by_id_se)}{p_end}
+{phang}{stata . list birthyear id b_by b_by_se b_by_id b_by_id_se if birthyear == 1930 & jobno == 1}{p_end}
+
+{pstd}
+Note that in the {helpb list} command above we filter on {cmd: jobno == 1} to ensure we get a single line per subject.
+
+{pstd}
+Then, we define a new {cmd: timevar} variable {cmd: tv} that we will predict for and we run {cmd: stdmestm} while fixing the BLUP for {cmd: birthyear == 1930}:
+
+{phang}{stata . range tv 0 365 100}{p_end}
+{phang}{stata . stdmestm S1930, reat(-.0795512) reatse(.1930458) varmargname(birthyear>id) timevar(tv) ci}{p_end}
+
+{pstd}
+We pick the values of {opt reat} and {opt reatse} from the output of {helpb list}, above, and we integrate over the random intercept at the subject level (denoted with {cmd: birthyear>id} in the output table of {helpb mestreg}).
+We also request confidence intervals, which are calculated using the default settings.
+
+{pstd}
+We can plot the resulting predictions with the following code:
+
+{phang}{stata . twoway (rarea S1930_lower S1930_upper tv, sort color(stblue%10)) (line S1930 tv, sort lcolor(stblue))}{p_end}
+
+{pstd}
+These predictions are interpreted as standardised survival probabilities for study subjects born in 1930, over time, standardising over the observed covariates distribution and marginalising over the subject-level random intercept.
+
+{pstd}
+For reference, we want to compare these predictions with {it: fully conditional} predictions from {helpb stdmest}.
+For this, we predict standardised survival probabilities for every subject born in 1930, fixing the random intercept values listed above (one at a time):
+
+{phang}{stata . stdmest S1930_1, reat(-.0795512 -1.39209) reatse(.1930458 .4813395) timevar(tv) ci}{p_end}
+{phang}{stata . stdmest S1930_2, reat(-.0795512 -.1309338) reatse(.1930458 .4605677) timevar(tv) ci}{p_end}
+{phang}{stata . stdmest S1930_47, reat(-.0795512 .0648713) reatse(.1930458 .4757858) timevar(tv) ci}{p_end}
+{phang}{stata . stdmest S1930_52, reat(-.0795512 .0921726) reatse(.1930458 .6059889) timevar(tv) ci}{p_end}
+{phang}{stata . stdmest S1930_53, reat(-.0795512 .2572126) reatse(.1930458 .5502837) timevar(tv) ci}{p_end}
+{phang}{stata . stdmest S1930_73, reat(-.0795512 -.3866474) reatse(.1930458 .4431536) timevar(tv) ci}{p_end}
+{phang}{stata . stdmest S1930_84, reat(-.0795512 .1991294) reatse(.1930458 .487356) timevar(tv) ci}{p_end}
+{phang}{stata . stdmest S1930_100, reat(-.0795512 .9406086) reatse(.1930458 .4313854) timevar(tv) ci}{p_end}
+{phang}{stata . stdmest S1930_109, reat(-.0795512 -.0400392) reatse(.1930458 .4674065) timevar(tv) ci}{p_end}
+{phang}{stata . stdmest S1930_119, reat(-.0795512 -.4323267) reatse(.1930458 .4766487) timevar(tv) ci}{p_end}
+{phang}{stata . stdmest S1930_125, reat(-.0795512 -.1077823) reatse(.1930458 .4622744) timevar(tv) ci}{p_end}
+{phang}{stata . stdmest S1930_161, reat(-.0795512 .3662371) reatse(.1930458 .5660748) timevar(tv) ci}{p_end}
+
+{pstd}
+All these predictions can then be plotted using the following code:
+
+{pstd}
+{bf}
+. levelsof id if birthyear == 1930, local(ids_1930)
+{break}
+. foreach i of local ids_1930 {
+{break}
+. {space 4} local addplot `addplot' ///
+{break}
+. {space 8} (rarea S1930_`i'_lower S1930_`i'_upper tv, sort color(black%05)) ///
+{break}
+. {space 8} (line S1930_`i' tv, sort lcolor(black) lpattern(dash))
+{break}
+. }
+{break}
+. local margplot (rarea S1930_lower S1930_upper tv, sort color(stblue%20)) (line S1930 tv, sort lcolor(stblue) lwidth(thick))
+{break}
+. twoway `addplot' `margplot', legend(order(25 "95% C.I." 26 "birthyear = 1930"))
+
+{pstd}
+{it}
+Note that the {ul:entire} code chunk above needs to be run together, in a single go, given the use of {help local} macro variables.
+{reset}
+
+{pstd}
+The blue line denotes standardised survival probabilities for study subjects born in 1930.
+Each black, dashed line denotes standardised survival probabilities for a specific study subject born in 1930.
+Note that, as expected, the blue line is approximately the average of the black lines.
+
 {marker author}{...}
 {title: Author}
 
