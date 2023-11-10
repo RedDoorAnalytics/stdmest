@@ -41,7 +41,7 @@
 {phang}
 {cmd: stdmestm} is a post-estimation command that can be used to estimate standardised survival probabilities (and contrasts thereof) after fitting three-level {helpb mestreg} models, using regression standardisation.
 The goal is to obtain standardised survival probabilities, standardising over the observed covariates distributions (i.e., the fixed effects that were included in your {helpb mestreg} model) while 1. fixing the random intercept for a certain level and 2. marginalise over the random intercept for the other level.
-We denote these predictions as {it: partially marginal} because we marginalise over {it: only} one of the two hierarchical levels of a three-levels survival model.
+We denote these predictions as {it: partially marginal} because we marginalise over {it: only} one of the two hierarchical levels of a three-level survival model.
 {p_end}
 
 {phang}
@@ -49,14 +49,14 @@ Note that only three-level {helpb mestreg} models using the proportional hazards
 {p_end}
 
 {phang}
-The difference between {cmd: stdmestm} and {helpb stdmest} is that the latter fixes random intercept values at all levels, while the former fixes one and marginales over the other.
+The difference between {cmd: stdmestm} and {helpb stdmest} is that the latter fixes random intercept values at all levels, while the former fixes one and marginalises over the other.
 {p_end}
 
 {marker options}{...}
 {title: Options}
 
 {phang}
-{opt reat(#)} is a values for the random (intercept) to be fixed for a certain level, and to calculate standardised survival probabilities for.
+{opt reat(#)} is a value for the random (intercept) to be fixed for a certain level, and to calculate standardised survival probabilities for.
 This is usually the predicted BLUP, obtained using the {helpb mestreg postestimation##predict:predict, reffects} post-estimation command of {helpb mestreg}.
 {p_end}
 
