@@ -1,7 +1,7 @@
 v 3
-d STDMEST: Regression standardisation post-estimation for hierarchical contrasts after mestreg
+d STDMEST: Regression standardisation post-estimation command for hierarchical contrasts after mestreg
 d Author: Alessandro Gasparini
-d Distribution-Date: 20231026
+d Distribution-Date: 20231110
 f stdmest/stdmest.ado
 f stdmest/stdmest.sthlp
 f stdmestm/stdmestm.ado
