@@ -74,6 +74,11 @@ program define stdmestm, sortpreserve
 	}
 
 	// Get nodes and weights for Gauss-Hermite quadrature
+	// But first, check that nk > 0
+	if (`nk' <= 0) {
+		display as error "'nk' must be > 0."
+		exit 198
+	}
 	tempname kx kw
 	mata: ghq(`nk', "`kx'", "`kw'")
 

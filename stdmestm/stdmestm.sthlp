@@ -120,7 +120,7 @@ This can be picked from the output table of {helpb mestreg}, from the variance c
 
 {phang}
 {opt nk} Number of Gauss-Hermite quadrature nodes used by the numerical integration algorithm to marginalise over the random intercept defined by {opt varmargname}.
-Defaults to 7, which provided good results in our experience, but a higher number can be used to ensure a more precise approximation at the cost of additional computational complexity.
+Must be a positive value ({opt nk} > 0) and defaults to 7, which provided good results in our experience, but a larger number can be used to ensure a more precise approximation at the cost of additional computational complexity.
 It is recommended to run the algorithm with different values of {opt nk} to ensure that a good approximation is used (and thus that consistent results are obtained).
 {p_end}
 

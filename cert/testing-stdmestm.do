@@ -13,11 +13,12 @@ gen tt = tend - tstart
 stset tt, fail(failure)
 mestreg education njobs prestige i.female || birthyear: || id:, distribution(exponential)
 range tv 0 365 200
+//
 stdmestm Smin_perc, reat(-.4603618) reatse(.1427249) varmargname(birthyear>id) timevar(tv) contrast ci
 stdmestm Smax_perc, reat(.2269995) reatse(.1666193) varmargname(birthyear>id) timevar(tv) contrast ci
 stdmestm Smin_norm, reat(-.4603618) reatse(.1427249) varmargname(birthyear>id) timevar(tv) contrast ci cinormal
 stdmestm Smax_norm, reat(.2269995) reatse(.1666193) varmargname(birthyear>id) timevar(tv) contrast ci cinormal
-
+//
 twoway /// 
 	(rarea Smin_perc_ref_lower Smin_perc_ref_upper tv, sort color(stblue%10)) ///
 	(rarea Smin_perc_lower Smin_perc_upper tv, sort color(stgreen%10)) ///
