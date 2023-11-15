@@ -32,7 +32,7 @@
 {synopt: {cmdab: rep:s(#)}}Number of repetitions used by the algorithm used to calculate the confidence intervals. Defaults to 100{p_end}
 {synopt: {cmdab: dots}}If defined, display dots while iterating across repetitions when calculating confidence intervals. This can be useful to display the progress of the algorithm{p_end}
 {synopt: {cmdab: varmarg:name}}Name of the random intercept to integrate (i.e., marginalise) over{p_end}
-{synopt: {cmdab: nk}}Number of Gauss-Hermite quadrature nodes used by the algorithm to numerically integrate out the random intercept denoted by {opt varmargname}{p_end}
+{synopt: {cmdab: nk}}Number of Gauss-Hermite quadrature nodes used by the algorithm to numerically integrate out the random intercept denoted by {opt varmargname}. Defaults to 7{p_end}
 {synoptline}
 
 {marker description}{...}
@@ -120,7 +120,8 @@ This can be picked from the output table of {helpb mestreg}, from the variance c
 
 {phang}
 {opt nk} Number of Gauss-Hermite quadrature nodes used by the numerical integration algorithm to marginalise over the random intercept defined by {opt varmargname}.
-Defaults to 7, which provided good results in our experience, but a higher number can be used to ensure a more precise approximation.
+Defaults to 7, which provided good results in our experience, but a higher number can be used to ensure a more precise approximation at the cost of additional computational complexity.
+It is recommended to run the algorithm with different values of {opt nk} to ensure that a good approximation is used (and thus that consistent results are obtained).
 {p_end}
 
 {marker examples}{...}
