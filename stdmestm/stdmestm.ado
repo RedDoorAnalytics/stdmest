@@ -217,13 +217,15 @@ program define stdmestm, sortpreserve
 			}
 			// Check if lower, upper outside of the correct bounds
 			if 	("`contrast'" == "") {
-				quietly count if `newvarname'_lower < 0 | `newvarname'_upper > 1
+				quietly count if `newvarname'_lower < 0 | (`newvarname'_upper > 1 & `newvarname'_upper != .)
+				local errtxt "Warning: some CIs have a lower/upper bound outside of the range [0, 1]."
 			}
 			else {
-				quietly count if `newvarname'_lower < 0 | `newvarname'_ref_lower < 0 | `newvarname'_contrast_lower < 0 | `newvarname'_upper > 1 | `newvarname'_ref_upper > 1 | `newvarname'_contrast_upper > 1
+				quietly count if `newvarname'_lower < 0 | `newvarname'_ref_lower < 0 | `newvarname'_contrast_lower < -1 | (`newvarname'_upper > 1 & `newvarname'_upper != .) | (`newvarname'_ref_upper > 1 & `newvarname'_ref_upper != .) | (`newvarname'_ref_upper > 1 & `newvarname'_ref_upper != .)
+				local errtxt "Warning: some CIs have a lower/upper bound outside of the range [0, 1] (or [-1, 1] for contrasts)."
 			}
 			if (`r(N)' > 0) {
-				display as error "Warning: some CIs have a lower/upper bound outside of the range [0, 1]."
+				display as error "`errtxt'"
 			}
 		}
 		// Restore estimation results
