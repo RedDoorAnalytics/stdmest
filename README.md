@@ -1,6 +1,6 @@
 # `stdmest`
 
-`stdmest` is a Stata post-estimation command for hierarchical survival models fitted using [-`mestreg`-](https://www.stata.com/manuals/memestreg.pdf).
+`stdmest` is a Stata post-estimation command for hierarchical survival models fitted using -[`mestreg`](https://www.stata.com/manuals/memestreg.pdf)-.
 
 This command can be used to obtain predictions of, e.g., standardised survival probabilities while fixing best linear unbiased predictions (BLUPs) of the random effects .
 
