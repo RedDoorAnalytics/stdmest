@@ -1,3 +1,5 @@
 v 3
-d Regression standardisation post-estimation command for hierarchical contrasts after mestreg
+d Post-Estimation Predictions for Standardized Hierarchical Contrasts after -mestreg- Models
 p stdmest
+p stdmestm
+p mestreg_export
