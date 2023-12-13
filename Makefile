@@ -7,3 +7,4 @@ vendor_data:
 cert:
 	cd cert && stata-mp -e assert-stdmest.do
 	cd cert && stata-mp -e assert-mestreg_export.do
+	cd cert && stata-mp -e assert-stdmestm.do
