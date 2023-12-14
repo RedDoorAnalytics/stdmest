@@ -1,11 +1,11 @@
-# `stdmest`: Post-Estimation Predictions for Standardized Hierarchical Contrasts after -`mestreg`- Models
+# `stdmest`: Post-Estimation Predictions for Standardised Hierarchical Contrasts after -`mestreg`- Models
 
 `stdmest` is a Stata post-estimation command for hierarchical survival models fitted using -[`mestreg`](https://www.stata.com/manuals/memestreg.pdf)-.
 
-This command can be used to obtain predictions of, e.g., standardised survival probabilities while fixing best linear unbiased predictions (BLUPs) of the random effects.
+This command can be used to obtain predictions of, e.g., standardised survival probabilities while fixing best linear unbiased predictions (BLUPs) of the random effects at any level of the hierarchy.
 
-In other words, `stdmest` can obtain marginal predictions across observed covariates (i.e., the fixed effects) while fixing predicted values of the random effects.
-Built-in post-estimation commands for `mestreg` can do the opposite, marginalising over the random effects.
+In other words, `stdmest` can obtain marginal predictions standardising across observed covariates (i.e., the fixed effects) while fixing predicted values of the random effects.
+Built-in post-estimation commands for `mestreg` can do the opposite, i.e., marginalising over the random effects.
 
 Three commands are provided by this package:
 
