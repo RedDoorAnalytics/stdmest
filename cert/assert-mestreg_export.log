@@ -43,6 +43,10 @@ Notes:
 
 . 
 . //
+. rcof "mestreg_export, filename(test.xlsx)" == 301
+
+. 
+. //
 . clear all
 
 . webuse catheter
@@ -60,15 +64,15 @@ file test.xlsx saved
 
 . 
 . //
-. capture mestreg_export, filename("test.xlsx")
-
-. assert _rc > 0
+. rcof "mestreg_export, filename(test.xlsx)" == 602
 
 . 
 . //
-. capture mestreg_export, filename("test.xlsx") replace
+. mestreg_export, filename("test.xlsx") replace
+file test.xlsx saved
+file test.xlsx saved
 
-. assert _rc == 0
+. rcof "mestreg_export, filename(test.xlsx) replace" == 0
 
 . 
 . //
