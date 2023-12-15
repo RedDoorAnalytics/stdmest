@@ -17,7 +17,7 @@ program define stdmestm, sortpreserve
 
 	// Check that we run stdmest after mestreg
 	if "`e(cmd2)'" != "mestreg" {
-		display as error "This only works after fitting an mestreg model."
+		display as error "This only works after fitting a mixed-effects survival model with -mestreg-."
 		exit 301
 	}
 

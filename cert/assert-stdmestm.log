@@ -29,8 +29,8 @@ Notes:
 . cd "~/Stata-dev/stdmest"
 /Users/ellessenne/Stata-dev/stdmest
 
-. adopath ++ "stdmestm"
-  [1]              "stdmestm"
+. adopath ++ "stdmest"
+  [1]              "stdmest"
   [2]  (BASE)      "/Applications/Stata/ado/base/"
   [3]  (SITE)      "/Applications/Stata/ado/site/"
   [4]              "."
@@ -39,7 +39,22 @@ Notes:
 > s/"
   [7]  (OLDPLACE)  "~/ado/"
 
+. adopath ++ "stdmestm"
+  [1]              "stdmestm"
+  [2]              "stdmest"
+  [3]  (BASE)      "/Applications/Stata/ado/base/"
+  [4]  (SITE)      "/Applications/Stata/ado/site/"
+  [5]              "."
+  [6]  (PERSONAL)  "/Users/ellessenne/Documents/Stata/ado/personal/"
+  [7]  (PLUS)      "/Users/ellessenne/Library/Application Support/Stata/ado/plu
+> s/"
+  [8]  (OLDPLACE)  "~/ado/"
+
 . clear all
+
+. 
+. //
+. rcof "stdmestm" == 119
 
 . 
 . //
@@ -67,54 +82,67 @@ Observed time interval: (0, tt]
                                      Earliest observed entry t =         0
                                           Last observed exit t =       428
 
-. range tv 0 365 10
-(590 missing values generated)
+. 
+. // random time variable
+. // I *don't* set the seed to incorporate some randomness
+. // -> all test should pass no matter what
+. gen tv = runiform(0, 365)
+
+. replace tv = . if _n > 10
+(590 real changes made, 590 to missing)
+
+. rcof "stdmestm" == 301
 
 . 
 . //
 . quietly mestreg education njobs prestige i.female || birthyear: || id:, distr
 > ibution(exponential) time
 
-. capture stdmestm S0, reat(0.0) reatse(0.0) varmargname(birthyear>id)
-
-. assert _rc > 0 
+. rcof "stdmestm S0, reat(0.0) reatse(0.0) varmargname(birthyear>id)" == 198
 
 . quietly mestreg education njobs prestige i.female || birthyear: || id:, distr
 > ibution(weibull) time
 
-. capture stdmestm S0, reat(0.0) reatse(0.0) varmargname(birthyear>id)
-
-. assert _rc > 0 
+. rcof "stdmestm S0, reat(0.0) reatse(0.0) varmargname(birthyear>id)" == 198
 
 . quietly mestreg education njobs prestige i.female || birthyear: || id:, distr
 > ibution(loglogistic)
 
-. capture stdmestm S0, reat(0.0) reatse(0.0) varmargname(birthyear>id)
-
-. assert _rc > 0 
+. rcof "stdmestm S0, reat(0.0) reatse(0.0) varmargname(birthyear>id)" == 198
 
 . quietly mestreg education njobs prestige i.female || birthyear: || id:, distr
 > ibution(lognormal)
 
-. capture stdmestm S0, reat(0.0) reatse(0.0) varmargname(birthyear>id)
-
-. assert _rc > 0 
-
 . matrix eb = e(b)
+
+. rcof "stdmestm S0, reat(0.0) reatse(0.0) varmargname(birthyear>id)" == 198
 
 . quietly mestreg education njobs prestige i.female || birthyear: || id:, distr
 > ibution(gamma) from(eb)
 
-. capture stdmestm S0, reat(0.0) reatse(0.0) varmargname(birthyear>id)
-
-. assert _rc > 0 
+. rcof "stdmestm S0, reat(0.0) reatse(0.0) varmargname(birthyear>id)" == 198
 
 . quietly mestreg education njobs prestige i.female || birthyear: || id:, distr
 > ibution(exponential)
 
-. capture stdmestm S0, reat(0.0 0.0) reatse(0.0 0.0) varmargname(birthyear>id)
+. rcof "stdmestm S0, reat(0.0 0.0) reatse(0.0 0.0) varmargname(birthyear>id)" =
+> = 198
 
-. assert _rc > 0 
+. 
+. //
+. quietly mestreg education njobs prestige i.female || id:, distribution(expone
+> ntial)
+
+. rcof "stdmestm S0, reat(0.0) reatse(0.0) varmargname(id)" == 198
+
+. 
+. //
+. quietly mestreg education njobs prestige i.female || birthyear: || id:, distr
+> ibution(exponential)
+
+. rcof "stdmestm S0, reat(0.0) reatse(0.0) varmargname(id)" == 198
+
+. rcof "stdmestm S0, reat(0.0) reatse(0.0) varmargname(hey)" == 198
 
 . 
 . //
@@ -152,45 +180,9 @@ CIs calculated using the percentile method.
 . assert S2a == S2b
 
 . assert S2a_lower >= S2b_lower
+2 contradictions in 600 observations
+assertion is false
+r(9);
 
-. assert S2a_upper <= S2b_upper
-
-. drop S2*
-
-. 
-. //
-. stdmestm S3a, reat(0.0) reatse(0.0) varmargname(birthyear>id) timevar(tv)
-
-. stdmestm S3b, reat(0.0) reatse(0.0) varmargname(birthyear>id) timevar(tv) nk(
-> 15)
-
-. stdmestm S3c, reat(0.0) reatse(0.0) varmargname(birthyear>id) timevar(tv) nk(
-> 30)
-
-. stdmestm S3d, reat(0.0) reatse(0.0) varmargname(birthyear>id) timevar(tv) nk(
-> 100)
-
-. mkmat S3a, matrix(mS3a) nomissing
-
-. mkmat S3b, matrix(mS3b) nomissing
-
-. mkmat S3c, matrix(mS3c) nomissing
-
-. mkmat S3d, matrix(mS3d) nomissing
-
-. assert mreldif(mS3a, mS3b) < 1e-04
-
-. assert mreldif(mS3a, mS3c) < 1e-04
-
-. assert mreldif(mS3a, mS3d) < 1e-04
-
-. assert mreldif(mS3b, mS3c) < 1e-05
-
-. assert mreldif(mS3b, mS3d) < 1e-05
-
-. assert mreldif(mS3c, mS3d) < 1e-06
-
-. drop S3*
-
-. 
 end of do-file
+r(9);
