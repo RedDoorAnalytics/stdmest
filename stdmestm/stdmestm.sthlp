@@ -29,7 +29,7 @@
 {synopt: {cmdab: ci}}If defined, confidence intervals for each quantity are calculated{p_end}
 {synopt: {cmdab: cinorm:al}}If defined, use the normal approximation method for the confidence intervals. The default is to use the percentile method{p_end}
 {synopt: {cmdab: cilev:el(#)}}Required confidence level for the confidence intervals. Defaults to 0.95 for 95% confidence intervals{p_end}
-{synopt: {cmdab: rep:s(#)}}Number of repetitions used by the algorithm used to calculate the confidence intervals. Defaults to 100{p_end}
+{synopt: {cmdab: rep:s(#)}}Number of repetitions used by the algorithm used to calculate the confidence intervals. Defaults to 1000{p_end}
 {synopt: {cmdab: dots}}If defined, display dots while iterating across repetitions when calculating confidence intervals. This can be useful to display the progress of the algorithm{p_end}
 {synopt: {cmdab: varmarg:name}}Name of the random intercept to integrate (i.e., marginalise) over{p_end}
 {synopt: {cmdab: nk}}Number of Gauss-Hermite quadrature nodes used by the algorithm to numerically integrate out the random intercept denoted by {opt varmargname}. Defaults to 7{p_end}
@@ -105,7 +105,7 @@ Defaults to 0.95, for 95% confidence intervals.
 
 {phang}
 {opt reps(#)} denotes the number of repetitions to use for the confidence intervals algorithm.
-Defaults to 100.
+Defaults to 1000.
 Note that a larger number of repetitions yields more accurate confidence intervals, at the cost of increased computational costs.
 {p_end}
 

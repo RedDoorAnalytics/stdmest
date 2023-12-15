@@ -1,4 +1,4 @@
-*! version 0.0.0-9000 Alessandro Gasparini 26Oct2023
+*! version 0.0.0-9000 Alessandro Gasparini 15Dec2023
 
 program define stdmest, sortpreserve
 	// Version
@@ -44,7 +44,7 @@ program define stdmest, sortpreserve
 		CI ///
 		CINORMal ///
 		CILEVel(real 0.95) ///
-		REPs(integer 100) ///
+		REPs(integer 1000) ///
 		DOTS ///
 		]
 

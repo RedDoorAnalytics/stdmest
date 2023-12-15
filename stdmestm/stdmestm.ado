@@ -1,4 +1,4 @@
-*! version 0.0.0-9000 Alessandro Gasparini 03Nov2023
+*! version 0.0.0-9000 Alessandro Gasparini 15Dec2023
 
 program define stdmestm, sortpreserve
 	// Version
@@ -52,7 +52,7 @@ program define stdmestm, sortpreserve
 		CI ///
 		CINORMal ///
 		CILEVel(real 0.95) ///
-		REPs(integer 100) ///
+		REPs(integer 1000) ///
 		DOTS ///
 		NK(integer 7) ///
 		VARMARGname(string) ///
