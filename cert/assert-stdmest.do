@@ -4,26 +4,26 @@ adopath ++ "stdmest"
 clear all
 
 //
+rcof "stdmest S0, reat(0.0) reatse(0.0)" == 119
+
+//
 clear
 webuse catheter
+rcof "stdmest S0, reat(0.0) reatse(0.0)" == 301
+
+//
 quietly mestreg age female || patient:, distribution(exponential) time
-capture stdmest S0, reat(0.0) reatse(0.0) 
-assert _rc > 0
+rcof "stdmest S0, reat(0.0) reatse(0.0)" == 198
 quietly mestreg age female || patient:, distribution(weibull) time
-capture stdmest S0, reat(0.0) reatse(0.0) 
-assert _rc > 0
+rcof "stdmest S0, reat(0.0) reatse(0.0)" == 198
 quietly mestreg age female || patient:, distribution(loglogistic)
-capture stdmest S0, reat(0.0) reatse(0.0) 
-assert _rc > 0
+rcof "stdmest S0, reat(0.0) reatse(0.0)" == 198
 quietly mestreg age female || patient:, distribution(lognormal)
-capture stdmest S0, reat(0.0) reatse(0.0) 
-assert _rc > 0
+rcof "stdmest S0, reat(0.0) reatse(0.0)" == 198
 quietly mestreg age female || patient:, distribution(gamma)
-capture stdmest S0, reat(0.0) reatse(0.0) 
-assert _rc > 0
+rcof "stdmest S0, reat(0.0) reatse(0.0)" == 198
 quietly mestreg age female || patient:, distribution(exponential)
-capture stdmest S0, reat(0.0 0.0) reatse(0.0 0.0) 
-assert _rc > 0
+rcof "stdmest S0, reat(0.0 0.0) reatse(0.0 0.0)" == 198
 
 // 
 clear
