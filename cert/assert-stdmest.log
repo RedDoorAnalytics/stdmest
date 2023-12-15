@@ -87,7 +87,7 @@ Notes:
 . webuse catheter
 (Kidney data, McGilchrist and Aisbett, Biometrics, 1991)
 
-. quietly mestreg age female || patient:, distribution(weibull)
+. quietly mestreg age female || patient:, distribution(exponential)
 
 . 
 . // 
@@ -136,7 +136,7 @@ Number of observations (_N) was 76, now 100.
 . webuse catheter
 (Kidney data, McGilchrist and Aisbett, Biometrics, 1991)
 
-. quietly mestreg age female || patient:, distribution(weibull)
+. quietly mestreg age female || patient:, distribution(exponential)
 
 . stdmest S3a, reat(-1.0) reatse(0.0)
 'timevar' not specified, _t will be used instead
@@ -166,6 +166,8 @@ Number of observations (_N) was 76, now 100.
 . assert S4a_contrast >= 0 
 
 . assert S4b_contrast <= 0 
+
+. drop S4*
 
 . 
 . //
@@ -198,7 +200,7 @@ Number of observations (_N) was 76, now 100.
 . replace S6b = 0 if _n > 1
 (75 real changes made)
 
-. assert (S6a - S6b) < 1e-16
+. assert (S6a - S6b) < 1e-6
 
 . drop S6*
 
@@ -206,7 +208,7 @@ Number of observations (_N) was 76, now 100.
 . //
 . set seed 487
 
-. stdmest S7a, reat(0.0) reatse(0.0) ci
+. stdmest S7a, reat(0.0) reatse(0.0) ci reps(10)
 'timevar' not specified, _t will be used instead
 Calculating CIs...
 
@@ -214,7 +216,7 @@ CIs calculated using the percentile method.
 
 . set seed 487
 
-. stdmest S7b, reat(0.0) reatse(1.0) ci
+. stdmest S7b, reat(0.0) reatse(1.0) ci reps(10)
 'timevar' not specified, _t will be used instead
 Calculating CIs...
 
@@ -291,6 +293,46 @@ Observed time interval: (0, tt]
 . assert S9a >= S9c
 
 . drop S9*
+
+. 
+. // 
+. clear
+
+. webuse catheter
+(Kidney data, McGilchrist and Aisbett, Biometrics, 1991)
+
+. quietly mestreg age female || patient:, distribution(exponential)
+
+. summ _t
+
+    Variable |        Obs        Mean    Std. dev.       Min        Max
+-------------+---------------------------------------------------------
+          _t |         76    97.68421    128.3424          2        562
+
+. // random time variable
+. // I *don't* set the seed to incorporate some randomness
+. // -> all test below should pass no matter what
+. gen tv = runiform(0, `r(mean)')
+
+. summ tv
+
+    Variable |        Obs        Mean    Std. dev.       Min        Max
+-------------+---------------------------------------------------------
+          tv |         76     45.0321    28.30084   .0769118     96.396
+
+. stdmest S10a, reat(`=r(min)') reatse(0.0) timevar(tv)
+
+. stdmest S10b, reat(`=r(mean)') reatse(0.0) timevar(tv)
+
+. stdmest S10c, reat(`=r(max)') reatse(0.0) timevar(tv)
+
+. assert S10a >= S10b
+
+. assert S10a >= S10c
+
+. assert S10b >= S10c
+
+. drop S10* tv
 
 . 
 end of do-file

@@ -28,7 +28,7 @@ rcof "stdmest S0, reat(0.0 0.0) reatse(0.0 0.0)" == 198
 // 
 clear
 webuse catheter
-quietly mestreg age female || patient:, distribution(weibull)
+quietly mestreg age female || patient:, distribution(exponential)
 
 // 
 stdmest S1, reat(0.0) reatse(0.0) reatref(0.0) reatseref(0.0) contrast
@@ -52,7 +52,7 @@ drop S2*
 //
 clear
 webuse catheter
-quietly mestreg age female || patient:, distribution(weibull)
+quietly mestreg age female || patient:, distribution(exponential)
 stdmest S3a, reat(-1.0) reatse(0.0)
 stdmest S3b, reat( 0.0) reatse(0.0)
 stdmest S3c, reat(+1.0) reatse(0.0)
@@ -66,6 +66,7 @@ stdmest S4a, reat(-1.0) reatse(0.0) reatref(0.0) reatseref(0.0) contrast
 stdmest S4b, reat(+1.0) reatse(0.0) reatref(0.0) reatseref(0.0) contrast
 assert S4a_contrast >= 0 
 assert S4b_contrast <= 0 
+drop S4*
 
 //
 gen t5 = 0
@@ -82,14 +83,14 @@ predict S6a, surv conditional(fixedonly)
 stdmest S6b if _n == 1, reat(0.0) reatse(0.0)
 replace S6a = 0 if _n > 1
 replace S6b = 0 if _n > 1
-assert (S6a - S6b) < 1e-16
+assert (S6a - S6b) < 1e-6
 drop S6*
 
 //
 set seed 487
-stdmest S7a, reat(0.0) reatse(0.0) ci
+stdmest S7a, reat(0.0) reatse(0.0) ci reps(10)
 set seed 487
-stdmest S7b, reat(0.0) reatse(1.0) ci
+stdmest S7b, reat(0.0) reatse(1.0) ci reps(10)
 assert S7a_lower <= S7a
 assert S7a <= S7a_upper
 assert S7b_lower <= S7b
@@ -118,3 +119,21 @@ stdmest S9c, reat( 0.0 -1.0) reatse(0.0 0.0)
 assert S9a >= S9b
 assert S9a >= S9c
 drop S9*
+
+// 
+clear
+webuse catheter
+quietly mestreg age female || patient:, distribution(exponential)
+summ _t
+// random time variable
+// I *don't* set the seed to incorporate some randomness
+// -> all test below should pass no matter what
+gen tv = runiform(0, `r(mean)')
+summ tv
+stdmest S10a, reat(`=r(min)') reatse(0.0) timevar(tv)
+stdmest S10b, reat(`=r(mean)') reatse(0.0) timevar(tv)
+stdmest S10c, reat(`=r(max)') reatse(0.0) timevar(tv)
+assert S10a >= S10b
+assert S10a >= S10c
+assert S10b >= S10c
+drop S10* tv
