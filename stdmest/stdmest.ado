@@ -47,7 +47,7 @@ program define stdmest, sortpreserve
 		REPs(integer 1000) ///
 		DOTS ///
 		]
-
+		
 	// Mark which rows to use
 	// (useful to standardise to a subset of the study data)
 	marksample touse, novarlist
@@ -97,7 +97,7 @@ program define stdmest, sortpreserve
 	// Process timevar
 	tempvar tv
 	if "`timevar'" == "" {
-		display "`timevar' not specified, _t will be used instead"
+		display "timevar() not specified, _t will be used instead"
 		local timevar _t
 		quietly generate double `tv' = _t if `touse' == 1
 	}
@@ -197,8 +197,8 @@ program define stdmest, sortpreserve
 		if ("`cinormal'" == "") {
 			display _newline "CIs calculated using the percentile method."
 			// Process ps
-			local plower = 100 * ((1 - `level') / 2)
-			local pupper = 100 * (1 - (1 - `level') / 2)
+			local plower = 100 * ((1 - (`level'/100)) / 2)
+			local pupper = 100 * (1 - (1 - (`level'/100)) / 2)
 			// Point estimate
 			quietly egen `newvarname'_lower = rowpctile(`iter_names'), p(`plower')
 			quietly egen `newvarname'_upper = rowpctile(`iter_names'), p(`pupper')
@@ -214,7 +214,7 @@ program define stdmest, sortpreserve
 		else {
 			display _newline "CIs calculated using the normal approximation method."
 			// Process critical values
-			local crit = invnormal(1 - (1 - `level') / 2)
+			local crit = invnormal(1 - (1 - (`level'/100)) / 2)
 			// Point estimate
 			quietly egen `newvarname'_se = rowsd(`iter_names')
 			quietly gen `newvarname'_lower = `newvarname' - `crit' * `newvarname'_se
