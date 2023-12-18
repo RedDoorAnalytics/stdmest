@@ -276,20 +276,21 @@ mata:
 		order_of_t = order(t, 1)
 		invorder_of_t = invorder(order_of_t)
 		unique_t = uniqrows(t, 1)
+		Nuniqt = rows(unique_t)
 		// view on linear predictor
 		st_view(xbb = ., ., xb, xbtouse)
 		// add fixed value of random intercept
-		xbb = xbb :+ reat
+		xbb = xbb :+ reat	//!! be careful, this will update the Stata variable as well
 		// do calculations for the std. survival, looping over timevar
 		// actually, we loop over _unique_ values of timevar to be more efficient,
-		unique_Savg = J(rows(unique_t), 1, .)
-		for (i = 1; i <= rows(unique_Savg); i++) {
+		unique_Savg = J(Nuniqt, 1, .)
+		for (i = 1; i <= Nuniqt; i++) {
 			unique_Savg[i] = mean(survfun(xbb, unique_t[i,1], ln_p))
 		}
 		// Return to original size
 		Savg = J(rows(t), 1, .)
 		counter = 1
-		for (i = 1; i <= rows(unique_Savg); i++) {
+		for (i = 1; i <= Nuniqt; i++) {
 			for (j = 1; j <= unique_t[i,2]; j++) {
 				Savg[counter] = unique_Savg[i]
 				counter++
@@ -303,8 +304,7 @@ mata:
 
 	real vector survfun (real vector xb, real scalar t, real scalar anc)
 	{
-		p = exp(anc)
-		S = exp(-exp(xb) :* (t:^p))
+		S = exp(-exp(xb) :* (t:^exp(anc)))
 		return(S)
 	}
 
@@ -328,8 +328,9 @@ mata:
 
 	void draw_newreat (real scalar B, real vector reat, real vector reatse, string scalar newreatname)
 	{
-		fulldraw = J(B, cols(reat), .)
-		for (i = 1; i <= cols(reat); i++) {
+		Nc = cols(reat)
+		fulldraw = J(B, Nc, .)
+		for (i = 1; i <= Nc; i++) {
 			fulldraw[.,i] = rnormal(B, 1, reat[i], reatse[i])
 		}
 		newreat = rowsum(fulldraw)
