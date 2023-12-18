@@ -85,7 +85,7 @@ program define stdmestm, sortpreserve
 	// Process timevar
 	tempvar tv
 	if "`timevar'" == "" {
-		display "'timevar' not specified, _t will be used instead"
+		display "`timevar' not specified, _t will be used instead"
 		local timevar _t
 		quietly generate double `tv' = _t if `touse' == 1
 	}
