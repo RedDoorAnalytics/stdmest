@@ -246,8 +246,10 @@ program define stdmest, sortpreserve
 
 end
 
-local SS 	string scalar
 local RS 	real scalar
+local RC 	real colvector
+local SS 	string scalar
+
 
 version 18.0
 mata:
@@ -302,13 +304,13 @@ void std_surv(	`SS' out,
 	st_store(., outi, timevartouse, Savg)
 }
 
-real vector survfun (real vector xb, real scalar t, real scalar anc)
+real vector survfun (`RC' xb, `RS' t, `RS' anc)
 {
 	S = exp(-exp(xb) :* (t:^exp(anc)))
 	return(S)
 }
 
-void draw_newpars (real scalar B, string scalar newebname)
+void draw_newpars (`RS' B, `SS' newebname)
 {
 	eb = st_matrix("e(b)")
 	eV = st_matrix("e(V)")
