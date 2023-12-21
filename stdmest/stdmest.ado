@@ -34,7 +34,7 @@ program define stdmest, sortpreserve
 	}
 
 	//!! need to check for ancillary parameters and error out
-	
+
 	// Syntax
 	syntax newvarname [if] [in], [ ///
 		REAT(numlist) ///
@@ -49,7 +49,7 @@ program define stdmest, sortpreserve
 		REPs(integer 1000) ///
 		DOTS ///
 		]
-		
+
 	// Mark which rows to use
 	// (useful to standardise to a subset of the study data)
 	marksample touse, novarlist
@@ -248,15 +248,16 @@ program define stdmest, sortpreserve
 
 end
 
-local RS 	real scalar
-local RC 	real colvector
-local SS 	string scalar
-
+local RS real scalar
+local RC real colvector
+local RR real rowvector
+local SS string scalar
 
 version 18.0
 mata:
 
-void std_surv(	`SS' out,
+void std_surv(
+		`SS' out,
 		`SS' xb,
 		`SS' xbtouse,
 		`SS' timevar,
@@ -330,7 +331,7 @@ void draw_newpars (`RS' B, `SS' newebname)
 	st_matrix(newebname, neweb)
 }
 
-void draw_newreat (real scalar B, real vector reat, real vector reatse, string scalar newreatname)
+void draw_newreat (`RS' B, `RR' reat, `RR' reatse, `SS' newreatname)
 {
 	Nc = cols(reat)
 	fulldraw = J(B, Nc, .)
