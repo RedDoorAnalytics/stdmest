@@ -307,7 +307,7 @@ void std_surv(
 	st_store(., outi, timevartouse, Savg)
 }
 
-real vector survfun (`RC' xb, `RS' t, `RS' anc)
+`RC' survfun (`RC' xb, `RS' t, `RS' anc)
 {
 	S = exp(-exp(xb) :* (t:^exp(anc)))
 	return(S)
