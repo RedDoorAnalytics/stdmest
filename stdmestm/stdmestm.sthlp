@@ -28,7 +28,7 @@
 {synopt: {cmdab: contr:ast}}If defined, return contrasts of {opt reat} vs {opt reatref} for every value of {opt timevar}{p_end}
 {synopt: {cmdab: ci}}If defined, confidence intervals for each quantity are calculated{p_end}
 {synopt: {cmdab: cinorm:al}}If defined, use the normal approximation method for the confidence intervals. The default is to use the percentile method{p_end}
-{synopt: {cmdab: cilev:el(#)}}Required confidence level for the confidence intervals. Defaults to 0.95 for 95% confidence intervals{p_end}
+{synopt: {cmdab: l:evel(#)}}Required confidence level for the confidence intervals. If not set, the default system-wide setting is used{p_end}
 {synopt: {cmdab: rep:s(#)}}Number of repetitions used by the algorithm used to calculate the confidence intervals. Defaults to 1000{p_end}
 {synopt: {cmdab: dots}}If defined, display dots while iterating across repetitions when calculating confidence intervals. This can be useful to display the progress of the algorithm{p_end}
 {synopt: {cmdab: varmarg:name}}Name of the random intercept to integrate (i.e., marginalise) over{p_end}
@@ -99,8 +99,8 @@ This is never the case with the percentile method, but this may require more ite
 {p_end}
 
 {phang}
-{opt cilevel(#)} denotes the confidence level for the confidence intervals.
-Defaults to 0.95, for 95% confidence intervals.
+{opt level(#)} denotes the confidence level for the confidence intervals.
+If not set, the default system-wide setting is used: see {helpb set level} for more details.
 {p_end}
 
 {phang}
