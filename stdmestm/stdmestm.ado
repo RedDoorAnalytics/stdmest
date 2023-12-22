@@ -1,4 +1,4 @@
-*! version 0.0.0-9000 Alessandro Gasparini 15Dec2023
+*! version 0.0.0-9000 Alessandro Gasparini, Michael J. Crowther 22Dec2023
 
 program define stdmestm, sortpreserve
 	// Version
