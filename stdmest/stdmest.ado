@@ -33,8 +33,6 @@ program define stdmest, sortpreserve
 		exit 198
 	}
 
-	//!! need to check for ancillary parameters and error out
-
 	// Syntax
 	syntax newvarname [if] [in], [ ///
 		REAT(numlist) ///
