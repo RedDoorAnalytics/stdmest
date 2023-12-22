@@ -43,7 +43,7 @@ program define stdmest, sortpreserve
 		CONTRast ///
 		CI ///
 		CINORMal ///
-		CILEVel(real 0.95) ///
+		Level(cilevel) ///
 		REPs(integer 1000) ///
 		DOTS ///
 		]
@@ -97,7 +97,7 @@ program define stdmest, sortpreserve
 	// Process timevar
 	tempvar tv
 	if "`timevar'" == "" {
-		display "'timevar' not specified, _t will be used instead"
+		display "timevar() not specified, _t will be used instead"
 		local timevar _t
 		quietly generate double `tv' = _t if `touse' == 1
 	}
@@ -133,15 +133,15 @@ program define stdmest, sortpreserve
 		tempname eb eV neweb newreat newreatref
 		matrix `eb' = e(b)
 		matrix `eV' = e(V)
-		local eb_rown: rowfullnames e(b)
-		local eb_coln: colfullnames e(b)
+		local eb_rown : rowfullnames e(b)
+		local eb_coln : colfullnames e(b)
 		mata: draw_newpars(`reps', "`neweb'")
 		local vreat: subinstr local reat " " ", ", all
 		local vreatse: subinstr local reatse " " ", ", all
 		mata: draw_newreat(`reps', (`vreat'), (`vreatse'), "`newreat'")
 		if ("`contrast'" != "") {
-			local vreatref: subinstr local reatref " " ", ", all
-			local vreatseref: subinstr local reatseref " " ", ", all
+			local vreatref : subinstr local reatref " " ", ", all
+			local vreatseref : subinstr local reatseref " " ", ", all
 			mata: draw_newreat(`reps', (`vreatref'), (`vreatseref'), "`newreatref'")
 		}
 		// Iterate with dots (if required by the user)
@@ -169,7 +169,7 @@ program define stdmest, sortpreserve
 				tempvar iter_`newvarname'_ref_b`b' iter_`newvarname'_contrast_b`b'
 			}
 			// Now, do stuff
-			predict double `new_xbname' if `touse' == 1, xb
+			quietly predict double `new_xbname' if `touse' == 1, xb
 			// Doing the following because predict, xb after mestreg does not respect the if statement
 			// This is a bug in the -predict- post-estimation command for -mestreg-
 			// The following line will be unnecessary once fixed
@@ -197,8 +197,8 @@ program define stdmest, sortpreserve
 		if ("`cinormal'" == "") {
 			display _newline "CIs calculated using the percentile method."
 			// Process ps
-			local plower = 100 * ((1 - `cilevel') / 2)
-			local pupper = 100 * (1 - (1 - `cilevel') / 2)
+			local plower = 100 * ((1 - (`level'/100)) / 2)
+			local pupper = 100 * (1 - (1 - (`level'/100)) / 2)
 			// Point estimate
 			quietly egen `newvarname'_lower = rowpctile(`iter_names'), p(`plower')
 			quietly egen `newvarname'_upper = rowpctile(`iter_names'), p(`pupper')
@@ -214,7 +214,7 @@ program define stdmest, sortpreserve
 		else {
 			display _newline "CIs calculated using the normal approximation method."
 			// Process critical values
-			local crit = invnormal(1 - (1 - `cilevel') / 2)
+			local crit = invnormal(1 - (1 - (`level'/100)) / 2)
 			// Point estimate
 			quietly egen `newvarname'_se = rowsd(`iter_names')
 			quietly gen `newvarname'_lower = `newvarname' - `crit' * `newvarname'_se
@@ -246,94 +246,98 @@ program define stdmest, sortpreserve
 
 end
 
+local RS real scalar
+local RC real colvector
+local RR real rowvector
+local SS string scalar
+
 version 18.0
 mata:
 
-	void std_surv (
-	string scalar out,
-	string scalar xb,
-	string scalar xbtouse,
-	string scalar timevar,
-	string scalar timevartouse,
-	real scalar reat
-	)
-	{
-		// process ancillary parameter
-		// (depending on baseline hazard distribution)
-		distribution = st_global("e(distribution)")
-		if (distribution == "exponential") {
-			ln_p = 0.0
-		}
-		else {
-			eb = st_matrix("e(b)")
-			clabels = st_matrixcolstripe("e(b)")
-			s = (clabels[,2] :== "ln_p")
-			s = s'
-			ln_p = select(eb, s)
-		}
-		// view on timevar
-		st_view(t = ., ., timevar, timevartouse)
-		order_of_t = order(t, 1)
-		invorder_of_t = invorder(order_of_t)
-		unique_t = uniqrows(t, 1)
-		// view on linear predictor
-		st_view(xbb = ., ., xb, xbtouse)
-		// add fixed value of random intercept
-		xbb = xbb :+ reat
-		// do calculations for the std. survival, looping over timevar
-		// actually, we loop over _unique_ values of timevar to be more efficient,
-		unique_Savg = J(rows(unique_t), 1, .)
-		for (i = 1; i <= rows(unique_Savg); i++) {
-			unique_Savg[i] = mean(survfun(xbb, unique_t[i,1], ln_p))
-		}
-		// Return to original size
-		Savg = J(rows(t), 1, .)
-		counter = 1
-		for (i = 1; i <= rows(unique_Savg); i++) {
-			for (j = 1; j <= unique_t[i,2]; j++) {
-				Savg[counter] = unique_Savg[i]
-				counter++
-			}
-		}
-		Savg = Savg[invorder_of_t]
-		// write out results
-		outi = st_addvar("double", out)
-		st_store(., outi, timevartouse, Savg)
+void std_surv(
+		`SS' out,
+		`SS' xb,
+		`SS' xbtouse,
+		`SS' timevar,
+		`SS' timevartouse,
+		`RS' reat)
+{
+	// process ancillary parameter
+	// (depending on baseline hazard distribution)
+	distribution = st_global("e(distribution)")
+	if (distribution == "exponential") {
+		ln_p = 0.0
 	}
-
-	real vector survfun (real vector xb, real scalar t, real scalar anc)
-	{
-		p = exp(anc)
-		S = exp(-exp(xb) :* (t:^p))
-		return(S)
-	}
-
-	void draw_newpars (real scalar B, string scalar newebname)
-	{
+	else {
 		eb = st_matrix("e(b)")
-		eV = st_matrix("e(V)")
-		svd(eV, U = ., s = ., Vt = .)
-		C = U * (diag(s):^(1/2))
-		draw = rnormal(B, cols(eb), 0, 1)
-		if (missing(draw) > 0) {
-			errprintf("Invalid samples for the confidence intervals algorithm. Please try again.\n")
-			exit(198)
-		}
-		neweb = draw * C'
-		for (i = 1; i <= cols(eb); i++) {
-			neweb[.,i] = neweb[.,i] :+ eb[i]
-		}
-		st_matrix(newebname, neweb)
+		clabels = st_matrixcolstripe("e(b)")
+		s = (clabels[,2] :== "ln_p")'
+		ln_p = select(eb, s)
 	}
+	// view on timevar
+	st_view(t = ., ., timevar, timevartouse)
+	order_of_t 	= order(t, 1)
+	invorder_of_t 	= invorder(order_of_t)
+	unique_t 	= uniqrows(t, 1)
+	Nuniqt 		= rows(unique_t)
+	// view on linear predictor
+	st_view(xbb = ., ., xb, xbtouse)
+	// add fixed value of random intercept
+	xbb = xbb :+ reat	//!! be careful, this will update the Stata variable as well
+	// do calculations for the std. survival, looping over timevar
+	// actually, we loop over _unique_ values of timevar to be more efficient,
+	unique_Savg = J(Nuniqt, 1, .)
+	for (i = 1; i <= Nuniqt; i++) {
+		unique_Savg[i] = mean(survfun(xbb, unique_t[i,1], ln_p))
+	}
+	// Return to original size
+	Savg = J(rows(t), 1, .)
+	counter = 1
+	for (i = 1; i <= Nuniqt; i++) {
+		for (j = 1; j <= unique_t[i,2]; j++) {
+			Savg[counter] = unique_Savg[i]
+			counter++
+		}
+	}
+	Savg = Savg[invorder_of_t]
+	// write out results
+	outi = st_addvar("double", out)
+	st_store(., outi, timevartouse, Savg)
+}
 
-	void draw_newreat (real scalar B, real vector reat, real vector reatse, string scalar newreatname)
-	{
-		fulldraw = J(B, cols(reat), .)
-		for (i = 1; i <= cols(reat); i++) {
-			fulldraw[.,i] = rnormal(B, 1, reat[i], reatse[i])
-		}
-		newreat = rowsum(fulldraw)
-		st_matrix(newreatname, newreat)
+`RC' survfun (`RC' xb, `RS' t, `RS' anc)
+{
+	S = exp(-exp(xb) :* (t:^exp(anc)))
+	return(S)
+}
+
+void draw_newpars (`RS' B, `SS' newebname)
+{
+	eb = st_matrix("e(b)")
+	eV = st_matrix("e(V)")
+	svd(eV, U = ., s = ., Vt = .)
+	C = U * (diag(s):^(1/2))
+	draw = rnormal(B, cols(eb), 0, 1)
+	if (missing(draw) > 0) {
+		errprintf("Invalid samples for the confidence intervals algorithm. Please try again.\n")
+		exit(198)
 	}
+	neweb = draw * C'
+	for (i = 1; i <= cols(eb); i++) {
+		neweb[.,i] = neweb[.,i] :+ eb[i]
+	}
+	st_matrix(newebname, neweb)
+}
+
+void draw_newreat (`RS' B, `RR' reat, `RR' reatse, `SS' newreatname)
+{
+	Nc = cols(reat)
+	fulldraw = J(B, Nc, .)
+	for (i = 1; i <= Nc; i++) {
+		fulldraw[.,i] = rnormal(B, 1, reat[i], reatse[i])
+	}
+	newreat = rowsum(fulldraw)
+	st_matrix(newreatname, newreat)
+}
 
 end

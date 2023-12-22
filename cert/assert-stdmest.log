@@ -92,7 +92,7 @@ Notes:
 . 
 . // 
 . stdmest S1, reat(0.0) reatse(0.0) reatref(0.0) reatseref(0.0) contrast
-'timevar' not specified, _t will be used instead
+timevar() not specified, _t will be used instead
 
 . gen S1_exp = 0
 
@@ -139,13 +139,13 @@ Number of observations (_N) was 76, now 100.
 . quietly mestreg age female || patient:, distribution(exponential)
 
 . stdmest S3a, reat(-1.0) reatse(0.0)
-'timevar' not specified, _t will be used instead
+timevar() not specified, _t will be used instead
 
 . stdmest S3b, reat( 0.0) reatse(0.0)
-'timevar' not specified, _t will be used instead
+timevar() not specified, _t will be used instead
 
 . stdmest S3c, reat(+1.0) reatse(0.0)
-'timevar' not specified, _t will be used instead
+timevar() not specified, _t will be used instead
 
 . assert S3a >= S3b 
 
@@ -158,10 +158,10 @@ Number of observations (_N) was 76, now 100.
 . 
 . //
 . stdmest S4a, reat(-1.0) reatse(0.0) reatref(0.0) reatseref(0.0) contrast
-'timevar' not specified, _t will be used instead
+timevar() not specified, _t will be used instead
 
 . stdmest S4b, reat(+1.0) reatse(0.0) reatref(0.0) reatseref(0.0) contrast
-'timevar' not specified, _t will be used instead
+timevar() not specified, _t will be used instead
 
 . assert S4a_contrast >= 0 
 
@@ -192,7 +192,7 @@ Number of observations (_N) was 76, now 100.
 . predict S6a, surv conditional(fixedonly)
 
 . stdmest S6b if _n == 1, reat(0.0) reatse(0.0)
-'timevar' not specified, _t will be used instead
+timevar() not specified, _t will be used instead
 
 . replace S6a = 0 if _n > 1
 (75 real changes made)
@@ -209,7 +209,7 @@ Number of observations (_N) was 76, now 100.
 . set seed 487
 
 . stdmest S7a, reat(0.0) reatse(0.0) ci reps(10)
-'timevar' not specified, _t will be used instead
+timevar() not specified, _t will be used instead
 Calculating CIs...
 
 CIs calculated using the percentile method.
@@ -217,7 +217,7 @@ CIs calculated using the percentile method.
 . set seed 487
 
 . stdmest S7b, reat(0.0) reatse(1.0) ci reps(10)
-'timevar' not specified, _t will be used instead
+timevar() not specified, _t will be used instead
 Calculating CIs...
 
 CIs calculated using the percentile method.
@@ -280,13 +280,13 @@ Observed time interval: (0, tt]
 . 
 . // 
 . stdmest S9a, reat(-1.0 -1.0) reatse(0.0 0.0)
-'timevar' not specified, _t will be used instead
+timevar() not specified, _t will be used instead
 
 . stdmest S9b, reat(-1.0  0.0) reatse(0.0 0.0)
-'timevar' not specified, _t will be used instead
+timevar() not specified, _t will be used instead
 
 . stdmest S9c, reat( 0.0 -1.0) reatse(0.0 0.0)
-'timevar' not specified, _t will be used instead
+timevar() not specified, _t will be used instead
 
 . assert S9a >= S9b
 
