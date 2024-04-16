@@ -3,7 +3,8 @@ clear all
 cd "~/Stata-dev/stdmest"
 adopath ++ "stdmestm"
 clear all
-// set trace on
+do ./build/buildmlib.do
+mata mata clear
 
 // helpfile
 help stdmestm
@@ -12,7 +13,7 @@ webuse jobhistory
 gen tt = tend - tstart
 stset tt, fail(failure)
 mestreg education njobs prestige i.female || birthyear: || id:, distribution(exponential)
-range tv 0 365 200
+range tv 0 365 100
 //
 stdmestm Smin_perc, reat(-.4603618) reatse(.1427249) varmargname(birthyear>id) timevar(tv) contrast ci reps(20) dots
 stdmestm Smax_perc, reat(.2269995) reatse(.1666193) varmargname(birthyear>id) timevar(tv) contrast ci reps(20) dots

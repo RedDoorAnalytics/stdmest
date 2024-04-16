@@ -2,6 +2,8 @@ clear all
 cd "~/Stata-dev/stdmest"
 adopath ++ "stdmest"
 clear all
+do ./build/buildmlib.do
+mata mata clear
 
 //
 rcof "stdmest S0, reat(0.0) reatse(0.0)" == 119

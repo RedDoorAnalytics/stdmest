@@ -4,6 +4,8 @@ cd "~/Stata-dev/stdmest"
 adopath ++ "stdmest"
 adopath ++ "stdmestm"
 clear all
+do ./build/buildmlib.do
+mata mata clear
 set maxvar 120000
 
 // data3CIA
