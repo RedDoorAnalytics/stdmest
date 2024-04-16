@@ -9,21 +9,16 @@ Notes:
 * Error checks could be standardised between `stdmest` and `stdmestm`, e.g., with a call to a certain ad-hoc function.
   This needs a separate .ado file.
 * Modifying the view on `xbb` is risky (e.g., in 	`xbb = xbb :+ reat`).
-* Many functions can be shared between `stdmest` and `stdmestm` via a Mata library.
 * The main loop can be done in Mata, for (1) efficiency and (2) to avoid incurring in issues due to the large number of columns to be added to the dataset.
 
-Call Stata from Mata:
+* Call Stata from Mata:
+  - `_stata("predict, xb")`, `help mata stata`
 
-* _stata("predict, xb"), `help mata stata`
-
-Mata library:
-
-* All Mata functions in a .mata file;
-* Compile with `lmbuild` every time I modify Mata functions;
-* Something like a `build mlib` function that is local to the repository;
-
-for (i in 1:B) {
-  merlin_parse(GML)
-  merlin_util_xzb(GML, new_parameters)
-  merlin_predict(GML)
-}
+* merlin-ish loop:
+  ```
+  for (i in 1:B) {
+    merlin_parse(GML)
+    merlin_util_xzb(GML, new_parameters)
+    merlin_predict(GML)
+  }
+  ```
