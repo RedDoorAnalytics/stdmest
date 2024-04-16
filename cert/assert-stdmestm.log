@@ -52,6 +52,17 @@ Notes:
 
 . clear all
 
+. do ./build/buildmlib.do
+
+. capture erase lstdmest.mlib
+
+. quietly {
+
+. 
+end of do-file
+
+. mata mata clear
+
 . 
 . //
 . rcof "stdmestm" == 119

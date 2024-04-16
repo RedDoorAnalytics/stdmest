@@ -41,6 +41,17 @@ Notes:
 
 . clear all
 
+. do ./build/buildmlib.do
+
+. capture erase lstdmest.mlib
+
+. quietly {
+
+. 
+end of do-file
+
+. mata mata clear
+
 . 
 . //
 . rcof "stdmest S0, reat(0.0) reatse(0.0)" == 119
