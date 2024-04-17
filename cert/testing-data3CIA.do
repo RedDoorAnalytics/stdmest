@@ -3,6 +3,8 @@ clear all
 cd "~/Stata-dev/stdmest"
 adopath ++ "stdmest"
 clear all
+do ./build/buildmlib.do
+mata mata clear
 
 // data3CIA 
 clear all

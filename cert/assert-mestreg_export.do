@@ -2,6 +2,8 @@ clear all
 cd "~/Stata-dev/stdmest"
 adopath ++ "mestreg_export"
 clear all
+do ./build/buildmlib.do
+mata mata clear
 
 //
 rcof "mestreg_export, filename(test.xlsx)" == 301

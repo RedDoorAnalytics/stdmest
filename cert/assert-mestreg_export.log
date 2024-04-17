@@ -41,6 +41,17 @@ Notes:
 
 . clear all
 
+. do ./build/buildmlib.do
+
+. capture erase lstdmest.mlib
+
+. quietly {
+
+. 
+end of do-file
+
+. mata mata clear
+
 . 
 . //
 . rcof "mestreg_export, filename(test.xlsx)" == 301
