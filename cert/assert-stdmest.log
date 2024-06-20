@@ -1,14 +1,14 @@
 
   ___  ____  ____  ____  ____ ®
- /__    /   ____/   /   ____/      18.0
+ /__    /   ____/   /   ____/      StataNow 18.5
 ___/   /   /___/   /   /___/       MP—Parallel Edition
 
  Statistics and Data Science       Copyright 1985-2023 StataCorp LLC
                                    StataCorp
                                    4905 Lakeway Drive
                                    College Station, Texas 77845 USA
-                                   800-STATA-PC        https://www.stata.com
-                                   979-696-4600        stata@stata.com
+                                   800-782-8272        https://www.stata.com
+                                   979-696-4600        service@stata.com
 
 Stata license: 3-user 2-core network, expiring 12 Sep 2024
 Serial number: 501809300405
@@ -124,7 +124,6 @@ Number of observations (_N) was 76, now 100.
 (38 real changes made, 38 to missing)
 
 . stdmest S2 if age >= 45, reat(0.0) reatse(0.0) timevar(tt)
-(24 missing values generated)
 
 . mkmat S2, matrix(S2_if) nomissing
 
@@ -132,7 +131,6 @@ Number of observations (_N) was 76, now 100.
 (38 observations deleted)
 
 . stdmest S2_2, reat(0.0) reatse(0.0) timevar(tt)
-(24 missing values generated)
 
 . mkmat S2_2, matrix(S2_keep) nomissing
 
@@ -221,17 +219,11 @@ timevar() not specified, _t will be used instead
 
 . stdmest S7a, reat(0.0) reatse(0.0) ci reps(10)
 timevar() not specified, _t will be used instead
-Calculating CIs...
-
-CIs calculated using the percentile method.
 
 . set seed 487
 
 . stdmest S7b, reat(0.0) reatse(1.0) ci reps(10)
 timevar() not specified, _t will be used instead
-Calculating CIs...
-
-CIs calculated using the percentile method.
 
 . assert S7a_lower <= S7a
 
@@ -331,11 +323,17 @@ timevar() not specified, _t will be used instead
 -------------+---------------------------------------------------------
           tv |         76     45.0321    28.30084   .0769118     96.396
 
-. stdmest S10a, reat(`=r(min)') reatse(0.0) timevar(tv)
+. local rmin = `r(min)'
 
-. stdmest S10b, reat(`=r(mean)') reatse(0.0) timevar(tv)
+. local rmean = `r(mean)'
 
-. stdmest S10c, reat(`=r(max)') reatse(0.0) timevar(tv)
+. local rmax = `r(max)'
+
+. stdmest S10a, reat(`rmin') reatse(0.0) timevar(tv)
+
+. stdmest S10b, reat(`rmean') reatse(0.0) timevar(tv)
+
+. stdmest S10c, reat(`rmax') reatse(0.0) timevar(tv)
 
 . assert S10a >= S10b
 

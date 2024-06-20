@@ -1,14 +1,14 @@
 
   ___  ____  ____  ____  ____ ®
- /__    /   ____/   /   ____/      18.0
+ /__    /   ____/   /   ____/      StataNow 18.5
 ___/   /   /___/   /   /___/       MP—Parallel Edition
 
  Statistics and Data Science       Copyright 1985-2023 StataCorp LLC
                                    StataCorp
                                    4905 Lakeway Drive
                                    College Station, Texas 77845 USA
-                                   800-STATA-PC        https://www.stata.com
-                                   979-696-4600        stata@stata.com
+                                   800-782-8272        https://www.stata.com
+                                   979-696-4600        service@stata.com
 
 Stata license: 3-user 2-core network, expiring 12 Sep 2024
 Serial number: 501809300405
@@ -178,22 +178,94 @@ Observed time interval: (0, tt]
 . //
 . stdmestm S2a, reat(0.0) reatse(0.0) varmargname(birthyear>id) timevar(tv) ci 
 > reps(10)
-Calculating CIs...
-
-CIs calculated using the percentile method.
 
 . stdmestm S2b, reat(0.0) reatse(1.0) varmargname(birthyear>id) timevar(tv) ci 
 > reps(10)
-Calculating CIs...
-
-CIs calculated using the percentile method.
 
 . assert S2a == S2b
 
 . assert S2a_lower >= S2b_lower
-2 contradictions in 600 observations
-assertion is false
-r(9);
 
+. assert S2a_upper <= S2b_upper
+
+. drop S2*
+
+. 
+. //
+. stdmestm S3a, reat(0.0) reatse(0.0) varmargname(birthyear>id) timevar(tv)
+
+. stdmestm S3b, reat(0.0) reatse(0.0) varmargname(birthyear>id) timevar(tv) nk(
+> 15)
+
+. stdmestm S3c, reat(0.0) reatse(0.0) varmargname(birthyear>id) timevar(tv) nk(
+> 30)
+
+. stdmestm S3d, reat(0.0) reatse(0.0) varmargname(birthyear>id) timevar(tv) nk(
+> 100)
+
+. mkmat S3a, matrix(mS3a) nomissing
+
+. mkmat S3b, matrix(mS3b) nomissing
+
+. mkmat S3c, matrix(mS3c) nomissing
+
+. mkmat S3d, matrix(mS3d) nomissing
+
+. assert mreldif(mS3a, mS3b) < 1e-04
+
+. assert mreldif(mS3a, mS3c) < 1e-04
+
+. assert mreldif(mS3a, mS3d) < 1e-04
+
+. assert mreldif(mS3b, mS3c) < 1e-05
+
+. assert mreldif(mS3b, mS3d) < 1e-05
+
+. assert mreldif(mS3c, mS3d) < 1e-06
+
+. drop S3*
+
+. 
+. //
+. stdmestm S4a, reat(0.0) reatse(0.0) varmargname(birthyear>id) timevar(tv)
+
+. stdmest  S4b, reat(0.0 0.0) reatse(0.0 0.0) timevar(tv)
+
+. mkmat S4a, matrix(mS4a) nomissing
+
+. mkmat S4b, matrix(mS4b) nomissing
+
+. assert mreldif(mS4a, mS4b) != 0.0
+
+. drop S4*
+
+. 
+. //
+. set seed 3475
+
+. stdmestm S5a, reat(0.0) reatse(1.0) varmargname(birthyear>id) timevar(tv) ci 
+> reps(10)
+
+. set seed 3475
+
+. stdmestm S5b, reat(0.0) reatse(1.0) varmargname(birthyear>id) timevar(tv) ci 
+> reps(100)
+
+. assert S5a == S5b
+
+. mkmat S5a_lower, matrix(mS5al) nomissing
+
+. mkmat S5b_lower, matrix(mS5bl) nomissing
+
+. assert mreldif(mS5al, mS5bl) != 0.0
+
+. mkmat S5a_upper, matrix(mS5au) nomissing
+
+. mkmat S5b_upper, matrix(mS5bu) nomissing
+
+. assert mreldif(mS5au, mS5bu) != 0.0
+
+. drop S5*
+
+. 
 end of do-file
-r(9);
