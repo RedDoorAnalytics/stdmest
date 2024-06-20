@@ -10,10 +10,7 @@ mata:
 
 	void std_isurv(
 	`SS' out,
-	`SS' xb,
-	`SS' xbtouse,
 	`SS' timevar,
-	`SS' timevartouse,
 	`RS' reat,
 	`RS' reatse,
 	`RS' reatref,
@@ -49,7 +46,7 @@ mata:
 			ln_p = select(eb, s)
 		}
 		// view on timevar
-		st_view(t = ., ., timevar, timevartouse)
+		st_view(t = ., ., timevar, st_local("timevartouse"))
 		order_of_t = order(t, 1)
 		invorder_of_t = invorder(order_of_t)
 		unique_t = uniqrows(t, 1)

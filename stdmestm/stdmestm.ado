@@ -123,7 +123,7 @@ program define stdmestm, sortpreserve
 	// This is a bug in the -predict- post-estimation command for -mestreg-
 	// The following line will be unnecessary once fixed
 	quietly replace `xbname' = . if `touse' != 1
-	mata: std_isurv("`newvarname'", "`xbname'", "`touse'", "`timevar'", "`timevartouse'", `reat', `reatse', `reatref', `reatseref', `vartoint', `nk', `reps', "`ci'", "`cinormal'", `level', "`contrast'", "`dots'", `NNN')
+	mata: std_isurv("`newvarname'", "`timevar'", `reat', `reatse', `reatref', `reatseref', `vartoint', `nk', `reps', "`ci'", "`cinormal'", `level', "`contrast'", "`dots'", `NNN')
 
 	// Restore estimation results after (possibly) fiddling with stuff in Mata
 	if "`ci'" != "" {
