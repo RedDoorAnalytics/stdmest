@@ -133,16 +133,21 @@ program define stdmest, sortpreserve
 	local vreatseref : subinstr local reatseref " " ", ", all
 
 	// Backup estimation results
-	tempname eb eV
-	matrix `eb' = e(b)
-	matrix `eV' = e(V)
-	local eb_rown : rowfullnames e(b)
-	local eb_coln : colfullnames e(b)
+	// (if we will calculate CIs)
+	if "`ci'" != "" {
+		tempname eb eV
+		matrix `eb' = e(b)
+		matrix `eV' = e(V)
+		local eb_rown : rowfullnames e(b)
+		local eb_coln : colfullnames e(b)
+	}
 
 	// Run algorithm in Mata
 	mata: std_surv("`newvarname'", "`timevar'", `reat_sum', (`vreat'), (`vreatse'), "`ci'", "`cinormal'", `level', `reps', `NNN', "`contrast'", `reatref_sum', (`vreatref'), (`vreatseref'), "`dots'")
 
 	// Restore estimation results after (possibly) fiddling with stuff in Mata
-	erepost b = `eb'
+	if "`ci'" != "" {
+		erepost b = `eb'
+	}
 
 end
