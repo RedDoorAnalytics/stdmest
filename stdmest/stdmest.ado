@@ -143,7 +143,7 @@ program define stdmest, sortpreserve
 	}
 
 	// Run algorithm in Mata
-	mata: std_surv("`newvarname'", `reat_sum', (`vreat'), (`vreatse'), `reatref_sum', (`vreatref'), (`vreatseref'), 0.0)
+	mata: stdmest_wf("`newvarname'", `reat_sum', `reatref_sum', (`vreat'), (`vreatse'), (`vreatref'), (`vreatseref'), 0.0)
 
 	// Restore estimation results after (possibly) fiddling with stuff in Mata
 	if "`ci'" != "" {

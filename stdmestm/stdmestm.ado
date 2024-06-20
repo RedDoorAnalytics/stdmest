@@ -116,14 +116,8 @@ program define stdmestm, sortpreserve
 		local eb_coln : colfullnames e(b)
 	}
 
-	// Point estimates
-	tempvar xbname
-	predict double `xbname' if `touse' == 1, xb
-	// Doing the following because predict, xb after mestreg does not respect the if statement
-	// This is a bug in the -predict- post-estimation command for -mestreg-
-	// The following line will be unnecessary once fixed
-	quietly replace `xbname' = . if `touse' != 1
-	mata: std_isurv("`newvarname'", "`timevar'", `reat', `reatse', `reatref', `reatseref', `vartoint', `nk', `reps', "`ci'", "`cinormal'", `level', "`contrast'", "`dots'", `NNN')
+	// Run algorithm in Mata
+	mata: stdmest_wf("`newvarname'", `reat', `reatref', (`reat'), (`reatse'), (`reatref'), (`reatseref'), 1.0)
 
 	// Restore estimation results after (possibly) fiddling with stuff in Mata
 	if "`ci'" != "" {

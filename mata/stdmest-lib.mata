@@ -9,12 +9,12 @@ local RM real matrix
 version 18.0
 mata:
 
-	void std_surv(
+	void stdmest_wf(
 	`SS' out,
 	`RS' reat,
+	`RS' reatref,
 	`RR' vreat,
 	`RR' vreatse,
-	`RS' reatref,
 	`RR' vreatref,
 	`RR' vreatseref,
 	`RS' integrate
@@ -32,6 +32,17 @@ mata:
 		B = strtoreal(st_local("reps"))
 		N = strtoreal(st_local("NNN"))
 		level = strtoreal(st_local("level"))
+		varmarg = strtoreal(st_local("vartoint"))
+		nk = strtoreal(st_local("nk"))
+
+        // quadrature rule
+        if (integrate == 1.0) {
+            GH = _gauss_hermite_nodes(nk)
+		    GHx = GH[1,]
+		    GHw = GH[2,]
+		    // calculate dnrm, to be used later
+		    dnrm = normalden(GHx :* sqrt(varmarg) :* sqrt(2.0), 0, sqrt(varmarg))
+        }
 
 		// process ancillary parameter
 		// (depending on baseline hazard distribution)
@@ -52,6 +63,7 @@ mata:
 		invorder_of_t = invorder(order_of_t)
 		unique_t = uniqrows(t, 1)
 		Nuniqt = rows(unique_t)
+
 		// figure out whether we need CIs or not
 		// if we do, we need to run the algorithm B + 1 times,
 		// otherwise we just do it once
@@ -72,24 +84,30 @@ mata:
 		else {
 			Bp1 = 1
 		}
+
 		// matrix to store the linear predictors across repetitions
 		xbmat = J(N, Bp1, .)
 		xbbmat = J(N, Bp1, .)
 		if (contrast != "") {
 			xbbmatref = J(N, Bp1, .)
 		}
-		// pickup rows to use
+
+        // pickup rows to use
 		st_view(touse, ., st_local("touse"))
+
 		// temp column in data to use
 		new_xbname = st_tempname()
 		stata("tempvar " + new_xbname)
+
 		// stata calls to drop old temp column (if any) and predict xb
 		cmd_drop = "capture drop " + new_xbname
 		cmd_predict = "quietly _predict double " + new_xbname + " if " + st_local("touse") + " == 1, xb"
+
 		// iterate with dots (if required by the user)
 		if (dots != "") {
 			stata("noisily _dots 0, reps(" + strofreal(B) + ")")
 		}
+
 		// loop over Bp1
 		for (i = 1; i <= Bp1; i++) {
 			if (i > 1) {
@@ -119,6 +137,7 @@ mata:
 				stata("noisily _dots " + strofreal(i) + " 0")
 			}
 		}
+
 		// do calculations for the std. survival, looping over timevar
 		// actually, we loop over _unique_ values of timevar to be more efficient
 		unique_Savg = J(Nuniqt, Bp1, .)
@@ -127,12 +146,23 @@ mata:
 		}
 		for (c = 1; c <= Bp1; c++) {
 			for (r = 1; r <= Nuniqt; r++) {
-				unique_Savg[r, c] = mean(survfun(xbbmat[.,c], unique_t[r,1], ln_p))
+                if (integrate == 0.0) {
+                    unique_Savg[r, c] = mean(survfun(xbbmat[.,c], unique_t[r,1], ln_p))
+                }
+                else {
+                    unique_Savg[r, c] = mean(intsurvfun(xbbmat[.,c], unique_t[r,1], ln_p, varmarg, dnrm, GHx, GHw))
+                }
 				if (contrast != "") {
-					unique_Savgref[r, c] = mean(survfun(xbbmatref[.,c], unique_t[r,1], ln_p))
+                    if (integrate == 0.0) {
+                        unique_Savgref[r, c] = mean(survfun(xbbmatref[.,c], unique_t[r,1], ln_p))
+                    }
+                    else {
+                        unique_Savgref[r, c] = mean(intsurvfun(xbbmatref[.,c], unique_t[r,1], ln_p, varmarg, dnrm, GHx, GHw))
+                    }
 				}
 			}
 		}
+
 		// return to original size
 		Savg = J(rows(t), Bp1, .)
 		if (contrast != "") {
@@ -154,9 +184,11 @@ mata:
 				Savgref[., c] = Savgref[invorder_of_t, c]
 			}
 		}
+
 		// write out results
 		outi = st_addvar("double", out)
 		st_store(., outi, st_local("timevartouse"), Savg[, 1])
+
 		// confidence intervals, if requested
 		if (ci != "") {
 			// rescale level to 0-1
@@ -261,6 +293,27 @@ mata:
 	{
 		S = exp(-exp(xb) :* (t:^exp(anc)))
 		return(S)
+	}
+
+	`RC' intsurvfun(
+	`RC' xbb,
+	`RS' t,
+	`RS' anc,
+	`RS' varmarg,
+	`RR' dnrm,
+	`RR' GHx,
+	`RR' GHw)
+	{
+		S1 = J(rows(xbb), cols(GHx), .)
+		tmp = sqrt(varmarg) * sqrt(2)
+		for (i = 1; i <= cols(S1); i++) {
+			this_b = GHx[i] * tmp
+			xbbb = xbb :+ this_b
+			S1[,i] = survfun(xbbb, t, anc) * dnrm[i]
+		}
+		Sint = tmp :* S1
+		Sint = (tmp :* S1) * ((GHw :* exp(GHx:^2))')
+		return(Sint)
 	}
 
 	`RM' draw_newpars (`RS' B)
