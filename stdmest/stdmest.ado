@@ -1,4 +1,4 @@
-*! version 0.0.1-9000 Alessandro Gasparini, Michael J. Crowther 19Jun2024
+*! version 0.0.1-9000 Alessandro Gasparini, Michael J. Crowther 20Jun2024
 
 program define stdmest, sortpreserve
 	// Version
@@ -143,7 +143,7 @@ program define stdmest, sortpreserve
 	}
 
 	// Run algorithm in Mata
-	mata: std_surv("`newvarname'", "`timevar'", `reat_sum', (`vreat'), (`vreatse'), "`ci'", "`cinormal'", `level', `reps', `NNN', "`contrast'", `reatref_sum', (`vreatref'), (`vreatseref'), "`dots'")
+	mata: std_surv("`newvarname'", `reat_sum', (`vreat'), (`vreatse'), `reatref_sum', (`vreatref'), (`vreatseref'), 0.0)
 
 	// Restore estimation results after (possibly) fiddling with stuff in Mata
 	if "`ci'" != "" {

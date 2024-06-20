@@ -1,4 +1,4 @@
-*! version 0.0.1-9000 Alessandro Gasparini 19Jun2024
+*! version 0.0.1-9000 Alessandro Gasparini 20Jun2024
 
 local RS real scalar
 local RC real colvector
@@ -11,22 +11,28 @@ mata:
 
 	void std_surv(
 	`SS' out,
-	`SS' timevar,
 	`RS' reat,
 	`RR' vreat,
 	`RR' vreatse,
-	`SS' ci,
-	`SS' cinormal,
-	`RS' level,
-	`RS' B,
-	`RS' N,
-	`SS' contrast,
 	`RS' reatref,
 	`RR' vreatref,
 	`RR' vreatseref,
-	`SS' dots
+	`RS' integrate
 	)
 	{
+
+		// read in locals from Stata
+		// strings:
+		timevar = st_local("timevar")
+		ci = st_local("ci")
+		cinormal = st_local("cinormal")
+		contrast = st_local("contrast")
+		dots = st_local("dots")
+		// numbers:
+		B = strtoreal(st_local("reps"))
+		N = strtoreal(st_local("NNN"))
+		level = strtoreal(st_local("level"))
+
 		// process ancillary parameter
 		// (depending on baseline hazard distribution)
 		distribution = st_global("e(distribution)")
@@ -39,6 +45,7 @@ mata:
 			s = (clabels[,2] :== "ln_p")'
 			ln_p = select(eb, s)
 		}
+
 		// view on timevar
 		st_view(t = ., ., timevar, st_local("timevartouse"))
 		order_of_t = order(t, 1)
