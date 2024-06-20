@@ -54,7 +54,7 @@ mata:
 			neweb = draw_newpars(B)
 			newreat = draw_newreat(B, vreat, vreatse)
 			newreat = rowsum(newreat)
-			if (contrast == "contrast") {
+			if (contrast != "") {
 				newreatref = draw_newreat(B, vreatref, vreatseref)
 				newreatref = rowsum(newreatref)
 			}

@@ -1,4 +1,4 @@
-*! version 0.0.0-9000 Alessandro Gasparini, Michael J. Crowther 16Apr2024
+*! version 0.0.1-9000 Alessandro Gasparini, Michael J. Crowther 20Jun2024
 
 program define stdmestm, sortpreserve
 	// Version
@@ -12,6 +12,14 @@ program define stdmestm, sortpreserve
 	if _rc > 0 {
 		display as error "The -erepost- command is required for -stdmest- to function properly. You can install it using:"
 		display as error ". {stata ssc install erepost}"
+		exit  198
+	}
+
+	// Check that moremata is installed
+	capture findfile lmoremata.mlib
+	if _rc > 0 {
+		display as error "The -moremata- package is required for -stdmest- to function properly. You can install it using:"
+		display as error ". {stata ssc install moremata}"
 		exit  198
 	}
 
@@ -58,6 +66,12 @@ program define stdmestm, sortpreserve
 		VARMARGname(string) ///
 		]
 
+	// The number of quadrature nodes nk must be greater than zero
+	if (`nk' <= 0) {
+		display as error "'nk' must be > 0."
+		exit 198
+	}
+
 	// Mark which rows to use
 	// (useful to standardise to a subset of the study data)
 	marksample touse, novarlist
@@ -72,15 +86,6 @@ program define stdmestm, sortpreserve
 		display as error "Could not pick the variance to marginalise over (I tried with /var(_cons[`varmargname']))."
 		exit 198
 	}
-
-	// Get nodes and weights for Gauss-Hermite quadrature
-	// But first, check that nk > 0
-	if (`nk' <= 0) {
-		display as error "'nk' must be > 0."
-		exit 198
-	}
-	tempname kx kw
-	mata: ghq(`nk', "`kx'", "`kw'")
 
 	// Process timevar
 	tempvar tv
@@ -97,6 +102,20 @@ program define stdmestm, sortpreserve
 	mark `timevartouse'
 	markout `timevartouse' `timevar'
 
+	// Count how many observations we are standardising over
+	quietly count if `touse' == 1
+	local NNN = `r(N)'
+
+	// Backup estimation results
+	// (if we will calculate CIs)
+	if "`ci'" != "" {
+		tempname eb eV
+		matrix `eb' = e(b)
+		matrix `eV' = e(V)
+		local eb_rown : rowfullnames e(b)
+		local eb_coln : colfullnames e(b)
+	}
+
 	// Point estimates
 	tempvar xbname
 	predict double `xbname' if `touse' == 1, xb
@@ -104,19 +123,10 @@ program define stdmestm, sortpreserve
 	// This is a bug in the -predict- post-estimation command for -mestreg-
 	// The following line will be unnecessary once fixed
 	quietly replace `xbname' = . if `touse' != 1
-	mata: std_isurv("`newvarname'", "`xbname'", "`touse'", "`timevar'", "`timevartouse'", `reat', `vartoint', "`kx'", "`kw'")
-
-	// Create contrast if requested
-	if ("`contrast'" != "") {
-		// Reference
-		mata: std_isurv("`newvarname'_ref", "`xbname'", "`touse'", "`timevar'", "`timevartouse'", `reatref', `vartoint', "`kx'", "`kw'")
-		// Calculate contrast
-		quietly generate `newvarname'_contrast = `newvarname' - `newvarname'_ref
-	}
-
+	mata: std_isurv("`newvarname'", "`xbname'", "`touse'", "`timevar'", "`timevartouse'", `reat', `reatse', `reatref', `reatseref', `vartoint', `nk', `reps', "`ci'", "`cinormal'", `level', "`contrast'", "`dots'", `NNN')
 
 	// Confidence intervals using bootstrap-like procedure
-	if ("`ci'" != "") {
+	/* if ("`ci'" != "") {
 		display "Calculating CIs..."
 		// Store original estimation results
 		tempname eb eV neweb newreat newreatref
@@ -234,6 +244,11 @@ program define stdmestm, sortpreserve
 			}
 		}
 		// Restore estimation results
+		erepost b = `eb'
+	} */
+
+	// Restore estimation results after (possibly) fiddling with stuff in Mata
+	if "`ci'" != "" {
 		erepost b = `eb'
 	}
 
