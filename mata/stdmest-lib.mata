@@ -44,19 +44,6 @@ mata:
 		    dnrm = normalden(GHx :* sqrt(varmarg) :* sqrt(2.0), 0, sqrt(varmarg))
         }
 
-		// process ancillary parameter
-		// (depending on baseline hazard distribution)
-		distribution = st_global("e(distribution)")
-		if (distribution == "exponential") {
-			ln_p = 0.0
-		}
-		else {
-			eb = st_matrix("e(b)")
-			clabels = st_matrixcolstripe("e(b)")
-			s = (clabels[,2] :== "ln_p")'
-			ln_p = select(eb, s)
-		}
-
 		// view on timevar
 		st_view(t = ., ., timevar, st_local("timevartouse"))
 		order_of_t = order(t, 1)
@@ -80,9 +67,25 @@ mata:
 			// bits for new model parameters
 			eb_rown = st_local("eb_rown")
 			eb_coln = st_local("eb_coln")
+			// stack e(b) with neweb
+			neweb = st_matrix("e(b)") \ neweb
 		}
 		else {
+			neweb = st_matrix("e(b)")
 			Bp1 = 1
+		}
+
+		// process ancillary parameter
+		// (depending on baseline hazard distribution)
+		distribution = st_global("e(distribution)")
+		if (distribution == "exponential") {
+			ln_p = J(Bp1, 1, 0.0)
+		}
+		else {
+			clabels = st_matrixcolstripe("e(b)")
+			s = (clabels[,2] :== "ln_p")'
+			s = selectindex(s)
+			ln_p = neweb[., s]
 		}
 
 		// matrix to store the linear predictors across repetitions
@@ -112,7 +115,7 @@ mata:
 		for (i = 1; i <= Bp1; i++) {
 			if (i > 1) {
 				tmpname = st_tempname()
-				st_matrix(tmpname, neweb[i - 1, ])
+				st_matrix(tmpname, neweb[i, ])
 				stata("matrix rownames " + tmpname + " = " + eb_rown)
 				stata("matrix colnames " + tmpname + " = " + eb_coln)
 				stata("erepost b = " + tmpname)
@@ -147,17 +150,17 @@ mata:
 		for (c = 1; c <= Bp1; c++) {
 			for (r = 1; r <= Nuniqt; r++) {
                 if (integrate == 0.0) {
-                    unique_Savg[r, c] = mean(survfun(xbbmat[.,c], unique_t[r,1], ln_p))
+                    unique_Savg[r, c] = mean(survfun(xbbmat[., c], unique_t[r, 1], ln_p[c, 1]))
                 }
                 else {
-                    unique_Savg[r, c] = mean(intsurvfun(xbbmat[.,c], unique_t[r,1], ln_p, varmarg, dnrm, GHx, GHw))
+                    unique_Savg[r, c] = mean(intsurvfun(xbbmat[., c], unique_t[r, 1], ln_p[c, 1], varmarg, dnrm, GHx, GHw))
                 }
 				if (contrast != "") {
                     if (integrate == 0.0) {
-                        unique_Savgref[r, c] = mean(survfun(xbbmatref[.,c], unique_t[r,1], ln_p))
+                        unique_Savgref[r, c] = mean(survfun(xbbmatref[., c], unique_t[r, 1], ln_p[c, 1]))
                     }
                     else {
-                        unique_Savgref[r, c] = mean(intsurvfun(xbbmatref[.,c], unique_t[r,1], ln_p, varmarg, dnrm, GHx, GHw))
+                        unique_Savgref[r, c] = mean(intsurvfun(xbbmatref[., c], unique_t[r, 1], ln_p[c, 1], varmarg, dnrm, GHx, GHw))
                     }
 				}
 			}
@@ -171,7 +174,7 @@ mata:
 		for (c = 1; c <= Bp1; c++) {
 			counter = 1
 			for (i = 1; i <= Nuniqt; i++) {
-				for (j = 1; j <= unique_t[i,2]; j++) {
+				for (j = 1; j <= unique_t[i, 2]; j++) {
 					Savg[counter, c] = unique_Savg[i, c]
 					if (contrast != "") {
 						Savgref[counter, c] = unique_Savgref[i, c]
