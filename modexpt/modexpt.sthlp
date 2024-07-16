@@ -1,23 +1,24 @@
 {smcl}
 {* *! version 1.0.0}{...}
 {vieweralsosee "mestreg" "help mestreg"}{...}
-{viewerjumpto "Syntax" "mestreg_export##syntax"}{...}
-{viewerjumpto "Description" "mestreg_export##description"}{...}
-{viewerjumpto "Options" "mestreg_export##options"}{...}
-{viewerjumpto "Examples" "mestreg_export##examples"}{...}
-{viewerjumpto "Author" "mestreg_export##author"}{...}
+{vieweralsosee "stmixed" "help stmixed"}{...}
+{viewerjumpto "Syntax" "modexpt##syntax"}{...}
+{viewerjumpto "Description" "modexpt##description"}{...}
+{viewerjumpto "Options" "modexpt##options"}{...}
+{viewerjumpto "Examples" "modexpt##examples"}{...}
+{viewerjumpto "Author" "modexpt##author"}{...}
 
-{synopt :{cmd: mestreg_export} {hline 2} Export estimation results of {cmd: mestreg} models to an Excel file}
+{synopt :{cmd: modexpt} {hline 2} Export estimation results of {cmd: mestreg} and {cmd: stmixed} models to an Excel file}
 
 {marker syntax}{...}
 {title: Syntax}
 
 {phang}
-Export results of {cmd: mestreg} models to an Excel file:
+Export results of {cmd: mestreg} and {cmd: stmixed} models to an Excel file:
 {p_end}
 
 {phang2}
-{cmd: mestreg_export}, {opt filename(string)} [{opt replace}]
+{cmd: modexpt}, {opt filename(string)} [{opt replace}]
 {p_end}
 
 {synoptset}{...}
@@ -34,14 +35,15 @@ Export results of {cmd: mestreg} models to an Excel file:
 {title: Description}
 
 {pstd}
-{cmd: mestreg_export} can be used to export an Excel file with estimated coefficients and their variance-covariance matrix of {cmd: mestreg} models.
-Specifically, {cmd: e(b)} and {cmd: e(V)} that are stored in {cmd: ereturn} by {cmd: mestreg} are exported in separate tabs of the Excel file specified with {opt filename(string)}.
+{cmd: modexpt} can be used to export an Excel file with estimated coefficients and their variance-covariance matrix of {cmd: mestreg} and {cmd: stmixed} models.
+Specifically, {cmd: e(b)} and {cmd: e(V)} that are stored in {cmd: ereturn} by {cmd: mestreg} and {cmd: stmixed} are exported in separate tabs of the Excel file specified with {opt filename(string)}.
+Note that some ancillary information, such as the model distribution/family, are exported as well.
 
 {marker options}{...}
 {title: Options}
 
 {phang}
-{opt filename(string)} specifies the name of the Excel file to be used to export the estimation results after {cmd: mestreg}.
+{opt filename(string)} specifies the name of the Excel file to be used to export the estimation results after {cmd: mestreg} or {cmd: stmixed}.
 The name must be a string, potentially including the path to a location other than the working directory.
 {p_end}
 
@@ -58,15 +60,23 @@ We start by replicating one of the examples from the {helpb mestreg} help file:
 {phang}{stata "mestreg age female || patient:, distribution(weibull)": . mestreg age female || patient:, distribution(weibull)}{p_end}
 
 {pstd}
-Then, we export the estimation results in a file named {cmd: test.xlsx}:
+Note that everything would work the same if we had fit a {cmd: stmixed} model instead.
+Then, we export the estimation results in a file named {cmd: test.xlsx}, located in the current working directory:
 
-{phang}{stata mestreg_export, filename("test.xlsx"): . mestreg_export, filename("test.xlsx")}{p_end}
+{phang}{stata modexpt, filename("test.xlsx"): . modexpt, filename("test.xlsx")}{p_end}
 
 {pstd}
 If we were to run the above command again we would get an error, as the file already exists.
 We can overcome this by using the {opt replace} option:
 
-{phang}{stata mestreg_export, filename("test.xlsx") replace: . mestreg_export, filename("test.xlsx") replace}{p_end}
+{phang}{stata modexpt, filename("test.xlsx") replace: . modexpt, filename("test.xlsx") replace}{p_end}
+
+{pstd}
+Finally, for {cmd: stmixed} models, we would replicate the above as:
+
+{phang}{stata webuse catheter: . webuse catheter}{p_end}
+{phang}{stata "stmixed age female || patient:, distribution(weibull)": . stmixed age female || patient:, distribution(weibull)}{p_end}
+{phang}{stata modexpt, filename("test.xlsx"): . modexpt, filename("test.xlsx")}{p_end}
 
 {marker author}{...}
 {title: Author}
