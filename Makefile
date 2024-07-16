@@ -5,7 +5,16 @@ vendor_data:
 	cp ~/R-dev/stdmest/data-raw/data3Lsim.dta ~/Stata-dev/stdmest/data/data3Lsim.dta
 
 cert:
-	cd cert && stata-mp -e assert-mestreg_export.do
-	cd cert && stata-mp -e assert-stdmest.do
-	cd cert && stata-mp -e assert-stdmestm.do
+	make cert_modexpt
+	make cert_stdmest
+	make cert_stdmestm
 	cd cert && stata-mp -e assert-data2Lsim.do
+
+cert_modexpt:
+	cd cert && stata-mp -e assert-modexpt.do
+
+cert_stdmest:
+	cd cert && stata-mp -e assert-stdmest.do
+
+cert_stdmestm:
+	cd cert && stata-mp -e assert-stdmestm.do

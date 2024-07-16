@@ -1,10 +1,10 @@
-*! version 0.0.0-9000  27Oct2023 AG
+*! version 0.0.1-9000  16Jul2024 AG
 
-program define mestreg_export
+program define modexpt
 	// Version
     version 18
 
-	// Check that we run stdmest after mestreg
+	// Check that we run modexpt after mestreg
 	if "`e(cmd2)'" != "mestreg" {
 		display as error "This only works after fitting a model with {cmd: mestreg}."
 		exit 301

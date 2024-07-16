@@ -1,14 +1,14 @@
 
   ___  ____  ____  ____  ____ ®
- /__    /   ____/   /   ____/      18.0
+ /__    /   ____/   /   ____/      StataNow 18.5
 ___/   /   /___/   /   /___/       MP—Parallel Edition
 
  Statistics and Data Science       Copyright 1985-2023 StataCorp LLC
                                    StataCorp
                                    4905 Lakeway Drive
                                    College Station, Texas 77845 USA
-                                   800-STATA-PC        https://www.stata.com
-                                   979-696-4600        stata@stata.com
+                                   800-782-8272        https://www.stata.com
+                                   979-696-4600        service@stata.com
 
 Stata license: 3-user 2-core network, expiring 12 Sep 2024
 Serial number: 501809300405
@@ -22,15 +22,15 @@ Notes:
       4. Maximum number of variables is set to 5,000 but can be increased;
           see help set_maxvar.
 
-. do "assert-mestreg_export.do" 
+. do "assert-modexpt.do" 
 
 . clear all
 
 . cd "~/Stata-dev/stdmest"
 /Users/ellessenne/Stata-dev/stdmest
 
-. adopath ++ "mestreg_export"
-  [1]              "mestreg_export"
+. adopath ++ "modexpt"
+  [1]              "modexpt"
   [2]  (BASE)      "/Applications/Stata/ado/base/"
   [3]  (SITE)      "/Applications/Stata/ado/site/"
   [4]              "."
@@ -41,20 +41,9 @@ Notes:
 
 . clear all
 
-. do ./build/buildmlib.do
-
-. capture erase lstdmest.mlib
-
-. quietly {
-
-. 
-end of do-file
-
-. mata mata clear
-
 . 
 . //
-. rcof "mestreg_export, filename(test.xlsx)" == 301
+. rcof "modexpt, filename(test.xlsx)" == 301
 
 . 
 . //
@@ -66,8 +55,8 @@ end of do-file
 . quietly mestreg age female || patient:, distribution(exponential)
 
 . 
-. // 
-. mestreg_export, filename("test.xlsx")
+. //
+. modexpt, filename("test.xlsx")
 file test.xlsx saved
 file test.xlsx saved
 
@@ -75,15 +64,15 @@ file test.xlsx saved
 
 . 
 . //
-. rcof "mestreg_export, filename(test.xlsx)" == 602
+. rcof "modexpt, filename(test.xlsx)" == 602
 
 . 
 . //
-. mestreg_export, filename("test.xlsx") replace
+. modexpt, filename("test.xlsx") replace
 file test.xlsx saved
 file test.xlsx saved
 
-. rcof "mestreg_export, filename(test.xlsx) replace" == 0
+. rcof "modexpt, filename(test.xlsx) replace" == 0
 
 . 
 . //
