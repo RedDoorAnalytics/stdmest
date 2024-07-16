@@ -43,7 +43,35 @@ Notes:
 
 . 
 . //
-. rcof "modexpt, filename(test.xlsx)" == 301
+. rcof "modexpt" == 301
+
+. 
+. //
+. tempfile test
+
+. rcof "modexpt, filename(`test')" == 301
+
+. 
+. //
+. clear all
+
+. webuse catheter
+(Kidney data, McGilchrist and Aisbett, Biometrics, 1991)
+
+. quietly streg age female, distribution(exponential)
+
+. rcof "modexpt, filename(`test')" == 301
+
+. 
+. //
+. clear all
+
+. webuse catheter
+(Kidney data, McGilchrist and Aisbett, Biometrics, 1991)
+
+. quietly stcox age female
+
+. rcof "modexpt, filename(`test')" == 301
 
 . 
 . //
@@ -54,29 +82,108 @@ Notes:
 
 . quietly mestreg age female || patient:, distribution(exponential)
 
-. 
-. //
-. modexpt, filename("test.xlsx")
-file test.xlsx saved
-file test.xlsx saved
-
-. assert fileexists("test.xlsx") == 1
+. tempfile test1
 
 . 
 . //
-. rcof "modexpt, filename(test.xlsx)" == 602
+. modexpt, filename("`test1'")
+file /var/folders/xr/_y099f650fjcbdct28bmv2kc0000gn/T//St87810.000002 saved
+file /var/folders/xr/_y099f650fjcbdct28bmv2kc0000gn/T//St87810.000002 saved
+file /var/folders/xr/_y099f650fjcbdct28bmv2kc0000gn/T//St87810.000002 saved
+file /var/folders/xr/_y099f650fjcbdct28bmv2kc0000gn/T//St87810.000002 saved
+
+. assert fileexists("`test1'") == 1
 
 . 
 . //
-. modexpt, filename("test.xlsx") replace
-file test.xlsx saved
-file test.xlsx saved
-
-. rcof "modexpt, filename(test.xlsx) replace" == 0
+. rcof "modexpt, filename(`test1')" == 602
 
 . 
 . //
-. rm "test.xlsx"
+. modexpt, filename("`test1'") replace
+file /var/folders/xr/_y099f650fjcbdct28bmv2kc0000gn/T//St87810.000002 saved
+file /var/folders/xr/_y099f650fjcbdct28bmv2kc0000gn/T//St87810.000002 saved
+file /var/folders/xr/_y099f650fjcbdct28bmv2kc0000gn/T//St87810.000002 saved
+file /var/folders/xr/_y099f650fjcbdct28bmv2kc0000gn/T//St87810.000002 saved
+
+. rcof "modexpt, filename(`test1') replace" == 0
+
+. 
+. //
+. clear all
+
+. webuse catheter
+(Kidney data, McGilchrist and Aisbett, Biometrics, 1991)
+
+. quietly stmixed age female || patient:, distribution(exponential)
+
+. tempfile test2
+
+. 
+. //
+. modexpt, filename("`test2'")
+file /var/folders/xr/_y099f650fjcbdct28bmv2kc0000gn/T//St87810.000003 saved
+file /var/folders/xr/_y099f650fjcbdct28bmv2kc0000gn/T//St87810.000003 saved
+file /var/folders/xr/_y099f650fjcbdct28bmv2kc0000gn/T//St87810.000003 saved
+file /var/folders/xr/_y099f650fjcbdct28bmv2kc0000gn/T//St87810.000003 saved
+
+. assert fileexists("`test2'") == 1
+
+. 
+. //
+. rcof "modexpt, filename(`test2')" == 602
+
+. 
+. //
+. modexpt, filename("`test2'") replace
+file /var/folders/xr/_y099f650fjcbdct28bmv2kc0000gn/T//St87810.000003 saved
+file /var/folders/xr/_y099f650fjcbdct28bmv2kc0000gn/T//St87810.000003 saved
+file /var/folders/xr/_y099f650fjcbdct28bmv2kc0000gn/T//St87810.000003 saved
+file /var/folders/xr/_y099f650fjcbdct28bmv2kc0000gn/T//St87810.000003 saved
+
+. rcof "modexpt, filename(`test2') replace" == 0
+
+. 
+. //
+. clear all
+
+. webuse catheter
+(Kidney data, McGilchrist and Aisbett, Biometrics, 1991)
+
+. quietly stmixed age female || patient:, distribution(rp) df(3)
+variables created: _rcs1_1 to _rcs1_3
+
+. tempfile test3
+
+. 
+. //
+. modexpt, filename("`test3'")
+file /var/folders/xr/_y099f650fjcbdct28bmv2kc0000gn/T//St87810.000004 saved
+file /var/folders/xr/_y099f650fjcbdct28bmv2kc0000gn/T//St87810.000004 saved
+file /var/folders/xr/_y099f650fjcbdct28bmv2kc0000gn/T//St87810.000004 saved
+file /var/folders/xr/_y099f650fjcbdct28bmv2kc0000gn/T//St87810.000004 saved
+file /var/folders/xr/_y099f650fjcbdct28bmv2kc0000gn/T//St87810.000004 saved
+file /var/folders/xr/_y099f650fjcbdct28bmv2kc0000gn/T//St87810.000004 saved
+file /var/folders/xr/_y099f650fjcbdct28bmv2kc0000gn/T//St87810.000004 saved
+
+. assert fileexists("`test3'") == 1
+
+. 
+. //
+. rcof "modexpt, filename(`test3')" == 602
+
+. 
+. //
+. modexpt, filename("`test3'") replace
+file /var/folders/xr/_y099f650fjcbdct28bmv2kc0000gn/T//St87810.000004 saved
+file /var/folders/xr/_y099f650fjcbdct28bmv2kc0000gn/T//St87810.000004 saved
+file /var/folders/xr/_y099f650fjcbdct28bmv2kc0000gn/T//St87810.000004 saved
+file /var/folders/xr/_y099f650fjcbdct28bmv2kc0000gn/T//St87810.000004 saved
+file /var/folders/xr/_y099f650fjcbdct28bmv2kc0000gn/T//St87810.000004 saved
+file /var/folders/xr/_y099f650fjcbdct28bmv2kc0000gn/T//St87810.000004 saved
+file /var/folders/xr/_y099f650fjcbdct28bmv2kc0000gn/T//St87810.000004 saved
+
+. rcof "modexpt, filename(`test3') replace" == 0
 
 . 
 end of do-file
