@@ -9,7 +9,7 @@ Built-in post-estimation commands for `mestreg` can do the opposite, i.e., margi
 
 Three commands are provided by this package:
 
-* `mestreg_export`, to export results (`e(b)`, `e(V)`) for a fitted `mestreg` model.
+* `modexpt`, to export results (`e(b)`, `e(V)`) for a fitted `mestreg` and `stmixed` models.
   This is useful to, e.g., use the R version of `stdmest`, which is available [here](https://github.com/RedDoorAnalytics/stdmest-r);
 
 * `stdmest`, to perform regression standardisation while fixing random intercept values.
