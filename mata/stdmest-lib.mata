@@ -37,7 +37,7 @@ mata:
 		hasci = st_local("ci") != ""
 		hascinormal = st_local("cinormal") != ""
 		hascontrast = st_local("contrast") != ""
-		hasdots = st_local("dots") != ""
+		hasverbose = st_local("verbose") != ""
 
         // quadrature rule
         if (integrate) {
@@ -137,7 +137,7 @@ mata:
 				}
 			}
 			// iterate dots
-			if (hasdots) {
+			if (hasverbose) {
 				stata("noisily _dots " + strofreal(i) + " 0")
 			}
 		}
