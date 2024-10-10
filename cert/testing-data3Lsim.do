@@ -31,8 +31,8 @@ range tt 0 10 5
 // # 2         397      2.65         0.407        3078     -0.298        0.522
 
 //
-stdmest Sa1, reat(0.878 0.122) reatse(0.311 0.570) ci reps(2000) timevar(tt) dots cinormal
-stdmest Sa2, reat(2.65 -0.298) reatse(0.407 0.522) ci reps(2000) timevar(tt) dots cinormal
+stdmest Sa1, reat(0.878 0.122) reatse(0.311 0.570) ci reps(2000) timevar(tt) verbose cinormal
+stdmest Sa2, reat(2.65 -0.298) reatse(0.407 0.522) ci reps(2000) timevar(tt) verbose cinormal
 list tt Sa1 Sa1_lower Sa1_upper Sa2 Sa2_lower Sa2_upper if tt != .
 //        +---------------------------------------------------------------------------+
 //        |  tt         Sa1   Sa1_lower   Sa1_up~r         Sa2   Sa2_lower   Sa2_up~r |
@@ -53,7 +53,7 @@ list tt Sa1 Sa1_lower Sa1_upper Sa2 Sa2_lower Sa2_upper if tt != .
 // # 5 10.0 0.001041533 -0.01251203 0.01459510 0.00001306697 -0.000879363 0.000905497
 
 // "Partially marginal" version
-stdmestm Sam, reat(0.878) reatse(0.311) varmargname(hospital_id>provider_id) timevar(tt) contrast ci reps(2000) dots cinormal
+stdmestm Sam, reat(0.878) reatse(0.311) varmargname(hospital_id>provider_id) timevar(tt) contrast ci reps(2000) verbose cinormal
 list tt Sam Sam_lower Sam_upper Sam_ref Sam_ref_lower Sam_ref_upper Sam_contrast Sam_contrast_lower Sam_contrast_upper if tt != .
 //        +--------------------------------------------------------------------------------------------------------------+
 //        |  tt         Sam   Sam_lower   Sam_up~r     Sam_ref   ~f_lower   ~f_upper   Sam_con~t   Sam_c~wer   Sam_c~per |

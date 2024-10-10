@@ -36,7 +36,7 @@ twoway ///
 
 //
 capture drop Stst*
-stdmest Stst, reat(-.4603618  -1.05416) reatse(.1427249 .5097189) reatref(0 0) reatseref(0 0) ci reps(100) timevar(tt) dots cinormal contrast
+stdmest Stst, reat(-.4603618  -1.05416) reatse(.1427249 .5097189) reatref(0 0) reatseref(0 0) ci reps(100) timevar(tt) verbose cinormal contrast
 
 //
 twoway ///

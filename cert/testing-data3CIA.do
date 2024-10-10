@@ -6,7 +6,7 @@ clear all
 do ./build/buildmlib.do
 mata mata clear
 
-// data3CIA 
+// data3CIA
 clear all
 use "data/data3CIA", clear
 
@@ -34,8 +34,8 @@ set seed 348756389
 capture drop Smin*
 capture drop Smin2*
 timer on 1
-stdmest Smin, reat(-1.006262) reatse(.2222539) reatref(0.0) reatseref(0.0) contrast dots ci reps(100) cinormal
-stdmest Smin2 if cohort == 18, reat(-1.006262) reatse(.2222539) reatref(0.0) reatseref(0.0) contrast dots ci reps(100) cinormal
+stdmest Smin, reat(-1.006262) reatse(.2222539) reatref(0.0) reatseref(0.0) contrast verbose ci reps(100) cinormal
+stdmest Smin2 if cohort == 18, reat(-1.006262) reatse(.2222539) reatref(0.0) reatseref(0.0) contrast verbose ci reps(100) cinormal
 timer off 1
 timer list 1
 
@@ -50,12 +50,12 @@ twoway ///
 // with timevar
 range tt 0 260.88 20
 
-// 
+//
 capture drop Smintt*
 capture drop Smintt2*
 timer on 1
-stdmest Smintt, reat(-1.006262) reatse(.2222539) reatref(0.0) reatseref(0.0) timevar(tt) contrast dots ci reps(100) cinormal
-stdmest Smintt2 if cohort == 18, reat(-1.006262) reatse(.2222539) reatref(0.0) reatseref(0.0) timevar(tt) contrast dots ci reps(100) cinormal
+stdmest Smintt, reat(-1.006262) reatse(.2222539) reatref(0.0) reatseref(0.0) timevar(tt) contrast verbose ci reps(100) cinormal
+stdmest Smintt2 if cohort == 18, reat(-1.006262) reatse(.2222539) reatref(0.0) reatseref(0.0) timevar(tt) contrast verbose ci reps(100) cinormal
 timer off 1
 timer list 1
 
@@ -99,5 +99,3 @@ list tt Smin Smin_lower Smin_upper Smin2 Smin2_lower Smin2_upper if tt != .
 //    4. | 150   .74284435   .6295867   .8252876   .71597334   .5951086   .8066548 |
 //    5. | 200   .65611022   .5254201   .7584257   .62167184    .484746    .732971 |
 //       +-------------------------------------------------------------------------+
-
-

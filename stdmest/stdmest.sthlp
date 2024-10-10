@@ -159,11 +159,11 @@ We can also define custom time points to obtain predictions at:
 {pstd}
 Then, we can pass this to {cmd: stdmest} via the {opt timevar} option:
 
-{phang}{stata . stdmest s4, ci timevar(tt) reps(1000) dots}{p_end}
+{phang}{stata . stdmest s4, ci timevar(tt) reps(1000) verbose}{p_end}
 {phang}{stata . list tt s4* if tt != .}{p_end}
 
 {pstd}
-We also pass the {opt reps(1000)} options to run 1,000 repetitions of the algorithm for the confidence intervals and the {opt dots} option to display progress in the Stata console.
+We also pass the {opt reps(1000)} options to run 1,000 repetitions of the algorithm for the confidence intervals and the {opt verbose} option to display progress in the Stata console.
 
 {pstd}
 Finally, we illustrate how to obtain contrasts of standardised survival probabilities.
@@ -176,7 +176,7 @@ First, we identify the smallest predicted BLUP:
 The smallest BLUP was predicted to be -2.098768, with a standard error of 0.4285454; note that the smallest BLUP corresponds to the patient with the lowest risk (i.e., the lowest hazard).
 Then, we pass this to {cmd: stdmest} via the {opt reat} and {opt reatse} options:
 
-{phang}{stata . stdmest s5, ci timevar(tt) reps(1000) dots contrast reat(-2.098768) reatse(.4285454) reatref(0.0) reatseref(0.0)}{p_end}
+{phang}{stata . stdmest s5, ci timevar(tt) reps(1000) verbose contrast reat(-2.098768) reatse(.4285454) reatref(0.0) reatseref(0.0)}{p_end}
 
 {pstd}
 Note that we needed to set reference values to contrast against, defined by the {opt reatref} and {opt reatseref} options; values of 0.0 denote the theoretical average patient, with a fixed random intercept value of 0.0.

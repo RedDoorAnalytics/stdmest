@@ -24,3 +24,4 @@ ex:
 	cd cert && stata-mp -e testing-stdmest-examples.do
 	cd cert && stata-mp -e testing-stdmestm.do
 	cd cert && stata-mp -e testing-stdmestm-examples.do
+	cd cert && stata-mp -e testing-verbose.do

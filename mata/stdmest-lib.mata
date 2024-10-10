@@ -107,8 +107,8 @@ mata:
 		cmd_drop = "capture drop " + new_xbname
 		cmd_predict = "quietly _predict double " + new_xbname + " if " + touse + " == 1, xb"
 
-		// iterate with dots (if required by the user)
-		if (dots != "") {
+		// iterate (if required by the user)
+		if (hasverbose) {
 			stata("noisily _dots 0, reps(" + strofreal(B) + ")")
 		}
 
@@ -136,7 +136,7 @@ mata:
 					xbbmatref[., i] = xbmat[., i] :+ newreatref[i - 1]
 				}
 			}
-			// iterate dots
+			// iterate
 			if (hasverbose) {
 				stata("noisily _dots " + strofreal(i) + " 0")
 			}
