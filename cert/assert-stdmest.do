@@ -132,9 +132,12 @@ summ _t
 // -> all test below should pass no matter what
 gen tv = runiform(0, `r(mean)')
 summ tv
-stdmest S10a, reat(`=r(min)') reatse(0.0) timevar(tv)
-stdmest S10b, reat(`=r(mean)') reatse(0.0) timevar(tv)
-stdmest S10c, reat(`=r(max)') reatse(0.0) timevar(tv)
+local rmin = `r(min)'
+local rmean = `r(mean)'
+local rmax = `r(max)'
+stdmest S10a, reat(`rmin') reatse(0.0) timevar(tv)
+stdmest S10b, reat(`rmean') reatse(0.0) timevar(tv)
+stdmest S10c, reat(`rmax') reatse(0.0) timevar(tv)
 assert S10a >= S10b
 assert S10a >= S10c
 assert S10b >= S10c

@@ -1,0 +1,401 @@
+
+  ___  ____  ____  ____  ____ ®
+ /__    /   ____/   /   ____/      StataNow 18.5
+___/   /   /___/   /   /___/       MP—Parallel Edition
+
+ Statistics and Data Science       Copyright 1985-2023 StataCorp LLC
+                                   StataCorp
+                                   4905 Lakeway Drive
+                                   College Station, Texas 77845 USA
+                                   800-782-8272        https://www.stata.com
+                                   979-696-4600        service@stata.com
+
+Stata license: 3-user 2-core network, expiring 12 Sep 2024
+Serial number: 501809300405
+  Licensed to: Alessandro Gasparini
+               Red Door Analytics AB
+
+Notes:
+      1. Stata is running in batch mode.
+      2. Unicode is supported; see help unicode_advice.
+      3. More than 2 billion observations are allowed; see help obs_advice.
+      4. Maximum number of variables is set to 5,000 but can be increased;
+          see help set_maxvar.
+
+. do "testing-stdmest-examples.do" 
+
+. clear all
+
+. // clear all is enough to 'refresh' in the same session
+. cd "~/Stata-dev/stdmest"
+/Users/ellessenne/Stata-dev/stdmest
+
+. adopath ++ "stdmest"
+  [1]              "stdmest"
+  [2]  (BASE)      "/Applications/Stata/ado/base/"
+  [3]  (SITE)      "/Applications/Stata/ado/site/"
+  [4]              "."
+  [5]  (PERSONAL)  "/Users/ellessenne/Documents/Stata/ado/personal/"
+  [6]  (PLUS)      "/Users/ellessenne/Library/Application Support/Stata/ado/plu
+> s/"
+  [7]  (OLDPLACE)  "~/ado/"
+
+. clear all
+
+. do ./build/buildmlib.do
+
+. capture erase lstdmest.mlib
+
+. quietly {
+
+. 
+end of do-file
+
+. mata mata clear
+
+. 
+. //
+. help stdmest
+request ignored because of batch mode
+
+. 
+. // Two-levels example
+. clear
+
+. webuse catheter
+(Kidney data, McGilchrist and Aisbett, Biometrics, 1991)
+
+. mestreg age female || patient:, distribution(weibull)
+
+        Failure _d: infect
+  Analysis time _t: time
+
+Fitting fixed-effects model:
+
+Iteration 0:  Log likelihood = -1700989.9  
+Iteration 1:  Log likelihood =  -440.1998  
+Iteration 2:  Log likelihood = -336.62162  
+Iteration 3:  Log likelihood = -334.64937  
+Iteration 4:  Log likelihood = -334.57959  
+Iteration 5:  Log likelihood = -334.57944  
+Iteration 6:  Log likelihood = -334.57944  
+
+Refining starting values:
+
+Grid node 0:  Log likelihood = -336.03604
+
+Fitting full model:
+
+Iteration 0:  Log likelihood = -336.03604  (not concave)
+Iteration 1:  Log likelihood = -333.14043  
+Iteration 2:  Log likelihood = -330.40952  
+Iteration 3:  Log likelihood = -329.89242  
+Iteration 4:  Log likelihood = -329.87847  
+Iteration 5:  Log likelihood = -329.87832  
+Iteration 6:  Log likelihood = -329.87832  
+
+Mixed-effects Weibull PH regression             Number of obs     =         76
+Group variable: patient                         Number of groups  =         38
+
+                                                Obs per group:
+                                                              min =          2
+                                                              avg =        2.0
+                                                              max =          2
+
+Integration method: mvaghermite                 Integration pts.  =          7
+
+                                                Wald chi2(2)      =      10.12
+Log likelihood = -329.87832                     Prob > chi2       =     0.0063
+------------------------------------------------------------------------------
+          _t | Haz. ratio   Std. err.      z    P>|z|     [95% conf. interval]
+-------------+----------------------------------------------------------------
+         age |   1.007348    .013788     0.53   0.593     .9806828    1.034737
+      female |   .1904727    .099992    -3.16   0.002     .0680737    .5329493
+       _cons |   .0072901   .0072274    -4.96   0.000     .0010444    .0508881
+-------------+----------------------------------------------------------------
+       /ln_p |   .2243233   .1402795                     -.0506195    .4992661
+-------------+----------------------------------------------------------------
+patient      |
+   var(_cons)|   .8308495   .4978425                       .256735    2.688808
+------------------------------------------------------------------------------
+Note: Estimates are transformed only in the first equation to hazard ratios.
+Note: _cons estimates baseline hazard (conditional on zero random effects).
+LR test vs. Weibull model: chibar2(01) = 9.40         Prob >= chibar2 = 0.0011
+
+. 
+. predict b, reffects reses(bse)
+(calculating posterior means of random effects)
+(using 7 quadrature points)
+
+. 
+. stdmest S1, reat(0.0) reatse(0.0)
+timevar() not specified, _t will be used instead
+
+. twoway line S1 _t, sort
+
+. 
+. stdmest S2, reat(0.0) reatse(0.0) ci
+timevar() not specified, _t will be used instead
+
+. twoway (rarea S2_lower S2_upper _t, sort color(stblue%10)) (line S2 _t, sort 
+> lcolor(stblue))
+
+. 
+. stdmest S3, reat(0.0) reatse(0.0) ci cinormal
+timevar() not specified, _t will be used instead
+
+. twoway (rarea S3_lower S3_upper _t, sort color(stgreen%10)) (line S3 _t, sort
+>  lcolor(stgreen))
+
+. 
+. range tt 0 100 5
+(71 missing values generated)
+
+. stdmest S4, reat(0.0) reatse(0.0) ci timevar(tt) reps(1000) dots
+----+--- 1 ---+--- 2 ---+--- 3 ---+--- 4 ---+--- 5 
+..................................................    50
+..................................................   100
+..................................................   150
+..................................................   200
+..................................................   250
+..................................................   300
+..................................................   350
+..................................................   400
+..................................................   450
+..................................................   500
+..................................................   550
+..................................................   600
+..................................................   650
+..................................................   700
+..................................................   750
+..................................................   800
+..................................................   850
+..................................................   900
+..................................................   950
+.................................................. 1,000
+.
+. list tt S4* if tt != .
+
+     +-----------------------------------------+
+     |  tt          S4    S4_lower    S4_upper |
+     |-----------------------------------------|
+  1. |   0           1           1           1 |
+  2. |  25   .81105926   .68226857   .86969016 |
+  3. |  50   .63895822   .50087107    .7161903 |
+  4. |  75   .50994906    .3604995   .59869408 |
+  5. | 100   .41147107   .25941239   .50981243 |
+     +-----------------------------------------+
+
+. 
+. sort b
+
+. list b bse if _n == 1
+
+     +----------------------+
+     |         b        bse |
+     |----------------------|
+  1. | -2.098768   .4285454 |
+     +----------------------+
+
+. stdmest S5, ci timevar(tt) reps(1000) dots contrast reat(-2.098768) reatse(.4
+> 285454) reatref(0.0) reatseref(0.0)
+----+--- 1 ---+--- 2 ---+--- 3 ---+--- 4 ---+--- 5 
+..................................................    50
+..................................................   100
+..................................................   150
+..................................................   200
+..................................................   250
+..................................................   300
+..................................................   350
+..................................................   400
+..................................................   450
+..................................................   500
+..................................................   550
+..................................................   600
+..................................................   650
+..................................................   700
+..................................................   750
+..................................................   800
+..................................................   850
+..................................................   900
+..................................................   950
+.................................................. 1,000
+.
+. sort tt
+
+. list tt S5* if tt != .
+
+     +-----------------------------------------------------------------+
+  1. |  tt |        S5 |  S5_lower |  S5_upper |    S5_ref | S5_re~wer |
+     |   0 |         1 |         1 |         1 |         1 |         1 |
+     |-----------------------------------------------------------------|
+     |   S5_re~per   |   S5_cont~t   |   S5_co~wer    |   S5_co~per    |
+     |           1   |           0   |           0    |           0    |
+     +-----------------------------------------------------------------+
+
+     +-----------------------------------------------------------------+
+  2. |  tt |        S5 |  S5_lower |  S5_upper |    S5_ref | S5_re~wer |
+     |  25 | .97265828 | .92606369 | .98937578 | .81105926 | .67962926 |
+     |-----------------------------------------------------------------|
+     |   S5_re~per   |   S5_cont~t   |   S5_co~wer    |   S5_co~per    |
+     |   .87355677   |   .16159902   |   .10527596    |   .27050283    |
+     +-----------------------------------------------------------------+
+
+     +-----------------------------------------------------------------+
+  3. |  tt |        S5 |  S5_lower |  S5_upper |    S5_ref | S5_re~wer |
+     |  50 | .93706276 | .84036666 |   .974183 | .63895822 | .49749646 |
+     |-----------------------------------------------------------------|
+     |   S5_re~per   |   S5_cont~t   |   S5_co~wer    |   S5_co~per    |
+     |   .72380386   |   .29810454   |   .20979045    |   .41981174    |
+     +-----------------------------------------------------------------+
+
+     +-----------------------------------------------------------------+
+  4. |  tt |        S5 |  S5_lower |  S5_upper |    S5_ref | S5_re~wer |
+     |  75 |  .8992979 | .76616724 | .95664439 | .50994906 | .37034575 |
+     |-----------------------------------------------------------------|
+     |   S5_re~per   |   S5_cont~t   |   S5_co~wer    |   S5_co~per    |
+     |   .60424322   |   .38934884   |    .2604313    |   .51834627    |
+     +-----------------------------------------------------------------+
+
+     +-----------------------------------------------------------------+
+  5. |  tt |        S5 |  S5_lower |  S5_upper |    S5_ref | S5_re~wer |
+     | 100 | .86124665 | .69182815 | .93864642 | .41147107 | .26670807 |
+     |-----------------------------------------------------------------|
+     |   S5_re~per   |   S5_cont~t   |   S5_co~wer    |   S5_co~per    |
+     |   .51817321   |   .44977557   |   .28865964    |    .5897917    |
+     +-----------------------------------------------------------------+
+
+. 
+. // Three-levels example
+. clear
+
+. webuse jobhistory
+(Job history data, Event History Analysis with Stata, Blossfeld et al. 2007)
+
+. gen tt = tend - tstart
+
+. stset tt, fail(failure)
+
+Survival-time data settings
+
+         Failure event: failure!=0 & failure<.
+Observed time interval: (0, tt]
+     Exit on or before: failure
+
+--------------------------------------------------------------------------
+        600  total observations
+          0  exclusions
+--------------------------------------------------------------------------
+        600  observations remaining, representing
+        458  failures in single-record/single-failure data
+     40,782  total analysis time at risk and under observation
+                                                At risk from t =         0
+                                     Earliest observed entry t =         0
+                                          Last observed exit t =       428
+
+. mestreg education njobs prestige i.female || birthyear: || id:, distribution(
+> exponential)
+
+        Failure _d: failure
+  Analysis time _t: tt
+
+Fitting fixed-effects model:
+
+Iteration 0:  Log likelihood = -5736904.5  
+Iteration 1:  Log likelihood = -2664.7513  
+Iteration 2:  Log likelihood = -2487.4495  
+Iteration 3:  Log likelihood = -2481.8869  
+Iteration 4:  Log likelihood = -2481.8774  
+Iteration 5:  Log likelihood = -2481.8774  
+
+Refining starting values:
+
+Grid node 0:  Log likelihood = -2484.9637
+
+Fitting full model:
+
+Iteration 0:  Log likelihood = -2484.9637  (not concave)
+Iteration 1:  Log likelihood = -2463.3277  (not concave)
+Iteration 2:  Log likelihood = -2459.1583  
+Iteration 3:  Log likelihood = -2457.0963  
+Iteration 4:  Log likelihood = -2446.3836  
+Iteration 5:  Log likelihood = -2446.2998  
+Iteration 6:  Log likelihood = -2446.2998  
+
+Mixed-effects exponential PH regression         Number of obs     =        600
+
+        Grouping information
+        -------------------------------------------------------------
+                        |     No. of       Observations per group
+         Group variable |     groups    Minimum    Average    Maximum
+        ----------------+--------------------------------------------
+              birthyear |         12          3       50.0         99
+                     id |        201          1        3.0          9
+        -------------------------------------------------------------
+
+Integration method: mvaghermite                 Integration pts.  =          7
+
+                                                Wald chi2(4)      =      78.18
+Log likelihood = -2446.2998                     Prob > chi2       =     0.0000
+------------------------------------------------------------------------------
+          _t | Haz. ratio   Std. err.      z    P>|z|     [95% conf. interval]
+-------------+----------------------------------------------------------------
+   education |   1.101358   .0382406     2.78   0.005     1.028901    1.178917
+       njobs |   .7785752   .0364371    -5.35   0.000     .7103372    .8533685
+    prestige |   .9707595   .0063937    -4.51   0.000     .9583087    .9833721
+    1.female |   1.611504    .237373     3.24   0.001     1.207397    2.150862
+       _cons |   .0133031   .0054918   -10.46   0.000     .0059233    .0298776
+-------------+----------------------------------------------------------------
+birthyear    |
+   var(_cons)|   .0709813    .055068                      .0155157    .3247245
+-------------+----------------------------------------------------------------
+birthyear>id |
+   var(_cons)|    .507621   .1213679                      .3177053    .8110633
+------------------------------------------------------------------------------
+Note: Estimates are transformed only in the first equation to hazard ratios.
+Note: _cons estimates baseline hazard (conditional on zero random effects).
+LR test vs. exponential model: chi2(2) = 71.16            Prob > chi2 = 0.0000
+
+Note: LR test is conservative and provided only for reference.
+
+. 
+. predict b*, reffects reses(bse*)
+(calculating posterior means of random effects)
+(using 7 quadrature points)
+
+. list b1 bse1 b2 bse2 if _n <= 2
+
+     +---------------------------------------------+
+     |        b1       bse1          b2       bse2 |
+     |---------------------------------------------|
+  1. | -.0795512   .1930458    -1.39209   .4813395 |
+  2. | -.0795512   .1930458   -.1309338   .4605677 |
+     +---------------------------------------------+
+
+. 
+. stdmest S1, reat(-.0795512 -1.39209) reatse(.1930458 .4813395) ci
+timevar() not specified, _t will be used instead
+
+. stdmest S2, reat(-.0795512 -.1309338) reatse(.1930458 .4605677) ci
+timevar() not specified, _t will be used instead
+
+. 
+. // 
+. twoway ///
+>         (rarea S1_lower S1_upper _t, sort color(stblue%10)) ///
+>         (rarea S2_lower S2_upper _t, sort color(stred%10)) ///
+>         (line S1 _t, sort lcolor(stblue)) ///
+>         (line S2 _t, sort lcolor(stred))
+
+. 
+. // 
+. stdmest S3, reat(-.0795512 -1.39209) reatse(.1930458 .4813395) reatref(-.0795
+> 512 -.1309338) reatseref(.1930458 .4605677) ci contrast
+timevar() not specified, _t will be used instead
+
+. twoway (rarea S3_contrast_lower S3_contrast_upper _t, sort color(stgreen%10))
+>  (line S3_contrast _t, sort lcolor(stgreen))
+
+. 
+. 
+end of do-file
