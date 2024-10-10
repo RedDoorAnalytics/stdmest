@@ -161,13 +161,10 @@ Observed time interval: (0, tt]
 > ibution(exponential)
 
 . stdmestm S1a, reat(-1.0) reatse(0.0) varmargname(birthyear>id) timevar(tv)
-----+--- 1 ---+--- 2 ---+--- 3 ---+--- 4 ---+--- 5 
 
 . stdmestm S1b, reat( 0.0) reatse(0.0) varmargname(birthyear>id) timevar(tv)
-----+--- 1 ---+--- 2 ---+--- 3 ---+--- 4 ---+--- 5 
 
 . stdmestm S1c, reat(+1.0) reatse(0.0) varmargname(birthyear>id) timevar(tv)
-----+--- 1 ---+--- 2 ---+--- 3 ---+--- 4 ---+--- 5 
 
 . assert S1a >= S1b
 
@@ -181,11 +178,9 @@ Observed time interval: (0, tt]
 . //
 . stdmestm S2a, reat(0.0) reatse(0.0) varmargname(birthyear>id) timevar(tv) ci 
 > reps(10)
-----+--- 1 ---+--- 2 ---+--- 3 ---+--- 4 ---+--- 5 
 
 . stdmestm S2b, reat(0.0) reatse(1.0) varmargname(birthyear>id) timevar(tv) ci 
 > reps(10)
-----+--- 1 ---+--- 2 ---+--- 3 ---+--- 4 ---+--- 5 
 
 . assert S2a == S2b
 
@@ -198,19 +193,15 @@ Observed time interval: (0, tt]
 . 
 . //
 . stdmestm S3a, reat(0.0) reatse(0.0) varmargname(birthyear>id) timevar(tv)
-----+--- 1 ---+--- 2 ---+--- 3 ---+--- 4 ---+--- 5 
 
 . stdmestm S3b, reat(0.0) reatse(0.0) varmargname(birthyear>id) timevar(tv) nk(
 > 15)
-----+--- 1 ---+--- 2 ---+--- 3 ---+--- 4 ---+--- 5 
 
 . stdmestm S3c, reat(0.0) reatse(0.0) varmargname(birthyear>id) timevar(tv) nk(
 > 30)
-----+--- 1 ---+--- 2 ---+--- 3 ---+--- 4 ---+--- 5 
 
 . stdmestm S3d, reat(0.0) reatse(0.0) varmargname(birthyear>id) timevar(tv) nk(
 > 100)
-----+--- 1 ---+--- 2 ---+--- 3 ---+--- 4 ---+--- 5 
 
 . mkmat S3a, matrix(mS3a) nomissing
 
@@ -237,10 +228,8 @@ Observed time interval: (0, tt]
 . 
 . //
 . stdmestm S4a, reat(0.0) reatse(0.0) varmargname(birthyear>id) timevar(tv)
-----+--- 1 ---+--- 2 ---+--- 3 ---+--- 4 ---+--- 5 
 
 . stdmest  S4b, reat(0.0 0.0) reatse(0.0 0.0) timevar(tv)
-----+--- 1 ---+--- 2 ---+--- 3 ---+--- 4 ---+--- 5 
 
 . mkmat S4a, matrix(mS4a) nomissing
 
@@ -256,13 +245,11 @@ Observed time interval: (0, tt]
 
 . stdmestm S5a, reat(0.0) reatse(1.0) varmargname(birthyear>id) timevar(tv) ci 
 > reps(10)
-----+--- 1 ---+--- 2 ---+--- 3 ---+--- 4 ---+--- 5 
 
 . set seed 3475
 
 . stdmestm S5b, reat(0.0) reatse(1.0) varmargname(birthyear>id) timevar(tv) ci 
 > reps(100)
-----+--- 1 ---+--- 2 ---+--- 3 ---+--- 4 ---+--- 5 
 
 . assert S5a == S5b
 

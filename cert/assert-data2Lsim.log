@@ -196,7 +196,6 @@ LR test vs. exponential model: chibar2(01) = 2.0e+06  Prob >= chibar2 = 0.0000
 . capture drop Sa1*
 
 . stdmest Sa1, reat(0) reatse(0) reatref(-2) reatseref(0) timevar(tt) contrast
-----+--- 1 ---+--- 2 ---+--- 3 ---+--- 4 ---+--- 5 
 
 . list Sa1* tt if tt != .
 

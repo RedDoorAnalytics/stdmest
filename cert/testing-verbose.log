@@ -22,7 +22,7 @@ Notes:
       4. Maximum number of variables is set to 5,000 but can be increased;
           see help set_maxvar.
 
-. do "testing-stdmestm-examples.do" 
+. do "testing-verbose.do" 
 
 . clear all
 
@@ -65,9 +65,9 @@ end of do-file
 . mata mata clear
 
 . 
-. // Three-levels example
-. clear
+. set seed 34587
 
+. 
 . webuse jobhistory
 (Job history data, Event History Analysis with Stata, Blossfeld et al. 2007)
 
@@ -157,118 +157,129 @@ LR test vs. exponential model: chi2(2) = 71.16            Prob > chi2 = 0.0000
 
 Note: LR test is conservative and provided only for reference.
 
-. predict b_by b_by_id, reffects reses(b_by_se b_by_id_se)
-(calculating posterior means of random effects)
-(using 7 quadrature points)
-
-. 
-. list birthyear id b_by b_by_se b_by_id b_by_id_se if birthyear == 1930 & jobn
-> o == 1
-
-     +--------------------------------------------------------------+
-     | birthy~r    id        b_by    b_by_se     b_by_id   b_by_i~e |
-     |--------------------------------------------------------------|
-  1. |     1930     1   -.0795512   .1930458    -1.39209   .4813395 |
-  2. |     1930     2   -.0795512   .1930458   -.1309338   .4605677 |
-147. |     1930    47   -.0795512   .1930458    .0648713   .4757858 |
-154. |     1930    52   -.0795512   .1930458    .0921726   .6059889 |
-155. |     1930    53   -.0795512   .1930458    .2572126   .5502837 |
-     |--------------------------------------------------------------|
-198. |     1930    73   -.0795512   .1930458   -.3866474   .4431536 |
-234. |     1930    84   -.0795512   .1930458    .1991294    .487356 |
-273. |     1930   100   -.0795512   .1930458    .9406086   .4313854 |
-310. |     1930   109   -.0795512   .1930458   -.0400392   .4674065 |
-341. |     1930   119   -.0795512   .1930458   -.4323267   .4766487 |
-     |--------------------------------------------------------------|
-359. |     1930   125   -.0795512   .1930458   -.1077823   .4622744 |
-447. |     1930   161   -.0795512   .1930458    .3662371   .5660748 |
-     +--------------------------------------------------------------+
-
-. //      +--------------------------------------------------------------+
-. //      | birthy~r    id        b_by    b_by_se     b_by_id   b_by_i~e |
-. //      |--------------------------------------------------------------|
-. //   1. |     1930     1   -.0795512   .1930458    -1.39209   .4813395 |
-. //   2. |     1930     2   -.0795512   .1930458   -.1309338   .4605677 |
-. // 147. |     1930    47   -.0795512   .1930458    .0648713   .4757858 |
-. // 154. |     1930    52   -.0795512   .1930458    .0921726   .6059889 |
-. // 155. |     1930    53   -.0795512   .1930458    .2572126   .5502837 |
-. //      |--------------------------------------------------------------|
-. // 198. |     1930    73   -.0795512   .1930458   -.3866474   .4431536 |
-. // 234. |     1930    84   -.0795512   .1930458    .1991294    .487356 |
-. // 273. |     1930   100   -.0795512   .1930458    .9406086   .4313854 |
-. // 310. |     1930   109   -.0795512   .1930458   -.0400392   .4674065 |
-. // 341. |     1930   119   -.0795512   .1930458   -.4323267   .4766487 |
-. //      |--------------------------------------------------------------|
-. // 359. |     1930   125   -.0795512   .1930458   -.1077823   .4622744 |
-. // 447. |     1930   161   -.0795512   .1930458    .3662371   .5660748 |
-. //      +--------------------------------------------------------------+
-. 
-. 
-. // stdmestm for birthyear == 1930
 . range tv 0 365 100
 (500 missing values generated)
 
-. stdmestm S1930, reat(-.0795512) reatse(.1930458) varmargname(birthyear>id) ti
-> mevar(tv) ci
+. 
+. //
+. stdmest S0a, reat(-.4603618 1.0) reatse(.1427249 0.1) reatref(0.0 0.0) reatse
+> ref(0.0 0.0) timevar(tv)
 
-. twoway ///
->         (rarea S1930_lower S1930_upper tv, sort color(stblue%10)) ///
->         (line S1930 tv, sort lcolor(stblue))
+. stdmest S0b, reat(-.4603618 1.0) reatse(.1427249 0.1) reatref(0.0 0.0) reatse
+> ref(0.0 0.0) timevar(tv) dots
+
+. stdmest S1a, reat(-.4603618 1.0) reatse(.1427249 0.1) reatref(0.0 0.0) reatse
+> ref(0.0 0.0) timevar(tv) verbose
+Deriving point estimates...
+Done!
+
+. stdmest S1b, reat(-.4603618 1.0) reatse(.1427249 0.1) reatref(0.0 0.0) reatse
+> ref(0.0 0.0) timevar(tv) verbose dots
+Deriving point estimates...
+Done!
+
+. stdmest S2a, reat(-.4603618 1.0) reatse(.1427249 0.1) reatref(0.0 0.0) reatse
+> ref(0.0 0.0) timevar(tv) contrast verbose 
+Deriving point estimates...
+Deriving contrasts...
+Done!
+
+. stdmest S2b, reat(-.4603618 1.0) reatse(.1427249 0.1) reatref(0.0 0.0) reatse
+> ref(0.0 0.0) timevar(tv) contrast verbose dots
+Deriving point estimates...
+Deriving contrasts...
+Done!
+
+. stdmest S3a, reat(-.4603618 1.0) reatse(.1427249 0.1) reatref(0.0 0.0) reatse
+> ref(0.0 0.0) timevar(tv) contrast ci reps(200) verbose
+Deriving point estimates...
+Calculating 200 linear predictors for the C.I. algorithm...
+Calculating 200 standardised survival probabilities for the C.I. algorithm...
+Deriving confidence intervals...
+Deriving contrasts...
+Deriving confidence intervals of contrasts...
+Done!
+
+. stdmest S3b, reat(-.4603618 1.0) reatse(.1427249 0.1) reatref(0.0 0.0) reatse
+> ref(0.0 0.0) timevar(tv) contrast ci reps(200) verbose dots
+Deriving point estimates...
+Calculating 200 linear predictors for the C.I. algorithm...
+----+--- 1 ---+--- 2 ---+--- 3 ---+--- 4 ---+--- 5 
+..................................................    50
+..................................................   100
+..................................................   150
+..................................................   200
+Calculating 200 standardised survival probabilities for the C.I. algorithm...
+----+--- 1 ---+--- 2 ---+--- 3 ---+--- 4 ---+--- 5 
+..................................................    50
+..................................................   100
+..................................................   150
+..................................................   200
+Deriving confidence intervals...
+Deriving contrasts...
+Deriving confidence intervals of contrasts...
+Done!
 
 . 
-. // for reference, we want to predict fully conditional for all subjects born 
-> in 1930,
-. //    the above should be about in the middle!
-. stdmest S1930_1, reat(-.0795512 -1.39209) reatse(.1930458 .4813395) timevar(t
-> v) ci
-
-. stdmest S1930_2, reat(-.0795512 -.1309338) reatse(.1930458 .4605677) timevar(
-> tv) ci
-
-. stdmest S1930_47, reat(-.0795512 .0648713) reatse(.1930458 .4757858) timevar(
-> tv) ci
-
-. stdmest S1930_52, reat(-.0795512 .0921726) reatse(.1930458 .6059889) timevar(
-> tv) ci
-
-. stdmest S1930_53, reat(-.0795512 .2572126) reatse(.1930458 .5502837) timevar(
-> tv) ci
-
-. stdmest S1930_73, reat(-.0795512 -.3866474) reatse(.1930458 .4431536) timevar
-> (tv) ci
-
-. stdmest S1930_84, reat(-.0795512 .1991294) reatse(.1930458 .487356) timevar(t
-> v) ci
-
-. stdmest S1930_100, reat(-.0795512 .9406086) reatse(.1930458 .4313854) timevar
-> (tv) ci
-
-. stdmest S1930_109, reat(-.0795512 -.0400392) reatse(.1930458 .4674065) timeva
-> r(tv) ci
-
-. stdmest S1930_119, reat(-.0795512 -.4323267) reatse(.1930458 .4766487) timeva
-> r(tv) ci
-
-. stdmest S1930_125, reat(-.0795512 -.1077823) reatse(.1930458 .4622744) timeva
-> r(tv) ci
-
-. stdmest S1930_161, reat(-.0795512 .3662371) reatse(.1930458 .5660748) timevar
-> (tv) ci
-
 . //
-. levelsof id if birthyear == 1930, local(ids_1930)
-1 2 47 52 53 73 84 100 109 119 125 161
+. stdmestm Sm0a, reat(-.4603618) reatse(.1427249) varmargname(birthyear>id) tim
+> evar(tv)
 
-. foreach i of local ids_1930 {
-  2.         local addplot `addplot' (rarea S1930_`i'_lower S1930_`i'_upper tv,
->  sort color(black%05)) (line S1930_`i' tv, sort lcolor(black) lpattern(dash))
-  3. }
+. stdmestm Sm0b, reat(-.4603618) reatse(.1427249) varmargname(birthyear>id) tim
+> evar(tv) dots
 
-. local margplot (rarea S1930_lower S1930_upper tv, sort color(stblue%20)) (lin
-> e S1930 tv, sort lcolor(stblue) lwidth(thick))
+. stdmestm Sm1a, reat(-.4603618) reatse(.1427249) varmargname(birthyear>id) tim
+> evar(tv) verbose
+Deriving point estimates...
+Done!
 
-. twoway `addplot' `margplot', legend(order(25 "95% C.I." 26 "birthyear = 1930"
-> ))
+. stdmestm Sm1b, reat(-.4603618) reatse(.1427249) varmargname(birthyear>id) tim
+> evar(tv) verbose dots
+Deriving point estimates...
+Done!
 
+. stdmestm Sm2a, reat(-.4603618) reatse(.1427249) varmargname(birthyear>id) tim
+> evar(tv) contrast verbose
+Deriving point estimates...
+Deriving contrasts...
+Done!
+
+. stdmestm Sm2b, reat(-.4603618) reatse(.1427249) varmargname(birthyear>id) tim
+> evar(tv) contrast verbose dots
+Deriving point estimates...
+Deriving contrasts...
+Done!
+
+. stdmestm Sm3a, reat(-.4603618) reatse(.1427249) varmargname(birthyear>id) tim
+> evar(tv) contrast ci reps(200) verbose
+Deriving point estimates...
+Calculating 200 linear predictors for the C.I. algorithm...
+Calculating 200 standardised survival probabilities for the C.I. algorithm...
+Deriving confidence intervals...
+Deriving contrasts...
+Deriving confidence intervals of contrasts...
+Done!
+
+. stdmestm Sm3b, reat(-.4603618) reatse(.1427249) varmargname(birthyear>id) tim
+> evar(tv) contrast ci reps(200) verbose dots
+Deriving point estimates...
+Calculating 200 linear predictors for the C.I. algorithm...
+----+--- 1 ---+--- 2 ---+--- 3 ---+--- 4 ---+--- 5 
+..................................................    50
+..................................................   100
+..................................................   150
+..................................................   200
+Calculating 200 standardised survival probabilities for the C.I. algorithm...
+----+--- 1 ---+--- 2 ---+--- 3 ---+--- 4 ---+--- 5 
+..................................................    50
+..................................................   100
+..................................................   150
+..................................................   200
+Deriving confidence intervals...
+Deriving contrasts...
+Deriving confidence intervals of contrasts...
+Done!
+
+. 
 . 
 end of do-file

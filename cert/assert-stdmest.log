@@ -104,7 +104,6 @@ end of do-file
 . // 
 . stdmest S1, reat(0.0) reatse(0.0) reatref(0.0) reatseref(0.0) contrast
 timevar() not specified, _t will be used instead
-----+--- 1 ---+--- 2 ---+--- 3 ---+--- 4 ---+--- 5 
 
 . gen S1_exp = 0
 
@@ -125,7 +124,6 @@ Number of observations (_N) was 76, now 100.
 (38 real changes made, 38 to missing)
 
 . stdmest S2 if age >= 45, reat(0.0) reatse(0.0) timevar(tt)
-----+--- 1 ---+--- 2 ---+--- 3 ---+--- 4 ---+--- 5 
 
 . mkmat S2, matrix(S2_if) nomissing
 
@@ -133,7 +131,6 @@ Number of observations (_N) was 76, now 100.
 (38 observations deleted)
 
 . stdmest S2_2, reat(0.0) reatse(0.0) timevar(tt)
-----+--- 1 ---+--- 2 ---+--- 3 ---+--- 4 ---+--- 5 
 
 . mkmat S2_2, matrix(S2_keep) nomissing
 
@@ -152,15 +149,12 @@ Number of observations (_N) was 76, now 100.
 
 . stdmest S3a, reat(-1.0) reatse(0.0)
 timevar() not specified, _t will be used instead
-----+--- 1 ---+--- 2 ---+--- 3 ---+--- 4 ---+--- 5 
 
 . stdmest S3b, reat( 0.0) reatse(0.0)
 timevar() not specified, _t will be used instead
-----+--- 1 ---+--- 2 ---+--- 3 ---+--- 4 ---+--- 5 
 
 . stdmest S3c, reat(+1.0) reatse(0.0)
 timevar() not specified, _t will be used instead
-----+--- 1 ---+--- 2 ---+--- 3 ---+--- 4 ---+--- 5 
 
 . assert S3a >= S3b 
 
@@ -174,11 +168,9 @@ timevar() not specified, _t will be used instead
 . //
 . stdmest S4a, reat(-1.0) reatse(0.0) reatref(0.0) reatseref(0.0) contrast
 timevar() not specified, _t will be used instead
-----+--- 1 ---+--- 2 ---+--- 3 ---+--- 4 ---+--- 5 
 
 . stdmest S4b, reat(+1.0) reatse(0.0) reatref(0.0) reatseref(0.0) contrast
 timevar() not specified, _t will be used instead
-----+--- 1 ---+--- 2 ---+--- 3 ---+--- 4 ---+--- 5 
 
 . assert S4a_contrast >= 0 
 
@@ -191,13 +183,10 @@ timevar() not specified, _t will be used instead
 . gen t5 = 0
 
 . stdmest S5a, reat(-1.0) reatse(0.0) timevar(t5)
-----+--- 1 ---+--- 2 ---+--- 3 ---+--- 4 ---+--- 5 
 
 . stdmest S5b, reat( 0.0) reatse(0.0) timevar(t5)
-----+--- 1 ---+--- 2 ---+--- 3 ---+--- 4 ---+--- 5 
 
 . stdmest S5c, reat(+1.0) reatse(0.0) timevar(t5)
-----+--- 1 ---+--- 2 ---+--- 3 ---+--- 4 ---+--- 5 
 
 . assert S5a == 1
 
@@ -213,7 +202,6 @@ timevar() not specified, _t will be used instead
 
 . stdmest S6b if _n == 1, reat(0.0) reatse(0.0)
 timevar() not specified, _t will be used instead
-----+--- 1 ---+--- 2 ---+--- 3 ---+--- 4 ---+--- 5 
 
 . replace S6a = 0 if _n > 1
 (75 real changes made)
@@ -231,13 +219,11 @@ timevar() not specified, _t will be used instead
 
 . stdmest S7a, reat(0.0) reatse(0.0) ci reps(10)
 timevar() not specified, _t will be used instead
-----+--- 1 ---+--- 2 ---+--- 3 ---+--- 4 ---+--- 5 
 
 . set seed 487
 
 . stdmest S7b, reat(0.0) reatse(1.0) ci reps(10)
 timevar() not specified, _t will be used instead
-----+--- 1 ---+--- 2 ---+--- 3 ---+--- 4 ---+--- 5 
 
 . assert S7a_lower <= S7a
 
@@ -298,15 +284,12 @@ Observed time interval: (0, tt]
 . // 
 . stdmest S9a, reat(-1.0 -1.0) reatse(0.0 0.0)
 timevar() not specified, _t will be used instead
-----+--- 1 ---+--- 2 ---+--- 3 ---+--- 4 ---+--- 5 
 
 . stdmest S9b, reat(-1.0  0.0) reatse(0.0 0.0)
 timevar() not specified, _t will be used instead
-----+--- 1 ---+--- 2 ---+--- 3 ---+--- 4 ---+--- 5 
 
 . stdmest S9c, reat( 0.0 -1.0) reatse(0.0 0.0)
 timevar() not specified, _t will be used instead
-----+--- 1 ---+--- 2 ---+--- 3 ---+--- 4 ---+--- 5 
 
 . assert S9a >= S9b
 
@@ -347,13 +330,10 @@ timevar() not specified, _t will be used instead
 . local rmax = `r(max)'
 
 . stdmest S10a, reat(`rmin') reatse(0.0) timevar(tv)
-----+--- 1 ---+--- 2 ---+--- 3 ---+--- 4 ---+--- 5 
 
 . stdmest S10b, reat(`rmean') reatse(0.0) timevar(tv)
-----+--- 1 ---+--- 2 ---+--- 3 ---+--- 4 ---+--- 5 
 
 . stdmest S10c, reat(`rmax') reatse(0.0) timevar(tv)
-----+--- 1 ---+--- 2 ---+--- 3 ---+--- 4 ---+--- 5 
 
 . assert S10a >= S10b
 
