@@ -309,14 +309,16 @@ mata:
 	`RR' GHw)
 	{
 		S1 = J(rows(xbb), cols(GHx), .)
-		tmp = sqrt(varmarg) * sqrt(2)
+		tmp = log(sqrt(varmarg)) + log(sqrt(2))
 		for (i = 1; i <= cols(S1); i++) {
-			this_b = GHx[i] * tmp
+			this_b = GHx[i] * exp(tmp)
 			xbbb = xbb :+ this_b
 			S1[,i] = survfun(xbbb, t, anc) * dnrm[i]
 		}
-		Sint = tmp :* S1
-		Sint = (tmp :* S1) * ((GHw :* exp(GHx:^2))')
+		B = log(GHw) :+ (GHx:^2)
+		B = exp(B)
+		_transpose(B)
+		Sint = exp(tmp) :* S1 * B
 		return(Sint)
 	}
 
