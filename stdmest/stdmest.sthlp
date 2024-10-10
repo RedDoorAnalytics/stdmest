@@ -31,6 +31,7 @@
 {synopt: {cmdab: l:evel(#)}}Required confidence level for the confidence intervals. If not set, the default system-wide setting is used{p_end}
 {synopt: {cmdab: rep:s(#)}}Number of repetitions used by the algorithm used to calculate the confidence intervals. Defaults to 1000{p_end}
 {synopt: {cmdab: verb:ose}}If defined, display progress of the algorithm{p_end}
+{synopt: {cmdab: dots}}If defined, display additional details on progress of the algorithm{p_end}
 {synoptline}
 
 {marker description}{...}
@@ -109,6 +110,11 @@ Note that a larger number of repetitions yields more accurate confidence interva
 {opt verbose} if provided, the progress of the underlying algorithm implementing the predictions is displayed visually.
 {p_end}
 
+{phang}
+{opt dots} if provided alongside the {opt verbose} option, additional details on progress of the prediction algorithm are displayed.
+Note that this has no effect is the {opt verbose} and {opt ci} options are not used.
+{p_end}
+
 {marker examples}{...}
 {title: Examples}
 
@@ -164,6 +170,10 @@ Then, we can pass this to {cmd: stdmest} via the {opt timevar} option:
 
 {pstd}
 We also pass the {opt reps(1000)} options to run 1,000 repetitions of the algorithm for the confidence intervals and the {opt verbose} option to display progress in the Stata console.
+
+{pstd}
+If we add the {opt dots} options, more details on progress are provided:
+{phang}{stata . stdmest s4b, ci timevar(tt) reps(1000) verbose dots}{p_end}
 
 {pstd}
 Finally, we illustrate how to obtain contrasts of standardised survival probabilities.

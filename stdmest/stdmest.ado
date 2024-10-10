@@ -54,6 +54,7 @@ program define stdmest, sortpreserve
 		Level(cilevel) ///
 		REPs(integer 1000) ///
 		VERBose ///
+		DOTS ///
 		]
 
 	// Mark which rows to use

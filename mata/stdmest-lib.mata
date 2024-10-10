@@ -38,6 +38,7 @@ mata:
 		hascinormal = st_local("cinormal") != ""
 		hascontrast = st_local("contrast") != ""
 		hasverbose = st_local("verbose") != ""
+		hasdots = st_local("dots") != ""
 
         // quadrature rule
         if (integrate) {
@@ -107,9 +108,15 @@ mata:
 		cmd_drop = "capture drop " + new_xbname
 		cmd_predict = "quietly _predict double " + new_xbname + " if " + touse + " == 1, xb"
 
-		// iterate (if required by the user)
+		// display progress (if required by the user)
 		if (hasverbose) {
-			stata("noisily _dots 0, reps(" + strofreal(B) + ")")
+			display("{text}Deriving point estimates...")
+			if (hasci) {
+				display("{text}Calculating " + strofreal(B) + " linear predictors for the C.I. algorithm...")
+				if (hasdots) {
+					stata("noisily _dots 0, reps(" + strofreal(B) + ")")
+				}
+			}
 		}
 
 		// loop over Bp1
@@ -138,7 +145,17 @@ mata:
 			}
 			// iterate
 			if (hasverbose) {
-				stata("noisily _dots " + strofreal(i) + " 0")
+				if (i > 1 & hasdots) {
+					stata("noisily _dots " + strofreal(i - 1) + " 0")
+				}
+			}
+		}
+
+		// display progress (if required by the user)
+		if (hasverbose & hasci) {
+			display("{text}Calculating "+ strofreal(B) + " standardised survival probabilities for the C.I. algorithm...")
+			if (hasdots) {				
+				stata("noisily _dots 0, reps(" + strofreal(B) + ")")
 			}
 		}
 
@@ -163,6 +180,12 @@ mata:
                     else {
                         unique_Savgref[r, c] = mean(intsurvfun(xbbmatref[., c], unique_t[r, 1], ln_p[c, 1], varmarg, dnrm, GHx, GHw))
                     }
+				}
+			}
+			// iterate
+			if (hasverbose) {
+				if (c > 1 & hasdots) {
+					stata("noisily _dots " + strofreal(c - 1) + " 0")
 				}
 			}
 		}
@@ -195,6 +218,10 @@ mata:
 
 		// confidence intervals, if requested
 		if (hasci) {
+			// display progress (if required by the user)
+			if (hasverbose) {
+				display("{text}Deriving confidence intervals...")
+			}
 			// rescale level to 0-1
 			level = level / 100
 			// if we need CIs, compute
@@ -226,6 +253,11 @@ mata:
 			st_store(., outi_upper, timevartouse, Sci_upper)
 		}
 		if (hascontrast) {
+			// display progress (if required by the user)
+			if (hasverbose) {
+				display("{text}Deriving contrasts...")
+			}
+			//
 			outiref = st_addvar("double", out + "_ref")
 			st_store(., outiref, timevartouse, Savgref[, 1])
 			if (hasci) {
@@ -263,6 +295,10 @@ mata:
 			outicontrast = st_addvar("double", out + "_contrast")
 			st_store(., outicontrast, timevartouse, Savgcontrast[, 1])
 			if (hasci) {
+				// display progress (if required by the user)
+				if (hasverbose) {
+					display("{text}Deriving confidence intervals of contrasts...")
+				}
 				// no need to rescale level to 0-1,
 				// should already be done above
 				// if we need CIs, compute
@@ -293,6 +329,11 @@ mata:
 				st_store(., outicontrast_lower, timevartouse, Scicontrast_lower)
 				st_store(., outicontrast_upper, timevartouse, Scicontrast_upper)
 			}
+		}
+
+		// display progress (if required by the user)
+		if (hasverbose) {
+			display("{text}Done!")
 		}
 	}
 

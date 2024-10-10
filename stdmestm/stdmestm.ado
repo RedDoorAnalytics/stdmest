@@ -62,6 +62,7 @@ program define stdmestm, sortpreserve
 		Level(cilevel) ///
 		REPs(integer 1000) ///
 		VERBose ///
+		DOTS ///
 		NK(integer 7) ///
 		VARMARGname(string) ///
 		]

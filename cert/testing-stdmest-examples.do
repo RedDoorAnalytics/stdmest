@@ -29,6 +29,8 @@ range tt 0 100 5
 stdmest S4, reat(0.0) reatse(0.0) ci timevar(tt) reps(1000) verbose
 list tt S4* if tt != .
 
+stdmest S4b, reat(0.0) reatse(0.0) ci timevar(tt) reps(1000) verbose dots
+
 sort b
 list b bse if _n == 1
 stdmest S5, ci timevar(tt) reps(1000) verbose contrast reat(-2.098768) reatse(.4285454) reatref(0.0) reatseref(0.0)
