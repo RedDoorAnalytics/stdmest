@@ -1,4 +1,4 @@
-*! version 0.0.1-9000 Alessandro Gasparini 20Jun2024
+*! version 0.0.1-9000 Alessandro Gasparini 10Oct2024
 
 local RS real scalar
 local RC real colvector
@@ -24,19 +24,23 @@ mata:
 		// read in locals from Stata
 		// strings:
 		timevar = st_local("timevar")
-		ci = st_local("ci")
-		cinormal = st_local("cinormal")
-		contrast = st_local("contrast")
-		dots = st_local("dots")
+		timevartouse = st_local("timevartouse")
+		// pickup rows to use
+		touse = st_local("touse")
 		// numbers:
 		B = strtoreal(st_local("reps"))
 		N = strtoreal(st_local("NNN"))
 		level = strtoreal(st_local("level"))
 		varmarg = strtoreal(st_local("vartoint"))
 		nk = strtoreal(st_local("nk"))
+		// flags
+		hasci = st_local("ci") != ""
+		hascinormal = st_local("cinormal") != ""
+		hascontrast = st_local("contrast") != ""
+		hasdots = st_local("dots") != ""
 
         // quadrature rule
-        if (integrate == 1.0) {
+        if (integrate) {
             GH = _gauss_hermite_nodes(nk)
 		    GHx = GH[1,]
 		    GHw = GH[2,]
@@ -45,7 +49,7 @@ mata:
         }
 
 		// view on timevar
-		st_view(t = ., ., timevar, st_local("timevartouse"))
+		st_view(t = ., ., timevar, timevartouse)
 		order_of_t = order(t, 1)
 		invorder_of_t = invorder(order_of_t)
 		unique_t = uniqrows(t, 1)
@@ -54,7 +58,7 @@ mata:
 		// figure out whether we need CIs or not
 		// if we do, we need to run the algorithm B + 1 times,
 		// otherwise we just do it once
-		if (ci != "") {
+		if (hasci) {
 			Bp1 = B + 1
 			// if we need CIs, draw new model parameters and random effects
 			neweb = draw_newpars(B)
@@ -95,16 +99,13 @@ mata:
 			xbbmatref = J(N, Bp1, .)
 		}
 
-        // pickup rows to use
-		st_view(touse, ., st_local("touse"))
-
 		// temp column in data to use
 		new_xbname = st_tempname()
 		stata("tempvar " + new_xbname)
 
 		// stata calls to drop old temp column (if any) and predict xb
 		cmd_drop = "capture drop " + new_xbname
-		cmd_predict = "quietly _predict double " + new_xbname + " if " + st_local("touse") + " == 1, xb"
+		cmd_predict = "quietly _predict double " + new_xbname + " if " + touse + " == 1, xb"
 
 		// iterate with dots (if required by the user)
 		if (dots != "") {
@@ -122,21 +123,21 @@ mata:
 			}
 			stata(cmd_drop)
 			stata(cmd_predict)
-			xbmat[., i] = st_data(., new_xbname, st_local("touse")) // copy back into Mata – might be inefficient?
+			xbmat[., i] = st_data(., new_xbname, touse) // copy back into Mata – might be inefficient?
 			if (i == 1) {
 				xbbmat[., i] = xbmat[., i] :+ reat
-				if (contrast != "") {
+				if (hascontrast) {
 					xbbmatref[., i] = xbmat[., i] :+ reatref
 				}
 			}
 			else {
 				xbbmat[., i] = xbmat[., i] :+ newreat[i - 1]
-				if (contrast != "") {
+				if (hascontrast) {
 					xbbmatref[., i] = xbmat[., i] :+ newreatref[i - 1]
 				}
 			}
 			// iterate dots
-			if (dots != "") {
+			if (hasdots) {
 				stata("noisily _dots " + strofreal(i) + " 0")
 			}
 		}
@@ -144,19 +145,19 @@ mata:
 		// do calculations for the std. survival, looping over timevar
 		// actually, we loop over _unique_ values of timevar to be more efficient
 		unique_Savg = J(Nuniqt, Bp1, .)
-		if (contrast != "") {
+		if (hascontrast) {
 			unique_Savgref = J(Nuniqt, Bp1, .)
 		}
 		for (c = 1; c <= Bp1; c++) {
 			for (r = 1; r <= Nuniqt; r++) {
-                if (integrate == 0.0) {
+                if (!integrate) {
                     unique_Savg[r, c] = mean(survfun(xbbmat[., c], unique_t[r, 1], ln_p[c, 1]))
                 }
                 else {
                     unique_Savg[r, c] = mean(intsurvfun(xbbmat[., c], unique_t[r, 1], ln_p[c, 1], varmarg, dnrm, GHx, GHw))
                 }
-				if (contrast != "") {
-                    if (integrate == 0.0) {
+				if (hascontrast) {
+                    if (!integrate) {
                         unique_Savgref[r, c] = mean(survfun(xbbmatref[., c], unique_t[r, 1], ln_p[c, 1]))
                     }
                     else {
@@ -168,7 +169,7 @@ mata:
 
 		// return to original size
 		Savg = J(rows(t), Bp1, .)
-		if (contrast != "") {
+		if (hascontrast) {
 			Savgref = J(rows(t), Bp1, .)
 		}
 		for (c = 1; c <= Bp1; c++) {
@@ -176,118 +177,118 @@ mata:
 			for (i = 1; i <= Nuniqt; i++) {
 				for (j = 1; j <= unique_t[i, 2]; j++) {
 					Savg[counter, c] = unique_Savg[i, c]
-					if (contrast != "") {
+					if (hascontrast) {
 						Savgref[counter, c] = unique_Savgref[i, c]
 					}
 					counter++
 				}
 			}
 			Savg[., c] = Savg[invorder_of_t, c]
-			if (contrast != "") {
+			if (hascontrast) {
 				Savgref[., c] = Savgref[invorder_of_t, c]
 			}
 		}
 
 		// write out results
 		outi = st_addvar("double", out)
-		st_store(., outi, st_local("timevartouse"), Savg[, 1])
+		st_store(., outi, timevartouse, Savg[, 1])
 
 		// confidence intervals, if requested
-		if (ci != "") {
+		if (hasci) {
 			// rescale level to 0-1
 			level = level / 100
 			// if we need CIs, compute
 			Sci = Savg[|1,2 \ rows(t),Bp1|]
-			Sci = Sci'
+			_transpose(Sci)
 			// add variables
 			outi_lower = st_addvar("double", out + "_lower")
 			outi_upper = st_addvar("double", out + "_upper")
-			if (cinormal == "") {
+			if (hascinormal) {
 				// confidence intervals using the percentile method
 				Sci_lower = mm_quantile(Sci, 1, (1 - level) / 2)
 				Sci_upper = mm_quantile(Sci, 1, (1 - (1 - level) / 2))
 				// transpose them
-				Sci_lower = Sci_lower'
-				Sci_upper = Sci_upper'
+				_transpose(Sci_lower)
+				_transpose(Sci_upper)
 			}
 			else {
 				// otherwise, use the normal approximation method
 				// (for symmetric CIs)
 				crit = invnormal(1 - (1 - level) / 2)
 				Sci_var = mm_colvar(Sci, 1)
-				Sci_var = Sci_var'
+				_transpose(Sci_var)
 				Sci_lower = Savg[, 1] :- crit * sqrt(Sci_var)
 				Sci_upper = Savg[, 1] :+ crit * sqrt(Sci_var)
 				// note: there is no guarantee that CIs are in the [0, 1] range
 			}
-			st_store(., outi_lower, st_local("timevartouse"), Sci_lower)
-			st_store(., outi_upper, st_local("timevartouse"), Sci_upper)
+			st_store(., outi_lower, timevartouse, Sci_lower)
+			st_store(., outi_upper, timevartouse, Sci_upper)
 		}
-		if (contrast != "") {
+		if (hascontrast) {
 			outiref = st_addvar("double", out + "_ref")
-			st_store(., outiref, st_local("timevartouse"), Savgref[, 1])
-			if (ci != "") {
+			st_store(., outiref, timevartouse, Savgref[, 1])
+			if (hasci) {
 				// no need to rescale level to 0-1,
 				// should already be done above
 				// if we need CIs, compute
 				Sciref = Savgref[|1,2 \ rows(t),Bp1|]
-				Sciref = Sciref'
+				_transpose(Sciref)
 				// add variables
 				outiref_lower = st_addvar("double", out + "_ref_lower")
 				outiref_upper = st_addvar("double", out + "_ref_upper")
-				if (cinormal == "") {
+				if (hascinormal) {
 					// confidence intervals using the percentile method
 					Sciref_lower = mm_quantile(Sciref, 1, (1 - level) / 2)
 					Sciref_upper = mm_quantile(Sciref, 1, (1 - (1 - level) / 2))
 					// transpose them
-					Sciref_lower = Sciref_lower'
-					Sciref_upper = Sciref_upper'
+					_transpose(Sciref_lower)
+					_transpose(Sciref_upper)
 				}
 				else {
 					// otherwise, use the normal approximation method
 					// (for symmetric CIs)
 					crit = invnormal(1 - (1 - level) / 2)
 					Sciref_var = mm_colvar(Sciref, 1)
-					Sciref_var = Sciref_var'
+					_transpose(Sciref_var)
 					Sciref_lower = Savgref[, 1] :- crit * sqrt(Sciref_var)
 					Sciref_upper = Savgref[, 1] :+ crit * sqrt(Sciref_var)
 					// note: there is no guarantee that CIs are in the [0, 1] range
 				}
-				st_store(., outiref_lower, st_local("timevartouse"), Sciref_lower)
-				st_store(., outiref_upper, st_local("timevartouse"), Sciref_upper)
+				st_store(., outiref_lower, timevartouse, Sciref_lower)
+				st_store(., outiref_upper, timevartouse, Sciref_upper)
 			}
 			Savgcontrast = Savg :- Savgref
 			outicontrast = st_addvar("double", out + "_contrast")
-			st_store(., outicontrast, st_local("timevartouse"), Savgcontrast[, 1])
-			if (ci != "") {
+			st_store(., outicontrast, timevartouse, Savgcontrast[, 1])
+			if (hasci) {
 				// no need to rescale level to 0-1,
 				// should already be done above
 				// if we need CIs, compute
 				Scicontrast = Savgcontrast[|1,2 \ rows(t),Bp1|]
-				Scicontrast = Scicontrast'
+				_transpose(Scicontrast)
 				// add variables
 				outicontrast_lower = st_addvar("double", out + "_contrast_lower")
 				outicontrast_upper = st_addvar("double", out + "_contrast_upper")
-				if (cinormal == "") {
+				if (hascinormal) {
 					// confidence intervals using the percentile method
 					Scicontrast_lower = mm_quantile(Scicontrast, 1, (1 - level) / 2)
 					Scicontrast_upper = mm_quantile(Scicontrast, 1, (1 - (1 - level) / 2))
 					// transpose them
-					Scicontrast_lower = Scicontrast_lower'
-					Scicontrast_upper = Scicontrast_upper'
+					_transpose(Scicontrast_lower)
+					_transpose(Scicontrast_upper)
 				}
 				else {
 					// otherwise, use the normal approximation method
 					// (for symmetric CIs)
 					crit = invnormal(1 - (1 - level) / 2)
 					Scicontrast_var = mm_colvar(Scicontrast, 1)
-					Scicontrast_var = Scicontrast_var'
+					_transpose(Scicontrast_var)
 					Scicontrast_lower = Savgcontrast[, 1] :- crit * sqrt(Scicontrast_var)
 					Scicontrast_upper = Savgcontrast[, 1] :+ crit * sqrt(Scicontrast_var)
 					// note: there is no guarantee that CIs are in the [0, 1] range
 				}
-				st_store(., outicontrast_lower, st_local("timevartouse"), Scicontrast_lower)
-				st_store(., outicontrast_upper, st_local("timevartouse"), Scicontrast_upper)
+				st_store(., outicontrast_lower, timevartouse, Scicontrast_lower)
+				st_store(., outicontrast_upper, timevartouse, Scicontrast_upper)
 			}
 		}
 	}
@@ -326,7 +327,7 @@ mata:
 		svd(eV, U = ., s = ., Vt = .)
 		C = U * (diag(s):^(1/2))
 		draw = rnormal(B, cols(eb), 0, 1)
-		if (missing(draw) > 0) {
+		if (missing(draw)) {
 			errprintf("Invalid samples for the confidence intervals algorithm. Please try again.\n")
 			exit(198)
 		}
