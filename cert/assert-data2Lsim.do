@@ -1,4 +1,4 @@
-500489r all
+clear all
 // clear all is enough to 'refresh' in the same session
 cd "~/Stata-dev/stdmest"
 adopath ++ "stdmest"
