@@ -1,4 +1,4 @@
-.PHONY: vendor_data cert
+.PHONY: vendor_data cert ex
 
 vendor_data:
 	cp ~/R-dev/stdmest/data-raw/data3CIA.dta ~/Stata-dev/stdmest/data/data3CIA.dta
@@ -18,3 +18,9 @@ cert_stdmest:
 
 cert_stdmestm:
 	cd cert && stata-mp -e assert-stdmestm.do
+
+ex:
+	cd cert && stata-mp -e testing-stdmest.do
+	cd cert && stata-mp -e testing-stdmest-examples.do
+	cd cert && stata-mp -e testing-stdmestm.do
+	cd cert && stata-mp -e testing-stdmestm-examples.do

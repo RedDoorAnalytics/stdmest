@@ -1,0 +1,274 @@
+
+  ___  ____  ____  ____  ____ ®
+ /__    /   ____/   /   ____/      StataNow 18.5
+___/   /   /___/   /   /___/       MP—Parallel Edition
+
+ Statistics and Data Science       Copyright 1985-2023 StataCorp LLC
+                                   StataCorp
+                                   4905 Lakeway Drive
+                                   College Station, Texas 77845 USA
+                                   800-782-8272        https://www.stata.com
+                                   979-696-4600        service@stata.com
+
+Stata license: 3-user 2-core network, expiring 12 Sep 2024
+Serial number: 501809300405
+  Licensed to: Alessandro Gasparini
+               Red Door Analytics AB
+
+Notes:
+      1. Stata is running in batch mode.
+      2. Unicode is supported; see help unicode_advice.
+      3. More than 2 billion observations are allowed; see help obs_advice.
+      4. Maximum number of variables is set to 5,000 but can be increased;
+          see help set_maxvar.
+
+. do "testing-stdmestm-examples.do" 
+
+. clear all
+
+. // clear all is enough to 'refresh' in the same session
+. cd "~/Stata-dev/stdmest"
+/Users/ellessenne/Stata-dev/stdmest
+
+. adopath ++ "stdmest"
+  [1]              "stdmest"
+  [2]  (BASE)      "/Applications/Stata/ado/base/"
+  [3]  (SITE)      "/Applications/Stata/ado/site/"
+  [4]              "."
+  [5]  (PERSONAL)  "/Users/ellessenne/Documents/Stata/ado/personal/"
+  [6]  (PLUS)      "/Users/ellessenne/Library/Application Support/Stata/ado/plu
+> s/"
+  [7]  (OLDPLACE)  "~/ado/"
+
+. adopath ++ "stdmestm"
+  [1]              "stdmestm"
+  [2]              "stdmest"
+  [3]  (BASE)      "/Applications/Stata/ado/base/"
+  [4]  (SITE)      "/Applications/Stata/ado/site/"
+  [5]              "."
+  [6]  (PERSONAL)  "/Users/ellessenne/Documents/Stata/ado/personal/"
+  [7]  (PLUS)      "/Users/ellessenne/Library/Application Support/Stata/ado/plu
+> s/"
+  [8]  (OLDPLACE)  "~/ado/"
+
+. clear all
+
+. do ./build/buildmlib.do
+
+. capture erase lstdmest.mlib
+
+. quietly {
+
+. 
+end of do-file
+
+. mata mata clear
+
+. 
+. // Three-levels example
+. clear
+
+. webuse jobhistory
+(Job history data, Event History Analysis with Stata, Blossfeld et al. 2007)
+
+. gen tt = tend - tstart
+
+. stset tt, fail(failure)
+
+Survival-time data settings
+
+         Failure event: failure!=0 & failure<.
+Observed time interval: (0, tt]
+     Exit on or before: failure
+
+--------------------------------------------------------------------------
+        600  total observations
+          0  exclusions
+--------------------------------------------------------------------------
+        600  observations remaining, representing
+        458  failures in single-record/single-failure data
+     40,782  total analysis time at risk and under observation
+                                                At risk from t =         0
+                                     Earliest observed entry t =         0
+                                          Last observed exit t =       428
+
+. mestreg education njobs prestige i.female || birthyear: || id:, distribution(
+> exponential)
+
+        Failure _d: failure
+  Analysis time _t: tt
+
+Fitting fixed-effects model:
+
+Iteration 0:  Log likelihood = -5736904.5  
+Iteration 1:  Log likelihood = -2664.7513  
+Iteration 2:  Log likelihood = -2487.4495  
+Iteration 3:  Log likelihood = -2481.8869  
+Iteration 4:  Log likelihood = -2481.8774  
+Iteration 5:  Log likelihood = -2481.8774  
+
+Refining starting values:
+
+Grid node 0:  Log likelihood = -2484.9637
+
+Fitting full model:
+
+Iteration 0:  Log likelihood = -2484.9637  (not concave)
+Iteration 1:  Log likelihood = -2463.3277  (not concave)
+Iteration 2:  Log likelihood = -2459.1583  
+Iteration 3:  Log likelihood = -2457.0963  
+Iteration 4:  Log likelihood = -2446.3836  
+Iteration 5:  Log likelihood = -2446.2998  
+Iteration 6:  Log likelihood = -2446.2998  
+
+Mixed-effects exponential PH regression         Number of obs     =        600
+
+        Grouping information
+        -------------------------------------------------------------
+                        |     No. of       Observations per group
+         Group variable |     groups    Minimum    Average    Maximum
+        ----------------+--------------------------------------------
+              birthyear |         12          3       50.0         99
+                     id |        201          1        3.0          9
+        -------------------------------------------------------------
+
+Integration method: mvaghermite                 Integration pts.  =          7
+
+                                                Wald chi2(4)      =      78.18
+Log likelihood = -2446.2998                     Prob > chi2       =     0.0000
+------------------------------------------------------------------------------
+          _t | Haz. ratio   Std. err.      z    P>|z|     [95% conf. interval]
+-------------+----------------------------------------------------------------
+   education |   1.101358   .0382406     2.78   0.005     1.028901    1.178917
+       njobs |   .7785752   .0364371    -5.35   0.000     .7103372    .8533685
+    prestige |   .9707595   .0063937    -4.51   0.000     .9583087    .9833721
+    1.female |   1.611504    .237373     3.24   0.001     1.207397    2.150862
+       _cons |   .0133031   .0054918   -10.46   0.000     .0059233    .0298776
+-------------+----------------------------------------------------------------
+birthyear    |
+   var(_cons)|   .0709813    .055068                      .0155157    .3247245
+-------------+----------------------------------------------------------------
+birthyear>id |
+   var(_cons)|    .507621   .1213679                      .3177053    .8110633
+------------------------------------------------------------------------------
+Note: Estimates are transformed only in the first equation to hazard ratios.
+Note: _cons estimates baseline hazard (conditional on zero random effects).
+LR test vs. exponential model: chi2(2) = 71.16            Prob > chi2 = 0.0000
+
+Note: LR test is conservative and provided only for reference.
+
+. predict b_by b_by_id, reffects reses(b_by_se b_by_id_se)
+(calculating posterior means of random effects)
+(using 7 quadrature points)
+
+. 
+. list birthyear id b_by b_by_se b_by_id b_by_id_se if birthyear == 1930 & jobn
+> o == 1
+
+     +--------------------------------------------------------------+
+     | birthy~r    id        b_by    b_by_se     b_by_id   b_by_i~e |
+     |--------------------------------------------------------------|
+  1. |     1930     1   -.0795512   .1930458    -1.39209   .4813395 |
+  2. |     1930     2   -.0795512   .1930458   -.1309338   .4605677 |
+147. |     1930    47   -.0795512   .1930458    .0648713   .4757858 |
+154. |     1930    52   -.0795512   .1930458    .0921726   .6059889 |
+155. |     1930    53   -.0795512   .1930458    .2572126   .5502837 |
+     |--------------------------------------------------------------|
+198. |     1930    73   -.0795512   .1930458   -.3866474   .4431536 |
+234. |     1930    84   -.0795512   .1930458    .1991294    .487356 |
+273. |     1930   100   -.0795512   .1930458    .9406086   .4313854 |
+310. |     1930   109   -.0795512   .1930458   -.0400392   .4674065 |
+341. |     1930   119   -.0795512   .1930458   -.4323267   .4766487 |
+     |--------------------------------------------------------------|
+359. |     1930   125   -.0795512   .1930458   -.1077823   .4622744 |
+447. |     1930   161   -.0795512   .1930458    .3662371   .5660748 |
+     +--------------------------------------------------------------+
+
+. //      +--------------------------------------------------------------+
+. //      | birthy~r    id        b_by    b_by_se     b_by_id   b_by_i~e |
+. //      |--------------------------------------------------------------|
+. //   1. |     1930     1   -.0795512   .1930458    -1.39209   .4813395 |
+. //   2. |     1930     2   -.0795512   .1930458   -.1309338   .4605677 |
+. // 147. |     1930    47   -.0795512   .1930458    .0648713   .4757858 |
+. // 154. |     1930    52   -.0795512   .1930458    .0921726   .6059889 |
+. // 155. |     1930    53   -.0795512   .1930458    .2572126   .5502837 |
+. //      |--------------------------------------------------------------|
+. // 198. |     1930    73   -.0795512   .1930458   -.3866474   .4431536 |
+. // 234. |     1930    84   -.0795512   .1930458    .1991294    .487356 |
+. // 273. |     1930   100   -.0795512   .1930458    .9406086   .4313854 |
+. // 310. |     1930   109   -.0795512   .1930458   -.0400392   .4674065 |
+. // 341. |     1930   119   -.0795512   .1930458   -.4323267   .4766487 |
+. //      |--------------------------------------------------------------|
+. // 359. |     1930   125   -.0795512   .1930458   -.1077823   .4622744 |
+. // 447. |     1930   161   -.0795512   .1930458    .3662371   .5660748 |
+. //      +--------------------------------------------------------------+
+. 
+. 
+. // stdmestm for birthyear == 1930
+. range tv 0 365 100
+(500 missing values generated)
+
+. stdmestm S1930, reat(-.0795512) reatse(.1930458) varmargname(birthyear>id) ti
+> mevar(tv) ci
+
+. twoway ///
+>         (rarea S1930_lower S1930_upper tv, sort color(stblue%10)) ///
+>         (line S1930 tv, sort lcolor(stblue))
+
+. 
+. // for reference, we want to predict fully conditional for all subjects born 
+> in 1930,
+. //    the above should be about in the middle!
+. stdmest S1930_1, reat(-.0795512 -1.39209) reatse(.1930458 .4813395) timevar(t
+> v) ci
+
+. stdmest S1930_2, reat(-.0795512 -.1309338) reatse(.1930458 .4605677) timevar(
+> tv) ci
+
+. stdmest S1930_47, reat(-.0795512 .0648713) reatse(.1930458 .4757858) timevar(
+> tv) ci
+
+. stdmest S1930_52, reat(-.0795512 .0921726) reatse(.1930458 .6059889) timevar(
+> tv) ci
+
+. stdmest S1930_53, reat(-.0795512 .2572126) reatse(.1930458 .5502837) timevar(
+> tv) ci
+
+. stdmest S1930_73, reat(-.0795512 -.3866474) reatse(.1930458 .4431536) timevar
+> (tv) ci
+
+. stdmest S1930_84, reat(-.0795512 .1991294) reatse(.1930458 .487356) timevar(t
+> v) ci
+
+. stdmest S1930_100, reat(-.0795512 .9406086) reatse(.1930458 .4313854) timevar
+> (tv) ci
+
+. stdmest S1930_109, reat(-.0795512 -.0400392) reatse(.1930458 .4674065) timeva
+> r(tv) ci
+
+. stdmest S1930_119, reat(-.0795512 -.4323267) reatse(.1930458 .4766487) timeva
+> r(tv) ci
+
+. stdmest S1930_125, reat(-.0795512 -.1077823) reatse(.1930458 .4622744) timeva
+> r(tv) ci
+
+. stdmest S1930_161, reat(-.0795512 .3662371) reatse(.1930458 .5660748) timevar
+> (tv) ci
+
+. //
+. levelsof id if birthyear == 1930, local(ids_1930)
+1 2 47 52 53 73 84 100 109 119 125 161
+
+. foreach i of local ids_1930 {
+  2.         local addplot `addplot' (rarea S1930_`i'_lower S1930_`i'_upper tv,
+>  sort color(black%05)) (line S1930_`i' tv, sort lcolor(black) lpattern(dash))
+  3. }
+
+. local margplot (rarea S1930_lower S1930_upper tv, sort color(stblue%20)) (lin
+> e S1930 tv, sort lcolor(stblue) lwidth(thick))
+
+. twoway `addplot' `margplot', legend(order(25 "95% C.I." 26 "birthyear = 1930"
+> ))
+
+. 
+end of do-file
