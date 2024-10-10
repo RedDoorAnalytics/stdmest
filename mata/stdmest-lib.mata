@@ -204,15 +204,7 @@ mata:
 			outi_lower = st_addvar("double", out + "_lower")
 			outi_upper = st_addvar("double", out + "_upper")
 			if (hascinormal) {
-				// confidence intervals using the percentile method
-				Sci_lower = mm_quantile(Sci, 1, (1 - level) / 2)
-				Sci_upper = mm_quantile(Sci, 1, (1 - (1 - level) / 2))
-				// transpose them
-				_transpose(Sci_lower)
-				_transpose(Sci_upper)
-			}
-			else {
-				// otherwise, use the normal approximation method
+				// use the normal approximation method
 				// (for symmetric CIs)
 				crit = invnormal(1 - (1 - level) / 2)
 				Sci_var = mm_colvar(Sci, 1)
@@ -220,6 +212,15 @@ mata:
 				Sci_lower = Savg[, 1] :- crit * sqrt(Sci_var)
 				Sci_upper = Savg[, 1] :+ crit * sqrt(Sci_var)
 				// note: there is no guarantee that CIs are in the [0, 1] range
+			}
+			else {
+				// otherwise, confidence intervals using the percentile method
+				// (the default)
+				Sci_lower = mm_quantile(Sci, 1, (1 - level) / 2)
+				Sci_upper = mm_quantile(Sci, 1, (1 - (1 - level) / 2))
+				// transpose them
+				_transpose(Sci_lower)
+				_transpose(Sci_upper)
 			}
 			st_store(., outi_lower, timevartouse, Sci_lower)
 			st_store(., outi_upper, timevartouse, Sci_upper)
@@ -237,15 +238,7 @@ mata:
 				outiref_lower = st_addvar("double", out + "_ref_lower")
 				outiref_upper = st_addvar("double", out + "_ref_upper")
 				if (hascinormal) {
-					// confidence intervals using the percentile method
-					Sciref_lower = mm_quantile(Sciref, 1, (1 - level) / 2)
-					Sciref_upper = mm_quantile(Sciref, 1, (1 - (1 - level) / 2))
-					// transpose them
-					_transpose(Sciref_lower)
-					_transpose(Sciref_upper)
-				}
-				else {
-					// otherwise, use the normal approximation method
+					// use the normal approximation method
 					// (for symmetric CIs)
 					crit = invnormal(1 - (1 - level) / 2)
 					Sciref_var = mm_colvar(Sciref, 1)
@@ -253,6 +246,15 @@ mata:
 					Sciref_lower = Savgref[, 1] :- crit * sqrt(Sciref_var)
 					Sciref_upper = Savgref[, 1] :+ crit * sqrt(Sciref_var)
 					// note: there is no guarantee that CIs are in the [0, 1] range
+				}
+				else {
+					// otherwise, confidence intervals using the percentile method
+					// (the default)
+					Sciref_lower = mm_quantile(Sciref, 1, (1 - level) / 2)
+					Sciref_upper = mm_quantile(Sciref, 1, (1 - (1 - level) / 2))
+					// transpose them
+					_transpose(Sciref_lower)
+					_transpose(Sciref_upper)
 				}
 				st_store(., outiref_lower, timevartouse, Sciref_lower)
 				st_store(., outiref_upper, timevartouse, Sciref_upper)
@@ -270,15 +272,7 @@ mata:
 				outicontrast_lower = st_addvar("double", out + "_contrast_lower")
 				outicontrast_upper = st_addvar("double", out + "_contrast_upper")
 				if (hascinormal) {
-					// confidence intervals using the percentile method
-					Scicontrast_lower = mm_quantile(Scicontrast, 1, (1 - level) / 2)
-					Scicontrast_upper = mm_quantile(Scicontrast, 1, (1 - (1 - level) / 2))
-					// transpose them
-					_transpose(Scicontrast_lower)
-					_transpose(Scicontrast_upper)
-				}
-				else {
-					// otherwise, use the normal approximation method
+					// use the normal approximation method
 					// (for symmetric CIs)
 					crit = invnormal(1 - (1 - level) / 2)
 					Scicontrast_var = mm_colvar(Scicontrast, 1)
@@ -286,6 +280,15 @@ mata:
 					Scicontrast_lower = Savgcontrast[, 1] :- crit * sqrt(Scicontrast_var)
 					Scicontrast_upper = Savgcontrast[, 1] :+ crit * sqrt(Scicontrast_var)
 					// note: there is no guarantee that CIs are in the [0, 1] range
+				}
+				else {
+					// otherwise, confidence intervals using the percentile method
+					// (the default)
+					Scicontrast_lower = mm_quantile(Scicontrast, 1, (1 - level) / 2)
+					Scicontrast_upper = mm_quantile(Scicontrast, 1, (1 - (1 - level) / 2))
+					// transpose them
+					_transpose(Scicontrast_lower)
+					_transpose(Scicontrast_upper)
 				}
 				st_store(., outicontrast_lower, timevartouse, Scicontrast_lower)
 				st_store(., outicontrast_upper, timevartouse, Scicontrast_upper)
