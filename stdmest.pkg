@@ -1,12 +1,12 @@
 v 3
 d STDMEST: Post-Estimation Predictions for Standardized Hierarchical Contrasts after -mestreg- Models
 d Author: Alessandro Gasparini
-d Distribution-Date: 20240620
+d Distribution-Date: 20240716
 f stdmest/stdmest.ado
 f stdmest/stdmest.sthlp
 f stdmestm/stdmestm.ado
 f stdmestm/stdmestm.sthlp
-f mestreg_export/mestreg_export.ado
-f mestreg_export/mestreg_export.sthlp
+f modexpt/modexpt.ado
+f modexpt/modexpt.sthlp
 f lstdmest.mlib
 e

@@ -1,0 +1,343 @@
+
+  ___  ____  ____  ____  ____ ®
+ /__    /   ____/   /   ____/      StataNow 18.5
+___/   /   /___/   /   /___/       MP—Parallel Edition
+
+ Statistics and Data Science       Copyright 1985-2023 StataCorp LLC
+                                   StataCorp
+                                   4905 Lakeway Drive
+                                   College Station, Texas 77845 USA
+                                   800-782-8272        https://www.stata.com
+                                   979-696-4600        service@stata.com
+
+Stata license: 3-user 2-core network, expiring 12 Sep 2025
+Serial number: 501809300405
+  Licensed to: Alessandro Gasparini
+               Red Door Analytics AB
+
+Notes:
+      1. Stata is running in batch mode.
+      2. Unicode is supported; see help unicode_advice.
+      3. More than 2 billion observations are allowed; see help obs_advice.
+      4. Maximum number of variables is set to 5,000 but can be increased;
+          see help set_maxvar.
+
+. do "assert-data2Lsim.do" 
+
+. clear all
+
+. // clear all is enough to 'refresh' in the same session
+. cd "~/Stata-dev/stdmest"
+/Users/ellessenne/Stata-dev/stdmest
+
+. adopath ++ "stdmest"
+  [1]              "stdmest"
+  [2]  (BASE)      "/Applications/Stata/ado/base/"
+  [3]  (SITE)      "/Applications/Stata/ado/site/"
+  [4]              "."
+  [5]  (PERSONAL)  "/Users/ellessenne/Documents/Stata/ado/personal/"
+  [6]  (PLUS)      "/Users/ellessenne/Library/Application Support/Stata/ado/plu
+> s/"
+  [7]  (OLDPLACE)  "~/ado/"
+
+. adopath ++ "stdmestm"
+  [1]              "stdmestm"
+  [2]              "stdmest"
+  [3]  (BASE)      "/Applications/Stata/ado/base/"
+  [4]  (SITE)      "/Applications/Stata/ado/site/"
+  [5]              "."
+  [6]  (PERSONAL)  "/Users/ellessenne/Documents/Stata/ado/personal/"
+  [7]  (PLUS)      "/Users/ellessenne/Library/Application Support/Stata/ado/plu
+> s/"
+  [8]  (OLDPLACE)  "~/ado/"
+
+. clear all
+
+. do ./build/buildmlib.do
+
+. capture erase lstdmest.mlib
+
+. quietly {
+
+. 
+end of do-file
+
+. mata mata clear
+
+. 
+. // data2Lsim
+. clear all
+
+. use "data/data2Lsim", clear
+
+. 
+. // mestreg exponential model
+. 
+. mestreg c.X1 || cluster:, dist(exponential) nohr
+
+        Failure _d: status==1
+  Analysis time _t: time
+
+Fitting fixed-effects model:
+
+Iteration 0:  Log likelihood = -2.688e+08  
+Iteration 1:  Log likelihood = -2792242.8  
+Iteration 2:  Log likelihood = -2226329.1  
+Iteration 3:  Log likelihood = -2220823.8  
+Iteration 4:  Log likelihood = -2220808.4  
+Iteration 5:  Log likelihood = -2220808.4  
+
+Refining starting values:
+
+Grid node 0:  Log likelihood = -1235159.1
+
+Fitting full model:
+
+Iteration 0:  Log likelihood = -1235159.1  
+Iteration 1:  Log likelihood = -1235099.6  
+Iteration 2:  Log likelihood = -1235047.1  
+Iteration 3:  Log likelihood = -1234956.5  
+Iteration 4:  Log likelihood = -1234884.2  
+Iteration 5:  Log likelihood = -1234825.1  
+Iteration 6:  Log likelihood = -1234776.2  
+Iteration 7:  Log likelihood = -1234735.4  
+Iteration 8:  Log likelihood =   -1234701  
+Iteration 9:  Log likelihood = -1234671.9  
+Iteration 10: Log likelihood = -1234647.2  
+Iteration 11: Log likelihood = -1234626.1  
+Iteration 12: Log likelihood = -1234608.2  
+Iteration 13: Log likelihood = -1234592.9  
+Iteration 14: Log likelihood = -1234579.9  
+Iteration 15: Log likelihood = -1234568.8  
+Iteration 16: Log likelihood = -1234559.4  
+Iteration 17: Log likelihood = -1234544.4  
+Iteration 18: Log likelihood = -1234533.9  
+Iteration 19: Log likelihood = -1234526.6  
+Iteration 20: Log likelihood = -1234521.6  
+Iteration 21: Log likelihood = -1234518.2  
+Iteration 22: Log likelihood = -1234516.1  
+Iteration 23: Log likelihood = -1234513.6  
+Iteration 24: Log likelihood = -1234512.8  
+Iteration 25: Log likelihood = -1234512.5  
+Iteration 26: Log likelihood = -1234512.5  
+
+Mixed-effects exponential PH regression         Number of obs     =    1000000
+Group variable: cluster                         Number of groups  =      1,000
+
+                                                Obs per group:
+                                                              min =      1,000
+                                                              avg =    1,000.0
+                                                              max =      1,000
+
+Integration method: mvaghermite                 Integration pts.  =          7
+
+                                                Wald chi2(1)      =   62553.76
+Log likelihood = -1234512.5                     Prob > chi2       =     0.0000
+------------------------------------------------------------------------------
+          _t | Coefficient  Std. err.      z    P>|z|     [95% conf. interval]
+-------------+----------------------------------------------------------------
+          X1 |  -.5007131    .002002  -250.11   0.000    -.5046369   -.4967893
+       _cons |   .0194006   .0448248     0.43   0.665    -.0684545    .1072556
+-------------+----------------------------------------------------------------
+cluster      |
+   var(_cons)|   2.007918   .0898333                      1.839347    2.191938
+------------------------------------------------------------------------------
+LR test vs. exponential model: chibar2(01) = 2.0e+06  Prob >= chibar2 = 0.0000
+
+. 
+. // Mixed-effects exponential PH regression         Number of obs     =    100
+> 0000
+. // Group variable: cluster                         Number of groups  =      1
+> ,000
+. //
+. //                                                 Obs per group:
+. //                                                               min =      1
+> ,000
+. //                                                               avg =    1,0
+> 00.0
+. //                                                               max =      1
+> ,000
+. //
+. // Integration method: mvaghermite                 Integration pts.  =       
+>    7
+. //
+. //                                                 Wald chi2(1)      =   6255
+> 3.76
+. // Log likelihood = -1234512.5                     Prob > chi2       =     0.
+> 0000
+. // --------------------------------------------------------------------------
+> ----
+. //           _t | Coefficient  Std. err.      z    P>|z|     [95% conf. inter
+> val]
+. // -------------+------------------------------------------------------------
+> ----
+. //           X1 |  -.5007131    .002002  -250.11   0.000    -.5046369   -.496
+> 7893
+. //        _cons |   .0194006   .0448248     0.43   0.665    -.0684545    .107
+> 2556
+. // -------------+------------------------------------------------------------
+> ----
+. // cluster      |
+. //    var(_cons)|   2.007918   .0898333                      1.839347    2.19
+> 1938
+. // --------------------------------------------------------------------------
+> ----
+. // LR test vs. exponential model: chibar2(01) = 2.0e+06  Prob >= chibar2 = 0.
+> 0000
+. 
+. // timevar
+. capture drop tt
+
+. range tt 0 10 11
+(999,989 missing values generated)
+
+. 
+. //
+. capture drop Sa1*
+
+. stdmest Sa1, reat(0) reatse(0) reatref(-2) reatseref(0) timevar(tt) contrast
+----+--- 1 ---+--- 2 ---+--- 3 ---+--- 4 ---+--- 5 
+
+. list Sa1* tt if tt != .
+
+         +-----------------------------------------+
+         |       Sa1     Sa1_ref   Sa1_cont~t   tt |
+         |-----------------------------------------|
+      1. |         1           1            0    0 |
+      2. | .44980254   .89541563   -.44561309    1 |
+      3. | .21026949   .80236105   -.59209156    2 |
+      4. | .10173044   .71950665    -.6177762    3 |
+      5. |  .0506473   .64568162   -.59503432    4 |
+         |-----------------------------------------|
+      6. | .02578955   .57985454   -.55406499    5 |
+      7. | .01335636   .52111629   -.50775993    6 |
+      8. | .00700291   .46866517   -.46166226    7 |
+      9. | .00370388   .42179382   -.41808994    8 |
+     10. | .00197093   .37987778   -.37790684    9 |
+         |-----------------------------------------|
+     11. | .00105317    .3423655   -.34131232   10 |
+         +-----------------------------------------+
+
+. 
+. //          +----------------------------------------+
+. //          |       Sa1     Sa1_ref   Sa1_con~t   tt |
+. //          |----------------------------------------|
+. //       1. |         1           1           0    0 |
+. //       2. | .44980254   .89541563   -.4456131    1 |
+. //       3. | .21026949   .80236105   -.5920916    2 |
+. //       4. | .10173044   .71950665   -.6177762    3 |
+. //       5. |  .0506473   .64568162   -.5950343    4 |
+. //          |----------------------------------------|
+. //       6. | .02578955   .57985454    -.554065    5 |
+. //       7. | .01335636   .52111629   -.5077599    6 |
+. //       8. | .00700291   .46866517   -.4616623    7 |
+. //       9. | .00370388   .42179382   -.4180899    8 |
+. //      10. | .00197093   .37987778   -.3779069    9 |
+. //          |----------------------------------------|
+. //      11. | .00105317    .3423655   -.3413123   10 |
+. //          +----------------------------------------+
+. 
+. * --> Calculate by hand
+. tab X1
+
+         X1 |      Freq.     Percent        Cum.
+------------+-----------------------------------
+          0 |    500,489       50.05       50.05
+          1 |    499,511       49.95      100.00
+------------+-----------------------------------
+      Total |  1,000,000      100.00
+
+. 
+. //          X1 |      Freq.     Percent        Cum.
+. // ------------+-----------------------------------
+. //           0 |    500,489       50.05       50.05
+. //           1 |    499,511       49.95      100.00
+. // ------------+-----------------------------------
+. //       Total |  1,000,000      100.00
+. 
+. // Sa1, for values of t:
+. forvalues t = 0(1)10 {
+  2.         mkmat Sa1 if tt == `t', matrix(ref)
+  3.         matrix test = 0.500489 * exp(-exp(_b[_cons] + 0 * _b[X1] + 0.0) * 
+> `t') + 0.499511 * exp(-exp(_b[_cons] + 1 * _b[X1] + 0.0) * `t')
+  4.         di mreldif(test, ref)
+  5.         assert mreldif(test, ref) < 1e-6
+  6. }
+0
+0
+2.293e-17
+0
+6.604e-18
+0
+0
+0
+0
+0
+2.166e-19
+
+. 
+. // Sa1_ref, for values of t:
+. forvalues t = 0(1)10 {
+  2.         mkmat Sa1_ref if tt == `t', matrix(ref)
+  3.         matrix test = 0.500489 * exp(-exp(_b[_cons] + 0 * _b[X1] - 2.0) * 
+> `t') + 0.499511 * exp(-exp(_b[_cons] + 1 * _b[X1] - 2.0) * `t')
+  4.         di mreldif(test, ref)
+  5.         assert mreldif(test, ref) < 1e-6
+  6. }
+0
+5.857e-17
+6.160e-17
+0
+0
+7.027e-17
+0
+0
+0
+8.046e-17
+0
+
+. 
+. * --> With true model parameters:
+. // Sa1, for values of t:
+. forvalues t = 0(1)10 {
+  2.         mkmat Sa1 if tt == `t', matrix(ref)
+  3.         matrix test = 0.500489 * exp(-exp(0.0 + 0 * (-0.5) + 0.0) * `t') +
+>  0.499511 * exp(-exp(0.0 + 1 * (-0.5) + 0.0) * `t')
+  4.         di mreldif(test, ref)
+  5.         assert mreldif(test, ref) < 1e-2
+  6. }
+0
+.00460067
+.00492606
+.00377053
+.00253718
+.0016114
+.00099498
+.00060498
+.00036426
+.0002177
+.0001293
+
+. 
+. // Sa1_ref, for values of t:
+. forvalues t = 0(1)10 {
+  2.         mkmat Sa1_ref if tt == `t', matrix(ref)
+  3.         matrix test = 0.500489 * exp(-exp(0.0 + 0 * (-0.5) - 2.0) * `t') +
+>  0.499511 * exp(-exp(0.0 + 1 * (-0.5) - 2.0) * `t')
+  4.         di mreldif(test, ref)
+  5.         assert mreldif(test, ref) < 1e-2
+  6. }
+0
+.00098625
+.00184746
+.00258881
+.00321661
+.00373804
+.00416097
+.00449373
+.00474487
+.00492294
+.00503637
+
+. 
+end of do-file
