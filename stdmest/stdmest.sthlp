@@ -94,6 +94,7 @@ If not specified, the algorithm will use the percentile method, which will take 
 The normal approximation method often converges faster (i.e., with a smaller number of {cmd: reps}) than the percentile method, so it may be useful when data size is large and computations are time-consuming.
 Note that when using normal approximation method confidence intervals are computed on the complementary log-log ({help mf_logit:cloglog}) scale to ensure that no values are outside the boundaries of a survival function (e.g., above 1 or below 0).
 Therefore, confidence intervals computed using the {opt cinormal} option are only symmetric on the transformed scale.
+This only applies to confidence intervals of standardised survival probabilities, not contrasts thereof (whose confidence intervals are calculated on the original scale).
 {p_end}
 
 {phang}
