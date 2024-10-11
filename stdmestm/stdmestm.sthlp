@@ -41,7 +41,8 @@
 
 {phang}
 {cmd: stdmestm} is a post-estimation command that can be used to estimate standardised survival probabilities (and contrasts thereof) after fitting three-level {helpb mestreg} models, using regression standardisation.
-The goal is to obtain standardised survival probabilities, standardising over the observed covariates distributions (i.e., the fixed effects that were included in your {helpb mestreg} model) while 1. fixing the random intercept for a certain level and 2. marginalise over the random intercept for the other level.
+The goal is to obtain standardised survival probabilities, standardising over the observed covariates distributions (i.e., the fixed effects that were included in your {helpb mestreg} model).
+This is accomplished by 1) fixing the random intercept for a certain level and 2) marginalising over the random intercept for the other level.
 We denote these predictions as {it: partially marginal} because we marginalise over {it: only} one of the two hierarchical levels of a three-level survival model.
 {p_end}
 
@@ -95,8 +96,10 @@ The algorithm runs for {opt reps} iterations, which can be controlled by the use
 {phang}
 {opt cinormal} denotes to use the normal approximation method within the algorithm used to obtain confidence intervals; this method calculates the standard deviation of the predictions, across repetitions, and uses it to produce confidence intervals that are symmetric and centered around the point estimates.
 If not specified, the algorithm will use the percentile method, which will take percentiles of the distribution of the predictions as the confidence intervals.
-Note that the normal approximation method might yield confidence intervals that are beyond the boundaries of a survival function (e.g., above 1 or below 0): {cmd: stdmest} does not fix this issue and only displays a warning when this happens.
-This is never the case with the percentile method, but this may require more iterations (e.g., a higher number of {cmd: reps}) to converge.
+The normal approximation method often converges faster (i.e., with a smaller number of {cmd: reps}) than the percentile method, so it may be useful when data size is large and computations are time-consuming.
+Note that when using normal approximation method confidence intervals are computed on the complementary log-log ({help mf_logit:cloglog}) scale to ensure that no values are outside the boundaries of a survival function (e.g., above 1 or below 0).
+Therefore, confidence intervals computed using the {opt cinormal} option are only symmetric on the transformed scale.
+This only applies to confidence intervals of standardised survival probabilities, not contrasts thereof (whose confidence intervals are calculated on the original scale).
 {p_end}
 
 {phang}

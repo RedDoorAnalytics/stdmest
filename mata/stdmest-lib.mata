@@ -1,4 +1,4 @@
-*! version 0.0.1-9000 Alessandro Gasparini 10Oct2024
+*! version 0.0.1-9000 Alessandro Gasparini 11Oct2024
 
 local RS real scalar
 local RC real colvector
@@ -234,11 +234,18 @@ mata:
 				// use the normal approximation method
 				// (for symmetric CIs)
 				crit = invnormal(1 - (1 - level) / 2)
+				Sci = cloglog(Sci)
 				Sci_var = mm_colvar(Sci, 1)
 				_transpose(Sci_var)
-				Sci_lower = Savg[, 1] :- crit * sqrt(Sci_var)
-				Sci_upper = Savg[, 1] :+ crit * sqrt(Sci_var)
-				// note: there is no guarantee that CIs are in the [0, 1] range
+				Sci_lower = cloglog(Savg[, 1]) :- crit * sqrt(Sci_var)
+				Sci_upper = cloglog(Savg[, 1]) :+ crit * sqrt(Sci_var)
+				Sci_lower = invcloglog(Sci_lower)
+				Sci_upper = invcloglog(Sci_upper)
+				// cloglog is not defined for 0, 1 – deal with that by hand
+				Sci_lower = mm_cond(Savg[, 1] :>= 1, 1, Sci_lower)
+				Sci_upper = mm_cond(Savg[, 1] :>= 1, 1, Sci_upper)
+				Sci_lower = mm_cond(Savg[, 1] :<= 0, 0, Sci_lower)
+				Sci_upper = mm_cond(Savg[, 1] :<= 0, 0, Sci_upper)
 			}
 			else {
 				// otherwise, confidence intervals using the percentile method
@@ -273,11 +280,18 @@ mata:
 					// use the normal approximation method
 					// (for symmetric CIs)
 					crit = invnormal(1 - (1 - level) / 2)
+					Sciref = cloglog(Sciref)
 					Sciref_var = mm_colvar(Sciref, 1)
 					_transpose(Sciref_var)
-					Sciref_lower = Savgref[, 1] :- crit * sqrt(Sciref_var)
-					Sciref_upper = Savgref[, 1] :+ crit * sqrt(Sciref_var)
-					// note: there is no guarantee that CIs are in the [0, 1] range
+					Sciref_lower = cloglog(Savgref[, 1]) :- crit * sqrt(Sciref_var)
+					Sciref_upper = cloglog(Savgref[, 1]) :+ crit * sqrt(Sciref_var)
+					Sciref_lower = invcloglog(Sciref_lower)
+					Sciref_upper = invcloglog(Sciref_upper)
+					// cloglog is not defined for 0, 1 – deal with that by hand
+					Sciref_lower = mm_cond(Savgref[, 1] :>= 1, 1, Sciref_lower)
+					Sciref_upper = mm_cond(Savgref[, 1] :>= 1, 1, Sciref_upper)
+					Sciref_lower = mm_cond(Savgref[, 1] :<= 0, 0, Sciref_lower)
+					Sciref_upper = mm_cond(Savgref[, 1] :<= 0, 0, Sciref_upper)
 				}
 				else {
 					// otherwise, confidence intervals using the percentile method
@@ -315,7 +329,7 @@ mata:
 					_transpose(Scicontrast_var)
 					Scicontrast_lower = Savgcontrast[, 1] :- crit * sqrt(Scicontrast_var)
 					Scicontrast_upper = Savgcontrast[, 1] :+ crit * sqrt(Scicontrast_var)
-					// note: there is no guarantee that CIs are in the [0, 1] range
+					// note: there is no guarantee that CIs are in the [-1, 1] range
 				}
 				else {
 					// otherwise, confidence intervals using the percentile method

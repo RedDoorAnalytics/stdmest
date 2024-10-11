@@ -91,8 +91,10 @@ The algorithm runs for {opt reps} iterations, which can be controlled by the use
 {phang}
 {opt cinormal} denotes to use the normal approximation method within the algorithm used to obtain confidence intervals; this method calculates the standard deviation of the predictions, across repetitions, and uses it to produce confidence intervals that are symmetric and centered around the point estimates.
 If not specified, the algorithm will use the percentile method, which will take percentiles of the distribution of the predictions as the confidence intervals.
-Note that the normal approximation method might yield confidence intervals that are beyond the boundaries of a survival function (e.g., above 1 or below 0): {cmd: stdmest} does not fix this issue and only displays a warning when this happens.
-This is never the case with the percentile method, but this may require more iterations (e.g., a higher number of {cmd: reps}) to converge.
+The normal approximation method often converges faster (i.e., with a smaller number of {cmd: reps}) than the percentile method, so it may be useful when data size is large and computations are time-consuming.
+Note that when using normal approximation method confidence intervals are computed on the complementary log-log ({help mf_logit:cloglog}) scale to ensure that no values are outside the boundaries of a survival function (e.g., above 1 or below 0).
+Therefore, confidence intervals computed using the {opt cinormal} option are only symmetric on the transformed scale.
+This only applies to confidence intervals of standardised survival probabilities, not contrasts thereof (whose confidence intervals are calculated on the original scale).
 {p_end}
 
 {phang}
