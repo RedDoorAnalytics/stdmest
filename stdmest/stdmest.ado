@@ -1,4 +1,4 @@
-*! version 0.0.1-9000 Alessandro Gasparini, Michael J. Crowther 20Jun2024
+*! version 0.0.1-9000 Alessandro Gasparini, Michael J. Crowther 11Oct2024
 
 program define stdmest, sortpreserve
 	// Version
@@ -44,9 +44,9 @@ program define stdmest, sortpreserve
 	// Syntax
 	syntax newvarname [if] [in], [ ///
 		REAT(numlist) ///
-		REATRef(numlist) ///
+		REATREF(numlist) ///
 		REATSE(numlist) ///
-		REATSERef(numlist) ///
+		REATREFSE(numlist) ///
 		TIMEvar(varname) ///
 		CONTRast ///
 		CI ///
@@ -72,13 +72,13 @@ program define stdmest, sortpreserve
 	// Number of levels for this specific model
 	local nlevels = wordcount("`e(ivars)'")
 
-	// Check how many elements in reat, reatse, reatref, reatseref
+	// Check how many elements in reat, reatse, reatref, reatrefse
 	local lreat = wordcount("`reat'")
 	local lreatse = wordcount("`reatse'")
 	local lreatref = wordcount("`reatref'")
-	local lreatseref = wordcount("`reatseref'")
+	local lreatrefse = wordcount("`reatrefse'")
 
-	// nlevels must be the same as lreat, lreatse, lreatref, lreatseref
+	// nlevels must be the same as lreat, lreatse, lreatref, lreatrefse
 	if ("`contrast'" == "") {
 		if `nlevels' != `lreat' | `nlevels' != `lreatse' {
 			local numerr = 1
@@ -86,9 +86,9 @@ program define stdmest, sortpreserve
 		}
 	}
 	else {
-		if `nlevels' != `lreat' | `nlevels' != `lreatse' | `nlevels' != `lreatref' | `nlevels' != `lreatseref' {
+		if `nlevels' != `lreat' | `nlevels' != `lreatse' | `nlevels' != `lreatref' | `nlevels' != `lreatrefse' {
 			local numerr = 1
-			local mustbeset = "'reat', 'reatse', 'reatref', 'reatseref'"
+			local mustbeset = "'reat', 'reatse', 'reatref', 'reatrefse'"
 		}
 	}
 	if ("`numerr'" == "1") {
@@ -122,18 +122,18 @@ program define stdmest, sortpreserve
 	mark `timevartouse'
 	markout `timevartouse' `timevar'
 
-	// Create vectors with reat, reatse, reatref, reatseref
+	// Create vectors with reat, reatse, reatref, reatrefse
 	local vreat: subinstr local reat " " ", ", all
 	local vreatse: subinstr local reatse " " ", ", all
 	if (`lreatref' == 0) {
 		// if reatref or reatrefse are empty fill them with zeros
 		forval i = 1/`lreat' {
 			local reatref `reatref' 0
-			local reatseref `reatseref' 0
+			local reatrefse `reatrefse' 0
 		}
 	}
 	local vreatref : subinstr local reatref " " ", ", all
-	local vreatseref : subinstr local reatseref " " ", ", all
+	local vreatrefse : subinstr local reatrefse " " ", ", all
 
 	// Backup estimation results
 	// (if we will calculate CIs)
@@ -146,7 +146,7 @@ program define stdmest, sortpreserve
 	}
 
 	// Run algorithm in Mata
-	mata: stdmest_wf("`newvarname'", `reat_sum', `reatref_sum', (`vreat'), (`vreatse'), (`vreatref'), (`vreatseref'), 0.0)
+	mata: stdmest_wf("`newvarname'", `reat_sum', `reatref_sum', (`vreat'), (`vreatse'), (`vreatref'), (`vreatrefse'), 0.0)
 
 	// Restore estimation results after (possibly) fiddling with stuff in Mata
 	if "`ci'" != "" {

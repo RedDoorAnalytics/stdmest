@@ -1,4 +1,4 @@
-*! version 0.0.1-9000 Alessandro Gasparini, Michael J. Crowther 20Jun2024
+*! version 0.0.1-9000 Alessandro Gasparini, Michael J. Crowther 11Oct2024
 
 program define stdmestm, sortpreserve
 	// Version
@@ -45,16 +45,16 @@ program define stdmestm, sortpreserve
 	// Must be a three-levels model (nlevels == 2)
 	local nlevels = wordcount("`e(ivars)'")
 	if (`nlevels' != 2) {
-		display as error "Only three-level models are supported – `=`nlevels'+1' were detected.
+		display as error "Only three-level models are supported, but `=`nlevels'+1' were detected.
 		exit 198
 	}
 
 	// Syntax
 	syntax newvarname [if] [in], [ ///
 		REAT(real 0.0) ///
-		REATRef(real 0.0) ///
+		REATREF(real 0.0) ///
 		REATSE(real 0.0) ///
-		REATSERef(real 0.0) ///
+		REATREFSE(real 0.0) ///
 		TIMEvar(varname) ///
 		CONTRast ///
 		CI ///
@@ -118,7 +118,7 @@ program define stdmestm, sortpreserve
 	}
 
 	// Run algorithm in Mata
-	mata: stdmest_wf("`newvarname'", `reat', `reatref', (`reat'), (`reatse'), (`reatref'), (`reatseref'), 1.0)
+	mata: stdmest_wf("`newvarname'", `reat', `reatref', (`reat'), (`reatse'), (`reatref'), (`reatrefse'), 1.0)
 
 	// Restore estimation results after (possibly) fiddling with stuff in Mata
 	if "`ci'" != "" {

@@ -21,9 +21,9 @@
 {synopthdr: Option}
 {synoptline}
 {synopt: {cmdab: reat(#)}}Random intercept value(s) to fix{p_end}
-{synopt: {cmdab: reatr:ef(#)}}Random intercept(s) value to fix as the reference. This is useful when calculating contrasts{p_end}
+{synopt: {cmdab: reatref(#)}}Random intercept(s) value to fix as the reference. This is useful when calculating contrasts{p_end}
 {synopt: {cmdab: reatse(#)}}Standard error(s) of the random intercept value(s) {opt reat}. This is used in the confidence intervals algorithm{p_end}
-{synopt: {cmdab: reatser:ef(#)}}Standard error(s) of the reference random intercept value(s) {opt reatref}. This is used in the confidence intervals algorithm{p_end}
+{synopt: {cmdab: reatrefse(#)}}Standard error(s) of the reference random intercept value(s) {opt reatref}. This is used in the confidence intervals algorithm{p_end}
 {synopt: {cmdab: time:var(varname)}}Time variable to obtain predictions at. Defaults to all values in {it: _t} if not specified by the user{p_end}
 {synopt: {cmdab: contr:ast}}If defined, return contrasts of {opt reat} vs {opt reatref} for every value of {opt timevar}{p_end}
 {synopt: {cmdab: ci}}If defined, confidence intervals for each quantity are calculated{p_end}
@@ -67,7 +67,7 @@ These are usually obtained with the {helpb mestreg postestimation##predict:reses
 {p_end}
 
 {phang}
-{opt reatseref(#)} is a vector of standard errors of {opt reatref}.
+{opt reatrefse(#)} is a vector of standard errors of {opt reatref}.
 Note that the same considerations outlined above for {opt reatse} apply here as well.
 {p_end}
 
@@ -186,10 +186,10 @@ First, we identify the smallest predicted BLUP:
 The smallest BLUP was predicted to be -2.098768, with a standard error of 0.4285454; note that the smallest BLUP corresponds to the patient with the lowest risk (i.e., the lowest hazard).
 Then, we pass this to {cmd: stdmest} via the {opt reat} and {opt reatse} options:
 
-{phang}{stata . stdmest s5, ci timevar(tt) reps(1000) verbose contrast reat(-2.098768) reatse(.4285454) reatref(0.0) reatseref(0.0)}{p_end}
+{phang}{stata . stdmest s5, ci timevar(tt) reps(1000) verbose contrast reat(-2.098768) reatse(.4285454) reatref(0.0) reatrefse(0.0)}{p_end}
 
 {pstd}
-Note that we needed to set reference values to contrast against, defined by the {opt reatref} and {opt reatseref} options; values of 0.0 denote the theoretical average patient, with a fixed random intercept value of 0.0.
+Note that we needed to set reference values to contrast against, defined by the {opt reatref} and {opt reatrefse} options; values of 0.0 denote the theoretical average patient, with a fixed random intercept value of 0.0.
 Estimated contrast values (and confidence intervals) can be displayed (and plotted) with the following Stata code:
 
 {phang}{stata . sort tt}{p_end}
@@ -218,7 +218,7 @@ Then, we predict the random effects for both {cmd: birthyear} and {cmd: id} leve
 
 {pstd}
 These values are for two distinct subjects (identified by {cmd: b2}) within a single birth year (identified by {cmd: b1}).
-We can pass more than one value to the {opt reat}, {opt reatse}, {opt reatref}, {opt reatseref} options:
+We can pass more than one value to the {opt reat}, {opt reatse}, {opt reatref}, {opt reatrefse} options:
 
 {phang}{stata . stdmest s1, reat(-.0795512 -1.39209) reatse(.1930458 .4813395) ci}{p_end}
 {phang}{stata . stdmest s2, reat(-.0795512 -.1309338) reatse(.1930458 .4605677) ci}{p_end}
@@ -229,7 +229,7 @@ These predictions can be plotted, once again, using {helpb twoway}.
 {pstd}
 If we wanted to calculate the standardised survival difference between the two subjects above, we can use {cmd: stdmest} as follows:
 
-{phang}{stata . stdmest s3, reat(-.0795512 -1.39209) reatse(.1930458 .4813395) reatref(-.0795512 -.1309338) reatseref(.1930458 .4605677) ci contrast}{p_end}
+{phang}{stata . stdmest s3, reat(-.0795512 -1.39209) reatse(.1930458 .4813395) reatref(-.0795512 -.1309338) reatrefse(.1930458 .4605677) ci contrast}{p_end}
 
 {marker author}{...}
 {title: Author}

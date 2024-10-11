@@ -16,7 +16,7 @@ mata:
 	`RR' vreat,
 	`RR' vreatse,
 	`RR' vreatref,
-	`RR' vreatseref,
+	`RR' vreatrefse,
 	`RS' integrate
 	)
 	{
@@ -66,7 +66,7 @@ mata:
 			newreat = draw_newreat(B, vreat, vreatse)
 			newreat = rowsum(newreat)
 			if (contrast != "") {
-				newreatref = draw_newreat(B, vreatref, vreatseref)
+				newreatref = draw_newreat(B, vreatref, vreatrefse)
 				newreatref = rowsum(newreatref)
 			}
 			// bits for new model parameters
@@ -154,7 +154,7 @@ mata:
 		// display progress (if required by the user)
 		if (hasverbose & hasci) {
 			display("{text}Calculating "+ strofreal(B) + " standardised survival probabilities for the C.I. algorithm...")
-			if (hasdots) {				
+			if (hasdots) {
 				stata("noisily _dots 0, reps(" + strofreal(B) + ")")
 			}
 		}

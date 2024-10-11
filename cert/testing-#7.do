@@ -26,4 +26,4 @@ capture noisily stdmest Stst, reat(-.4603618  -1.05416) reatse(.1427249 .5097189
 
 // okay
 capture noisily stdmest Stst, reat(-.4603618  -1.05416) reatse(.1427249 .5097189) ci reps(100) timevar(tt) contrast ///
-	reatref(0.0 0.0) reatseref(0.0 0.0)
+	reatref(0.0 0.0) reatrefse(0.0 0.0)

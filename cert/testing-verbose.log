@@ -164,36 +164,36 @@ Note: LR test is conservative and provided only for reference.
 
 . 
 . //
-. stdmest S0a, reat(-.4603618 1.0) reatse(.1427249 0.1) reatref(0.0 0.0) reatse
-> ref(0.0 0.0) timevar(tv)
+. stdmest S0a, reat(-.4603618 1.0) reatse(.1427249 0.1) reatref(0.0 0.0) reatre
+> fse(0.0 0.0) timevar(tv)
 
-. stdmest S0b, reat(-.4603618 1.0) reatse(.1427249 0.1) reatref(0.0 0.0) reatse
-> ref(0.0 0.0) timevar(tv) dots
+. stdmest S0b, reat(-.4603618 1.0) reatse(.1427249 0.1) reatref(0.0 0.0) reatre
+> fse(0.0 0.0) timevar(tv) dots
 
-. stdmest S1a, reat(-.4603618 1.0) reatse(.1427249 0.1) reatref(0.0 0.0) reatse
-> ref(0.0 0.0) timevar(tv) verbose
+. stdmest S1a, reat(-.4603618 1.0) reatse(.1427249 0.1) reatref(0.0 0.0) reatre
+> fse(0.0 0.0) timevar(tv) verbose
 Deriving point estimates...
 Done!
 
-. stdmest S1b, reat(-.4603618 1.0) reatse(.1427249 0.1) reatref(0.0 0.0) reatse
-> ref(0.0 0.0) timevar(tv) verbose dots
+. stdmest S1b, reat(-.4603618 1.0) reatse(.1427249 0.1) reatref(0.0 0.0) reatre
+> fse(0.0 0.0) timevar(tv) verbose dots
 Deriving point estimates...
 Done!
 
-. stdmest S2a, reat(-.4603618 1.0) reatse(.1427249 0.1) reatref(0.0 0.0) reatse
-> ref(0.0 0.0) timevar(tv) contrast verbose
-Deriving point estimates...
-Deriving contrasts...
-Done!
-
-. stdmest S2b, reat(-.4603618 1.0) reatse(.1427249 0.1) reatref(0.0 0.0) reatse
-> ref(0.0 0.0) timevar(tv) contrast verbose dots
+. stdmest S2a, reat(-.4603618 1.0) reatse(.1427249 0.1) reatref(0.0 0.0) reatre
+> fse(0.0 0.0) timevar(tv) contrast verbose
 Deriving point estimates...
 Deriving contrasts...
 Done!
 
-. stdmest S3a, reat(-.4603618 1.0) reatse(.1427249 0.1) reatref(0.0 0.0) reatse
-> ref(0.0 0.0) timevar(tv) contrast ci reps(200) verbose
+. stdmest S2b, reat(-.4603618 1.0) reatse(.1427249 0.1) reatref(0.0 0.0) reatre
+> fse(0.0 0.0) timevar(tv) contrast verbose dots
+Deriving point estimates...
+Deriving contrasts...
+Done!
+
+. stdmest S3a, reat(-.4603618 1.0) reatse(.1427249 0.1) reatref(0.0 0.0) reatre
+> fse(0.0 0.0) timevar(tv) contrast ci reps(200) verbose
 Deriving point estimates...
 Calculating 200 linear predictors for the C.I. algorithm...
 Calculating 200 standardised survival probabilities for the C.I. algorithm...
@@ -202,8 +202,8 @@ Deriving contrasts...
 Deriving confidence intervals of contrasts...
 Done!
 
-. stdmest S3b, reat(-.4603618 1.0) reatse(.1427249 0.1) reatref(0.0 0.0) reatse
-> ref(0.0 0.0) timevar(tv) contrast ci reps(200) verbose dots
+. stdmest S3b, reat(-.4603618 1.0) reatse(.1427249 0.1) reatref(0.0 0.0) reatre
+> fse(0.0 0.0) timevar(tv) contrast ci reps(200) verbose dots
 Deriving point estimates...
 Calculating 200 linear predictors for the C.I. algorithm...
 ----+--- 1 ---+--- 2 ---+--- 3 ---+--- 4 ---+--- 5 

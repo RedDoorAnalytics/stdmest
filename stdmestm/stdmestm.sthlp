@@ -21,9 +21,9 @@
 {synopthdr: Option}
 {synoptline}
 {synopt: {cmdab: reat(#)}}Random intercept value to fix{p_end}
-{synopt: {cmdab: reatr:ef(#)}}Random intercept value to fix as the reference. This is useful when calculating contrasts{p_end}
+{synopt: {cmdab: reatref(#)}}Random intercept value to fix as the reference. This is useful when calculating contrasts{p_end}
 {synopt: {cmdab: reatse(#)}}Standard error of the random intercept value {opt reat}. This is used in the confidence intervals algorithm{p_end}
-{synopt: {cmdab: reatser:ef(#)}}Standard error of the reference random intercept value {opt reatref}. This is used in the confidence intervals algorithm{p_end}
+{synopt: {cmdab: reatrefse(#)}}Standard error of the reference random intercept value {opt reatref}. This is used in the confidence intervals algorithm{p_end}
 {synopt: {cmdab: time:var(varname)}}Time variable to obtain predictions at. Defaults to all values in {it: _t} if not specified by the user{p_end}
 {synopt: {cmdab: contr:ast}}If defined, return contrasts of {opt reat} vs {opt reatref} for every value of {opt timevar}{p_end}
 {synopt: {cmdab: ci}}If defined, confidence intervals for each quantity are calculated{p_end}
@@ -72,7 +72,7 @@ This is usually obtained with the {helpb mestreg postestimation##predict:reses} 
 {p_end}
 
 {phang}
-{opt reatseref(#)} is the standard error of {opt reatref}.
+{opt reatrefse(#)} is the standard error of {opt reatref}.
 {p_end}
 
 {phang}

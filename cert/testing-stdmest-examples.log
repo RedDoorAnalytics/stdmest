@@ -236,7 +236,7 @@ Done!
      +----------------------+
 
 . stdmest S5, ci timevar(tt) reps(1000) verbose contrast reat(-2.098768) reatse
-> (.4285454) reatref(0.0) reatseref(0.0)
+> (.4285454) reatref(0.0) reatrefse(0.0)
 Deriving point estimates...
 Calculating 1000 linear predictors for the C.I. algorithm...
 Calculating 1000 standardised survival probabilities for the C.I. algorithm...
@@ -414,7 +414,7 @@ timevar() not specified, _t will be used instead
 . 
 . //
 . stdmest S3, reat(-.0795512 -1.39209) reatse(.1930458 .4813395) reatref(-.0795
-> 512 -.1309338) reatseref(.1930458 .4605677) ci contrast
+> 512 -.1309338) reatrefse(.1930458 .4605677) ci contrast
 timevar() not specified, _t will be used instead
 
 . twoway (rarea S3_contrast_lower S3_contrast_upper _t, sort color(stgreen%10))

@@ -36,7 +36,7 @@ stdmest S4b, reat(0.0) reatse(0.0) ci timevar(tt) reps(1000) verbose dots
 
 sort b
 list b bse if _n == 1
-stdmest S5, ci timevar(tt) reps(1000) verbose contrast reat(-2.098768) reatse(.4285454) reatref(0.0) reatseref(0.0)
+stdmest S5, ci timevar(tt) reps(1000) verbose contrast reat(-2.098768) reatse(.4285454) reatref(0.0) reatrefse(0.0)
 sort tt
 list tt S5* if tt != .
 
@@ -61,5 +61,5 @@ twoway ///
 	(line S2 _t, sort lcolor(stred))
 
 //
-stdmest S3, reat(-.0795512 -1.39209) reatse(.1930458 .4813395) reatref(-.0795512 -.1309338) reatseref(.1930458 .4605677) ci contrast
+stdmest S3, reat(-.0795512 -1.39209) reatse(.1930458 .4813395) reatref(-.0795512 -.1309338) reatrefse(.1930458 .4605677) ci contrast
 twoway (rarea S3_contrast_lower S3_contrast_upper _t, sort color(stgreen%10)) (line S3_contrast _t, sort lcolor(stgreen))

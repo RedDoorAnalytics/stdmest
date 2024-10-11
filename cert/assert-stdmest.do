@@ -27,20 +27,20 @@ rcof "stdmest S0, reat(0.0) reatse(0.0)" == 198
 quietly mestreg age female || patient:, distribution(exponential)
 rcof "stdmest S0, reat(0.0 0.0) reatse(0.0 0.0)" == 198
 
-// 
+//
 clear
 webuse catheter
 quietly mestreg age female || patient:, distribution(exponential)
 
-// 
-stdmest S1, reat(0.0) reatse(0.0) reatref(0.0) reatseref(0.0) contrast
+//
+stdmest S1, reat(0.0) reatse(0.0) reatref(0.0) reatrefse(0.0) contrast
 gen S1_exp = 0
 mkmat S1_contrast, matrix(S1_contrast)
 mkmat S1_exp, matrix(S1_exp)
 assert mreldif(S1_contrast, S1_exp) < 1e-16
 drop S1*
 
-// 
+//
 range tt 0 365 100
 replace tt = . if age < 45
 stdmest S2 if age >= 45, reat(0.0) reatse(0.0) timevar(tt)
@@ -58,16 +58,16 @@ quietly mestreg age female || patient:, distribution(exponential)
 stdmest S3a, reat(-1.0) reatse(0.0)
 stdmest S3b, reat( 0.0) reatse(0.0)
 stdmest S3c, reat(+1.0) reatse(0.0)
-assert S3a >= S3b 
+assert S3a >= S3b
 assert S3a >= S3c
 assert S3b >= S3c
 drop S3*
 
 //
-stdmest S4a, reat(-1.0) reatse(0.0) reatref(0.0) reatseref(0.0) contrast
-stdmest S4b, reat(+1.0) reatse(0.0) reatref(0.0) reatseref(0.0) contrast
-assert S4a_contrast >= 0 
-assert S4b_contrast <= 0 
+stdmest S4a, reat(-1.0) reatse(0.0) reatref(0.0) reatrefse(0.0) contrast
+stdmest S4b, reat(+1.0) reatse(0.0) reatref(0.0) reatrefse(0.0) contrast
+assert S4a_contrast >= 0
+assert S4b_contrast <= 0
 drop S4*
 
 //
@@ -101,20 +101,20 @@ assert S7b_lower <= S7a_lower
 assert S7a_upper <= S7b_upper
 drop S7*
 
-// 
+//
 clear all
 webuse jobhistory
 gen tt = tend - tstart
 stset tt, fail(failure)
 quietly mestreg education njobs prestige i.female || birthyear: || id:, distribution(exponential)
 
-// 
+//
 capture stdmest S8, reat(0.0) reatse(0.0)
 assert _rc > 0
 capture stdmest S8, reat(0.0 0.0 0.0) reatse(0.0 0.0 0.0)
 assert _rc > 0
 
-// 
+//
 stdmest S9a, reat(-1.0 -1.0) reatse(0.0 0.0)
 stdmest S9b, reat(-1.0  0.0) reatse(0.0 0.0)
 stdmest S9c, reat( 0.0 -1.0) reatse(0.0 0.0)
@@ -122,7 +122,7 @@ assert S9a >= S9b
 assert S9a >= S9c
 drop S9*
 
-// 
+//
 clear
 webuse catheter
 quietly mestreg age female || patient:, distribution(exponential)

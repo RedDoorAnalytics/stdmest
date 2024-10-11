@@ -119,13 +119,13 @@ Observed time interval: (0, tt]
 . capture noisily stdmest Stst, reat(-.4603618  -1.05416) reatse(.1427249 .5097
 > 189) ci reps(100) timevar(tt) contrast
 Wrong number of input values for a model with 2 hierarchical levels:
-2 values must be set for each of 'reat', 'reatse', 'reatref', 'reatseref'.
+2 values must be set for each of 'reat', 'reatse', 'reatref', 'reatrefse'.
 
 . 
 . // okay
 . capture noisily stdmest Stst, reat(-.4603618  -1.05416) reatse(.1427249 .5097
 > 189) ci reps(100) timevar(tt) contrast ///
->         reatref(0.0 0.0) reatseref(0.0 0.0)
+>         reatref(0.0 0.0) reatrefse(0.0 0.0)
 
 . 
 end of do-file

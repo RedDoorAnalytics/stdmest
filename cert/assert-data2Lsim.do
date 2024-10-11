@@ -44,7 +44,7 @@ range tt 0 10 11
 
 //
 capture drop Sa1*
-stdmest Sa1, reat(0) reatse(0) reatref(-2) reatseref(0) timevar(tt) contrast
+stdmest Sa1, reat(0) reatse(0) reatref(-2) reatrefse(0) timevar(tt) contrast
 list Sa1* tt if tt != .
 
 //          +----------------------------------------+

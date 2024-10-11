@@ -34,8 +34,8 @@ list b bse if _n == 1 | _n == _N
 capture drop Smin*
 capture drop Smin2*
 timer on 1
-stdmest Smin, reat(-1.006262) reatse(.2222539) reatref(0.0) reatseref(0.0) contrast verbose ci reps(100) cinormal
-stdmest Smin2 if cohort == 18, reat(-1.006262) reatse(.2222539) reatref(0.0) reatseref(0.0) contrast verbose ci reps(100) cinormal
+stdmest Smin, reat(-1.006262) reatse(.2222539) reatref(0.0) reatrefse(0.0) contrast verbose ci reps(100) cinormal
+stdmest Smin2 if cohort == 18, reat(-1.006262) reatse(.2222539) reatref(0.0) reatrefse(0.0) contrast verbose ci reps(100) cinormal
 timer off 1
 timer list 1
 
@@ -54,8 +54,8 @@ range tt 0 260.88 20
 capture drop Smintt*
 capture drop Smintt2*
 timer on 1
-stdmest Smintt, reat(-1.006262) reatse(.2222539) reatref(0.0) reatseref(0.0) timevar(tt) contrast verbose ci reps(100) cinormal
-stdmest Smintt2 if cohort == 18, reat(-1.006262) reatse(.2222539) reatref(0.0) reatseref(0.0) timevar(tt) contrast verbose ci reps(100) cinormal
+stdmest Smintt, reat(-1.006262) reatse(.2222539) reatref(0.0) reatrefse(0.0) timevar(tt) contrast verbose ci reps(100) cinormal
+stdmest Smintt2 if cohort == 18, reat(-1.006262) reatse(.2222539) reatref(0.0) reatrefse(0.0) timevar(tt) contrast verbose ci reps(100) cinormal
 timer off 1
 timer list 1
 
@@ -85,8 +85,8 @@ quietly {
 	stset months, failure(status == 1)
 	mestreg c.age c.fev1pp ib0.mmrc || cohort: , dist(wei) nohr
 	range tt 0 200 5
-	stdmest Smin, reat(-1.006262) reatse(.2222539) reatref(0.0) reatseref(0.0) ci reps(2000) timevar(tt)
-	stdmest Smin2 if cohort == 18, reat(-1.006262) reatse(.2222539) reatref(0.0) reatseref(0.0) ci reps(2000) timevar(tt)
+	stdmest Smin, reat(-1.006262) reatse(.2222539) reatref(0.0) reatrefse(0.0) ci reps(2000) timevar(tt)
+	stdmest Smin2 if cohort == 18, reat(-1.006262) reatse(.2222539) reatref(0.0) reatrefse(0.0) ci reps(2000) timevar(tt)
 }
 list tt Smin Smin_lower Smin_upper Smin2 Smin2_lower Smin2_upper if tt != .
 //       +-------------------------------------------------------------------------+

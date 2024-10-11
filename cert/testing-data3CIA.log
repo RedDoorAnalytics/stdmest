@@ -180,7 +180,7 @@ LR test vs. Weibull model: chibar2(01) = 205.78       Prob >= chibar2 = 0.0000
 
 . timer on 1
 
-. stdmest Smin, reat(-1.006262) reatse(.2222539) reatref(0.0) reatseref(0.0) co
+. stdmest Smin, reat(-1.006262) reatse(.2222539) reatref(0.0) reatrefse(0.0) co
 > ntrast verbose ci reps(100) cinormal
 timevar() not specified, _t will be used instead
 Deriving point estimates...
@@ -192,7 +192,7 @@ Deriving confidence intervals of contrasts...
 Done!
 
 . stdmest Smin2 if cohort == 18, reat(-1.006262) reatse(.2222539) reatref(0.0) 
-> reatseref(0.0) contrast verbose ci reps(100) cinormal
+> reatrefse(0.0) contrast verbose ci reps(100) cinormal
 timevar() not specified, _t will be used instead
 Deriving point estimates...
 Calculating 100 linear predictors for the C.I. algorithm...
@@ -205,7 +205,7 @@ Done!
 . timer off 1
 
 . timer list 1
-   1:     42.31 /        1 =      42.3080
+   1:     38.17 /        1 =      38.1710
 
 . 
 . // list Smin Smin_ref Smin_contrast if tt != .
@@ -231,7 +231,7 @@ Done!
 
 . timer on 1
 
-. stdmest Smintt, reat(-1.006262) reatse(.2222539) reatref(0.0) reatseref(0.0) 
+. stdmest Smintt, reat(-1.006262) reatse(.2222539) reatref(0.0) reatrefse(0.0) 
 > timevar(tt) contrast verbose ci reps(100) cinormal
 Deriving point estimates...
 Calculating 100 linear predictors for the C.I. algorithm...
@@ -242,7 +242,7 @@ Deriving confidence intervals of contrasts...
 Done!
 
 . stdmest Smintt2 if cohort == 18, reat(-1.006262) reatse(.2222539) reatref(0.0
-> ) reatseref(0.0) timevar(tt) contrast verbose ci reps(100) cinormal
+> ) reatrefse(0.0) timevar(tt) contrast verbose ci reps(100) cinormal
 Deriving point estimates...
 Calculating 100 linear predictors for the C.I. algorithm...
 Calculating 100 standardised survival probabilities for the C.I. algorithm...
@@ -254,7 +254,7 @@ Done!
 . timer off 1
 
 . timer list 1
-   1:     43.75 /        2 =      21.8755
+   1:     39.62 /        2 =      19.8075
 
 . 
 . list Smintt Smintt2 if tt != .

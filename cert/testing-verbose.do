@@ -18,14 +18,14 @@ mestreg education njobs prestige i.female || birthyear: || id:, distribution(exp
 range tv 0 365 100
 
 //
-stdmest S0a, reat(-.4603618 1.0) reatse(.1427249 0.1) reatref(0.0 0.0) reatseref(0.0 0.0) timevar(tv)
-stdmest S0b, reat(-.4603618 1.0) reatse(.1427249 0.1) reatref(0.0 0.0) reatseref(0.0 0.0) timevar(tv) dots
-stdmest S1a, reat(-.4603618 1.0) reatse(.1427249 0.1) reatref(0.0 0.0) reatseref(0.0 0.0) timevar(tv) verbose
-stdmest S1b, reat(-.4603618 1.0) reatse(.1427249 0.1) reatref(0.0 0.0) reatseref(0.0 0.0) timevar(tv) verbose dots
-stdmest S2a, reat(-.4603618 1.0) reatse(.1427249 0.1) reatref(0.0 0.0) reatseref(0.0 0.0) timevar(tv) contrast verbose
-stdmest S2b, reat(-.4603618 1.0) reatse(.1427249 0.1) reatref(0.0 0.0) reatseref(0.0 0.0) timevar(tv) contrast verbose dots
-stdmest S3a, reat(-.4603618 1.0) reatse(.1427249 0.1) reatref(0.0 0.0) reatseref(0.0 0.0) timevar(tv) contrast ci reps(200) verbose
-stdmest S3b, reat(-.4603618 1.0) reatse(.1427249 0.1) reatref(0.0 0.0) reatseref(0.0 0.0) timevar(tv) contrast ci reps(200) verbose dots
+stdmest S0a, reat(-.4603618 1.0) reatse(.1427249 0.1) reatref(0.0 0.0) reatrefse(0.0 0.0) timevar(tv)
+stdmest S0b, reat(-.4603618 1.0) reatse(.1427249 0.1) reatref(0.0 0.0) reatrefse(0.0 0.0) timevar(tv) dots
+stdmest S1a, reat(-.4603618 1.0) reatse(.1427249 0.1) reatref(0.0 0.0) reatrefse(0.0 0.0) timevar(tv) verbose
+stdmest S1b, reat(-.4603618 1.0) reatse(.1427249 0.1) reatref(0.0 0.0) reatrefse(0.0 0.0) timevar(tv) verbose dots
+stdmest S2a, reat(-.4603618 1.0) reatse(.1427249 0.1) reatref(0.0 0.0) reatrefse(0.0 0.0) timevar(tv) contrast verbose
+stdmest S2b, reat(-.4603618 1.0) reatse(.1427249 0.1) reatref(0.0 0.0) reatrefse(0.0 0.0) timevar(tv) contrast verbose dots
+stdmest S3a, reat(-.4603618 1.0) reatse(.1427249 0.1) reatref(0.0 0.0) reatrefse(0.0 0.0) timevar(tv) contrast ci reps(200) verbose
+stdmest S3b, reat(-.4603618 1.0) reatse(.1427249 0.1) reatref(0.0 0.0) reatrefse(0.0 0.0) timevar(tv) contrast ci reps(200) verbose dots
 
 //
 stdmestm Sm0a, reat(-.4603618) reatse(.1427249) varmargname(birthyear>id) timevar(tv)
