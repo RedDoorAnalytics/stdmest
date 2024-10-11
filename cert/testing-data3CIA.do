@@ -6,6 +6,9 @@ clear all
 do ./build/buildmlib.do
 mata mata clear
 
+// seed, for reproducibility
+set seed 347856
+
 // data3CIA
 clear all
 use "data/data3CIA", clear
@@ -26,9 +29,6 @@ list b bse if _n == 1 | _n == _N
 //    1. | -1.006262   .2222539 |
 // 8697. |   .995125   .1405887 |
 //       +----------------------+
-
-// seed
-set seed 348756389
 
 // without timevar
 capture drop Smin*
@@ -85,7 +85,6 @@ quietly {
 	stset months, failure(status == 1)
 	mestreg c.age c.fev1pp ib0.mmrc || cohort: , dist(wei) nohr
 	range tt 0 200 5
-	set seed 34756
 	stdmest Smin, reat(-1.006262) reatse(.2222539) reatref(0.0) reatseref(0.0) ci reps(2000) timevar(tt)
 	stdmest Smin2 if cohort == 18, reat(-1.006262) reatse(.2222539) reatref(0.0) reatseref(0.0) ci reps(2000) timevar(tt)
 }

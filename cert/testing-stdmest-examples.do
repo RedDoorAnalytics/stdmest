@@ -6,6 +6,9 @@ clear all
 do ./build/buildmlib.do
 mata mata clear
 
+// seed, for reproducibility
+set seed 9438576
+
 //
 help stdmest
 
