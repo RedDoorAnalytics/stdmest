@@ -53,6 +53,7 @@ program define stdmest, sortpreserve
 		CINORMal ///
 		Level(cilevel) ///
 		REPs(integer 1000) ///
+		VERBose ///
 		DOTS ///
 		]
 

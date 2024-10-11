@@ -20,7 +20,11 @@ cert_stdmestm:
 	cd cert && stata-mp -e assert-stdmestm.do
 
 ex:
+	cd cert && stata-mp -e testing-data3CIA.do
+	cd cert && stata-mp -e testing-data3Lsim.do
+	cd cert && stata-mp -e testing-modexpt-examples.do
 	cd cert && stata-mp -e testing-stdmest.do
 	cd cert && stata-mp -e testing-stdmest-examples.do
 	cd cert && stata-mp -e testing-stdmestm.do
 	cd cert && stata-mp -e testing-stdmestm-examples.do
+	cd cert && stata-mp -e testing-verbose.do

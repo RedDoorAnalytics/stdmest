@@ -30,7 +30,8 @@
 {synopt: {cmdab: cinorm:al}}If defined, use the normal approximation method for the confidence intervals. The default is to use the percentile method{p_end}
 {synopt: {cmdab: l:evel(#)}}Required confidence level for the confidence intervals. If not set, the default system-wide setting is used{p_end}
 {synopt: {cmdab: rep:s(#)}}Number of repetitions used by the algorithm used to calculate the confidence intervals. Defaults to 1000{p_end}
-{synopt: {cmdab: dots}}If defined, display dots while iterating across repetitions when calculating confidence intervals. This can be useful to display the progress of the algorithm{p_end}
+{synopt: {cmdab: verb:ose}}If defined, display progress of the algorithm{p_end}
+{synopt: {cmdab: dots}}If defined, display additional details on progress of the algorithm{p_end}
 {synopt: {cmdab: varmarg:name}}Name of the random intercept to integrate (i.e., marginalise) over{p_end}
 {synopt: {cmdab: nk}}Number of Gauss-Hermite quadrature nodes used by the algorithm to numerically integrate out the random intercept denoted by {opt varmargname}. Defaults to 7{p_end}
 {synoptline}
@@ -110,7 +111,12 @@ Note that a larger number of repetitions yields more accurate confidence interva
 {p_end}
 
 {phang}
-{opt dots} if provided, the progress of the algorithm for the confidence intervals is displayed visually.
+{opt verbose} if provided, the progress of the algorithm for the confidence intervals is displayed visually.
+{p_end}
+
+{phang}
+{opt dots} if provided alongside the {opt verbose} option, additional details on progress of the prediction algorithm are displayed.
+Note that this has no effect is the {opt verbose} and {opt ci} options are not used.
 {p_end}
 
 {phang}

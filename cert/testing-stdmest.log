@@ -10,7 +10,7 @@ ___/   /   /___/   /   /___/       MP—Parallel Edition
                                    800-782-8272        https://www.stata.com
                                    979-696-4600        service@stata.com
 
-Stata license: 3-user 2-core network, expiring 12 Sep 2024
+Stata license: 3-user 2-core network, expiring 12 Sep 2025
 Serial number: 501809300405
   Licensed to: Alessandro Gasparini
                Red Door Analytics AB
@@ -52,6 +52,10 @@ Notes:
 end of do-file
 
 . mata mata clear
+
+. 
+. // seed, for reproducibility
+. set seed 1993480
 
 . 
 . // helpfile
@@ -131,11 +135,15 @@ Observed time interval: (0, tt]
 . capture drop Stst*
 
 . stdmest Stst, reat(-.4603618  -1.05416) reatse(.1427249 .5097189) reatref(0 0
-> ) reatseref(0 0) ci reps(100) timevar(tt) dots cinormal contrast
-----+--- 1 ---+--- 2 ---+--- 3 ---+--- 4 ---+--- 5 
-..................................................    50
-..................................................   100
-.
+> ) reatseref(0 0) ci reps(100) timevar(tt) verbose cinormal contrast
+Deriving point estimates...
+Calculating 100 linear predictors for the C.I. algorithm...
+Calculating 100 standardised survival probabilities for the C.I. algorithm...
+Deriving confidence intervals...
+Deriving contrasts...
+Deriving confidence intervals of contrasts...
+Done!
+
 . 
 . //
 . twoway ///

@@ -10,7 +10,7 @@ ___/   /   /___/   /   /___/       MP—Parallel Edition
                                    800-782-8272        https://www.stata.com
                                    979-696-4600        service@stata.com
 
-Stata license: 3-user 2-core network, expiring 12 Sep 2024
+Stata license: 3-user 2-core network, expiring 12 Sep 2025
 Serial number: 501809300405
   Licensed to: Alessandro Gasparini
                Red Door Analytics AB
@@ -55,7 +55,7 @@ end of do-file
 
 . 
 . // helpfile
-. //  stdmestm
+. // help stdmestm
 . 
 . webuse jobhistory
 (Job history data, Event History Analysis with Stata, Blossfeld et al. 2007)
@@ -88,32 +88,56 @@ Observed time interval: (0, tt]
 (570 missing values generated)
 
 . 
-. //
+. // seed, for reproducibility
 . set seed 243958
 
 . stdmestm Smin_perc, reat(-.4603618) reatse(.1427249) varmargname(birthyear>id
-> ) timevar(tv) contrast ci reps(10) dots
-----+--- 1 ---+--- 2 ---+--- 3 ---+--- 4 ---+--- 5 
-...........
+> ) timevar(tv) contrast ci reps(10) verbose
+Deriving point estimates...
+Calculating 10 linear predictors for the C.I. algorithm...
+Calculating 10 standardised survival probabilities for the C.I. algorithm...
+Deriving confidence intervals...
+Deriving contrasts...
+Deriving confidence intervals of contrasts...
+Done!
+
 . stdmestm Smax_perc, reat(.2269995) reatse(.1666193) varmargname(birthyear>id)
->  timevar(tv) contrast ci reps(10) dots
-----+--- 1 ---+--- 2 ---+--- 3 ---+--- 4 ---+--- 5 
-...........
+>  timevar(tv) contrast ci reps(10) verbose
+Deriving point estimates...
+Calculating 10 linear predictors for the C.I. algorithm...
+Calculating 10 standardised survival probabilities for the C.I. algorithm...
+Deriving confidence intervals...
+Deriving contrasts...
+Deriving confidence intervals of contrasts...
+Done!
+
 . 
-. //
+. // seed, for reproducibility
 . set seed 243958
 
 . stdmestm Smin_norm, reat(-.4603618) reatse(.1427249) varmargname(birthyear>id
-> ) timevar(tv) contrast ci cinormal reps(10) dots
-----+--- 1 ---+--- 2 ---+--- 3 ---+--- 4 ---+--- 5 
-...........
+> ) timevar(tv) contrast ci cinormal reps(10) verbose
+Deriving point estimates...
+Calculating 10 linear predictors for the C.I. algorithm...
+Calculating 10 standardised survival probabilities for the C.I. algorithm...
+Deriving confidence intervals...
+Deriving contrasts...
+Deriving confidence intervals of contrasts...
+Done!
+
 . stdmestm Smax_norm, reat(.2269995) reatse(.1666193) varmargname(birthyear>id)
->  timevar(tv) contrast ci cinormal reps(10) dots
-----+--- 1 ---+--- 2 ---+--- 3 ---+--- 4 ---+--- 5 
-...........
+>  timevar(tv) contrast ci cinormal reps(10) verbose
+Deriving point estimates...
+Calculating 10 linear predictors for the C.I. algorithm...
+Calculating 10 standardised survival probabilities for the C.I. algorithm...
+Deriving confidence intervals...
+Deriving contrasts...
+Deriving confidence intervals of contrasts...
+Done!
+
 . 
 . //
-. twoway /// 
+. twoway ///
 >         (rarea Smin_perc_ref_lower Smin_perc_ref_upper tv, sort color(stblue%
 > 10)) ///
 >         (rarea Smin_perc_lower Smin_perc_upper tv, sort color(stgreen%10)) //
@@ -124,7 +148,7 @@ Observed time interval: (0, tt]
 >         (line Smax_perc tv, sort lcolor(stred)) ///
 >         , name("cipercentile", replace)
 
-. twoway /// 
+. twoway ///
 >         (rarea Smin_norm_ref_lower Smin_norm_ref_upper tv, sort color(stblue%
 > 10)) ///
 >         (rarea Smin_norm_lower Smin_norm_upper tv, sort color(stgreen%10)) //
