@@ -1,0 +1,372 @@
+
+  ___  ____  ____  ____  ____ ®
+ /__    /   ____/   /   ____/      StataNow 18.5
+___/   /   /___/   /   /___/       MP—Parallel Edition
+
+ Statistics and Data Science       Copyright 1985-2023 StataCorp LLC
+                                   StataCorp
+                                   4905 Lakeway Drive
+                                   College Station, Texas 77845 USA
+                                   800-782-8272        https://www.stata.com
+                                   979-696-4600        service@stata.com
+
+Stata license: 3-user 2-core network, expiring 12 Sep 2025
+Serial number: 501809300405
+  Licensed to: Alessandro Gasparini
+               Red Door Analytics AB
+
+Notes:
+      1. Stata is running in batch mode.
+      2. Unicode is supported; see help unicode_advice.
+      3. More than 2 billion observations are allowed; see help obs_advice.
+      4. Maximum number of variables is set to 5,000 but can be increased;
+          see help set_maxvar.
+
+. do "testing-data3CIA.do" 
+
+. clear all
+
+. // clear all is enough to 'refresh' in the same session
+. cd "~/Stata-dev/stdmest"
+/Users/ellessenne/Stata-dev/stdmest
+
+. adopath ++ "stdmest"
+  [1]              "stdmest"
+  [2]  (BASE)      "/Applications/Stata/ado/base/"
+  [3]  (SITE)      "/Applications/Stata/ado/site/"
+  [4]              "."
+  [5]  (PERSONAL)  "/Users/ellessenne/Documents/Stata/ado/personal/"
+  [6]  (PLUS)      "/Users/ellessenne/Library/Application Support/Stata/ado/plu
+> s/"
+  [7]  (OLDPLACE)  "~/ado/"
+
+. clear all
+
+. do ./build/buildmlib.do
+
+. capture erase lstdmest.mlib
+
+. quietly {
+
+. 
+end of do-file
+
+. mata mata clear
+
+. 
+. // seed, for reproducibility
+. set seed 347856
+
+. 
+. // data3CIA
+. clear all
+
+. use "data/data3CIA", clear
+
+. 
+. // stset
+. stset months, failure(status == 1)
+
+Survival-time data settings
+
+         Failure event: status==1
+Observed time interval: (0, months]
+     Exit on or before: failure
+
+--------------------------------------------------------------------------
+      8,697  total observations
+          5  observations end on or before enter()
+--------------------------------------------------------------------------
+      8,692  observations remaining, representing
+      2,449  failures in single-record/single-failure data
+ 552,433.42  total analysis time at risk and under observation
+                                                At risk from t =         0
+                                     Earliest observed entry t =         0
+                                          Last observed exit t =    260.88
+
+. 
+. // mestreg Weibull model adjusting for age, FEV1, and dyspnea score
+. mestreg c.age c.fev1pp ib0.mmrc || cohort: , dist(wei) nohr
+
+        Failure _d: status==1
+  Analysis time _t: months
+
+Fitting fixed-effects model:
+
+Iteration 0:  Log likelihood =  -51721207  
+Iteration 1:  Log likelihood = -18320.422  
+Iteration 2:  Log likelihood = -15148.234  (not concave)
+Iteration 3:  Log likelihood = -14948.181  
+Iteration 4:  Log likelihood = -14827.051  
+Iteration 5:  Log likelihood = -14803.766  
+Iteration 6:  Log likelihood = -14803.647  
+Iteration 7:  Log likelihood = -14803.647  
+
+Refining starting values:
+
+Grid node 0:  Log likelihood = -14710.492
+
+Fitting full model:
+
+Iteration 0:  Log likelihood = -14710.492  (not concave)
+Iteration 1:  Log likelihood = -14705.298  
+Iteration 2:  Log likelihood = -14702.531  
+Iteration 3:  Log likelihood = -14700.879  
+Iteration 4:  Log likelihood = -14700.757  
+Iteration 5:  Log likelihood = -14700.755  
+Iteration 6:  Log likelihood = -14700.755  
+
+Mixed-effects Weibull PH regression             Number of obs     =      8,692
+Group variable: cohort                          Number of groups  =         23
+
+                                                Obs per group:
+                                                              min =         50
+                                                              avg =      377.9
+                                                              max =      2,242
+
+Integration method: mvaghermite                 Integration pts.  =          7
+
+                                                Wald chi2(6)      =    1289.67
+Log likelihood = -14700.755                     Prob > chi2       =     0.0000
+------------------------------------------------------------------------------
+          _t | Coefficient  Std. err.      z    P>|z|     [95% conf. interval]
+-------------+----------------------------------------------------------------
+         age |   .0607941   .0023694    25.66   0.000     .0561502     .065438
+      fev1pp |  -.0224616   .0012945   -17.35   0.000    -.0249989   -.0199244
+             |
+        mmrc |
+          1  |  -.0737735    .076011    -0.97   0.332    -.2227524    .0752053
+          2  |   .1898304   .0740251     2.56   0.010     .0447438    .3349169
+          3  |   .3901157   .0788746     4.95   0.000     .2355244    .5447071
+          4  |   .6147957   .0842143     7.30   0.000     .4497387    .7798527
+             |
+       _cons |  -10.28166   .2477476   -41.50   0.000    -10.76724   -9.796083
+-------------+----------------------------------------------------------------
+       /ln_p |   .3372656   .0174159                      .3031311    .3714002
+-------------+----------------------------------------------------------------
+cohort       |
+   var(_cons)|   .2650788   .0916277                      .1346316    .5219188
+------------------------------------------------------------------------------
+LR test vs. Weibull model: chibar2(01) = 205.78       Prob >= chibar2 = 0.0000
+
+. 
+. // predict random effect
+. predict b, reffects reses(bse)
+(calculating posterior means of random effects)
+(using 7 quadrature points)
+
+. sort b
+
+. list b bse if _n == 1 | _n == _N
+
+      +----------------------+
+      |         b        bse |
+      |----------------------|
+   1. | -1.006262   .2222539 |
+8697. |   .995125   .1405887 |
+      +----------------------+
+
+. //       +----------------------+
+. //       |         b        bse |
+. //       |----------------------|
+. //    1. | -1.006262   .2222539 |
+. // 8697. |   .995125   .1405887 |
+. //       +----------------------+
+. 
+. // without timevar
+. capture drop Smin*
+
+. capture drop Smin2*
+
+. timer on 1
+
+. stdmest Smin, reat(-1.006262) reatse(.2222539) reatref(0.0) reatseref(0.0) co
+> ntrast verbose ci reps(100) cinormal
+timevar() not specified, _t will be used instead
+Deriving point estimates...
+Calculating 100 linear predictors for the C.I. algorithm...
+Calculating 100 standardised survival probabilities for the C.I. algorithm...
+Deriving confidence intervals...
+Deriving contrasts...
+Deriving confidence intervals of contrasts...
+Done!
+
+. stdmest Smin2 if cohort == 18, reat(-1.006262) reatse(.2222539) reatref(0.0) 
+> reatseref(0.0) contrast verbose ci reps(100) cinormal
+timevar() not specified, _t will be used instead
+Deriving point estimates...
+Calculating 100 linear predictors for the C.I. algorithm...
+Calculating 100 standardised survival probabilities for the C.I. algorithm...
+Deriving confidence intervals...
+Deriving contrasts...
+Deriving confidence intervals of contrasts...
+Done!
+
+. timer off 1
+
+. timer list 1
+   1:     39.53 /        1 =      39.5260
+
+. 
+. // list Smin Smin_ref Smin_contrast if tt != .
+. twoway ///
+>         (rarea Smin2_contrast_lower Smin2_contrast_upper _t, sort color(red%1
+> 0)) ///
+>         (rarea Smin_contrast_lower Smin_contrast_upper _t, sort color(blue%10
+> )) ///
+>         (line Smin2_contrast _t, sort lcolor(red)) ///
+>         (line Smin_contrast _t, sort lcolor(blue)) ///
+>         , name("no_timevar", replace)
+
+. 
+. // with timevar
+. range tt 0 260.88 20
+(8,677 missing values generated)
+
+. 
+. //
+. capture drop Smintt*
+
+. capture drop Smintt2*
+
+. timer on 1
+
+. stdmest Smintt, reat(-1.006262) reatse(.2222539) reatref(0.0) reatseref(0.0) 
+> timevar(tt) contrast verbose ci reps(100) cinormal
+Deriving point estimates...
+Calculating 100 linear predictors for the C.I. algorithm...
+Calculating 100 standardised survival probabilities for the C.I. algorithm...
+Deriving confidence intervals...
+Deriving contrasts...
+Deriving confidence intervals of contrasts...
+Done!
+
+. stdmest Smintt2 if cohort == 18, reat(-1.006262) reatse(.2222539) reatref(0.0
+> ) reatseref(0.0) timevar(tt) contrast verbose ci reps(100) cinormal
+Deriving point estimates...
+Calculating 100 linear predictors for the C.I. algorithm...
+Calculating 100 standardised survival probabilities for the C.I. algorithm...
+Deriving confidence intervals...
+Deriving contrasts...
+Deriving confidence intervals of contrasts...
+Done!
+
+. timer off 1
+
+. timer list 1
+   1:     40.99 /        2 =      20.4950
+
+. 
+. list Smintt Smintt2 if tt != .
+
+      +-----------------------+
+      |    Smintt     Smintt2 |
+      |-----------------------|
+   1. |         1           1 |
+   2. | .98823057   .98695804 |
+   3. | .96947622   .96616928 |
+   4. | .94729479   .94157688 |
+   5. | .92303639   .91468457 |
+      |-----------------------|
+   6. | .89752157   .88641337 |
+   7. | .87131354   .85740098 |
+   8. | .84481925   .82811183 |
+   9. | .81833956   .79889138 |
+  10. | .79209859   .76999785 |
+      |-----------------------|
+  11. | .76626308    .7416232 |
+  12. | .74095584   .71390806 |
+  13. | .71626562   .68695269 |
+  14. |  .6922547   .66082585 |
+  15. | .66896464   .63557137 |
+      |-----------------------|
+  16. | .64642077   .61121369 |
+  17. | .62463582   .58776213 |
+  18. |  .6036126   .56521436 |
+  19. | .58334648   .54355929 |
+  20. | .56382699   .52277922 |
+      +-----------------------+
+
+. 
+. // list Smin Smin_ref Smin_contrast if tt != .
+. twoway ///
+>         (rarea Smintt2_contrast_lower Smintt2_contrast_upper tt, sort color(r
+> ed%10)) ///
+>         (rarea Smintt_contrast_lower Smintt_contrast_upper tt, sort color(blu
+> e%10)) ///
+>         (line Smintt2_contrast tt, sort lcolor(red)) ///
+>         (line Smintt_contrast tt, sort lcolor(blue)) ///
+>         , name("with_timevar", replace)
+
+. 
+. // Comparison with results from R:
+. // #    tt      Smin Smin_lower Smin_upper     Smin2 Smin2_lower Smin2_upper
+. // # 1   0 1.0000000  1.0000000  1.0000000 1.0000000   1.0000000   1.0000000
+. // # 2  50 0.9319127  0.8929531  0.9571315 0.9245237   0.8830277   0.9533136
+. // # 3 100 0.8373119  0.7583575  0.8940225 0.8198216   0.7327097   0.8853843
+. // # 4 150 0.7428443  0.6347484  0.8260286 0.7159733   0.5979398   0.8129497
+. // # 5 200 0.6561102  0.5315389  0.7571369 0.6216718   0.4896364   0.7419416
+. quietly {
+
+. list tt Smin Smin_lower Smin_upper Smin2 Smin2_lower Smin2_upper if tt != .
+
+      +-----------------------------------------------------------------+
+   1. |  tt |      Smin | Smin_lo~r | Smin_up~r |     Smin2 | Smin2_l~r |
+      |   0 |         1 |         1 |         1 |         1 |         1 |
+      |-----------------------------------------------------------------|
+      |                            Smin2_u~r                            |
+      |                                    1                            |
+      +-----------------------------------------------------------------+
+
+      +-----------------------------------------------------------------+
+   2. |  tt |      Smin | Smin_lo~r | Smin_up~r |     Smin2 | Smin2_l~r |
+      |  50 |  .9319127 | .89194266 | .95521315 |  .9245237 | .88114407 |
+      |-----------------------------------------------------------------|
+      |                            Smin2_u~r                            |
+      |                            .95291734                            |
+      +-----------------------------------------------------------------+
+
+      +-----------------------------------------------------------------+
+   3. |  tt |      Smin | Smin_lo~r | Smin_up~r |     Smin2 | Smin2_l~r |
+      | 100 | .83731194 | .75654833 |  .8900413 | .81982162 | .73160634 |
+      |-----------------------------------------------------------------|
+      |                            Smin2_u~r                            |
+      |                            .88340277                            |
+      +-----------------------------------------------------------------+
+
+      +-----------------------------------------------------------------+
+   4. |  tt |      Smin | Smin_lo~r | Smin_up~r |     Smin2 | Smin2_l~r |
+      | 150 | .74284435 | .63248659 | .82111168 | .71597334 |  .5983204 |
+      |-----------------------------------------------------------------|
+      |                            Smin2_u~r                            |
+      |                             .8089513                            |
+      +-----------------------------------------------------------------+
+
+      +-----------------------------------------------------------------+
+   5. |  tt |      Smin | Smin_lo~r | Smin_up~r |     Smin2 | Smin2_l~r |
+      | 200 | .65611022 | .52938009 | .75393563 | .62167184 | .49031608 |
+      |-----------------------------------------------------------------|
+      |                            Smin2_u~r                            |
+      |                            .73533689                            |
+      +-----------------------------------------------------------------+
+
+. //       +-------------------------------------------------------------------
+> ------+
+. //       |  tt        Smin   Smin_l~r   Smin_u~r       Smin2   Smin2_l~   Smi
+> n2_u~ |
+. //       |-------------------------------------------------------------------
+> ------|
+. //    1. |   0           1          1          1           1          1      
+>     1 |
+. //    2. |  50    .9319127   .8908648   .9567641    .9245237   .8805603   .95
+> 23867 |
+. //    3. | 100   .83731194   .7529303   .8930812   .81982162   .7299135      
+> .8818 |
+. //    4. | 150   .74284435   .6295867   .8252876   .71597334   .5951086   .80
+> 66548 |
+. //    5. | 200   .65611022   .5254201   .7584257   .62167184    .484746    .7
+> 32971 |
+. //       +-------------------------------------------------------------------
+> ------+
+. 
+end of do-file

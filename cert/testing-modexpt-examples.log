@@ -1,0 +1,183 @@
+
+  ___  ____  ____  ____  ____ ®
+ /__    /   ____/   /   ____/      StataNow 18.5
+___/   /   /___/   /   /___/       MP—Parallel Edition
+
+ Statistics and Data Science       Copyright 1985-2023 StataCorp LLC
+                                   StataCorp
+                                   4905 Lakeway Drive
+                                   College Station, Texas 77845 USA
+                                   800-782-8272        https://www.stata.com
+                                   979-696-4600        service@stata.com
+
+Stata license: 3-user 2-core network, expiring 12 Sep 2025
+Serial number: 501809300405
+  Licensed to: Alessandro Gasparini
+               Red Door Analytics AB
+
+Notes:
+      1. Stata is running in batch mode.
+      2. Unicode is supported; see help unicode_advice.
+      3. More than 2 billion observations are allowed; see help obs_advice.
+      4. Maximum number of variables is set to 5,000 but can be increased;
+          see help set_maxvar.
+
+. do "testing-modexpt-examples.do" 
+
+. clear all
+
+. cd "~/Stata-dev/stdmest"
+/Users/ellessenne/Stata-dev/stdmest
+
+. adopath ++ "modexpt"
+  [1]              "modexpt"
+  [2]  (BASE)      "/Applications/Stata/ado/base/"
+  [3]  (SITE)      "/Applications/Stata/ado/site/"
+  [4]              "."
+  [5]  (PERSONAL)  "/Users/ellessenne/Documents/Stata/ado/personal/"
+  [6]  (PLUS)      "/Users/ellessenne/Library/Application Support/Stata/ado/plu
+> s/"
+  [7]  (OLDPLACE)  "~/ado/"
+
+. clear all
+
+. 
+. //
+. help modexpt
+request ignored because of batch mode
+
+. 
+. //
+. clear all
+
+. webuse catheter
+(Kidney data, McGilchrist and Aisbett, Biometrics, 1991)
+
+. mestreg age female || patient:, distribution(weibull)
+
+        Failure _d: infect
+  Analysis time _t: time
+
+Fitting fixed-effects model:
+
+Iteration 0:  Log likelihood = -1700989.9  
+Iteration 1:  Log likelihood =  -440.1998  
+Iteration 2:  Log likelihood = -336.62162  
+Iteration 3:  Log likelihood = -334.64937  
+Iteration 4:  Log likelihood = -334.57959  
+Iteration 5:  Log likelihood = -334.57944  
+Iteration 6:  Log likelihood = -334.57944  
+
+Refining starting values:
+
+Grid node 0:  Log likelihood = -336.03604
+
+Fitting full model:
+
+Iteration 0:  Log likelihood = -336.03604  (not concave)
+Iteration 1:  Log likelihood = -333.14043  
+Iteration 2:  Log likelihood = -330.40952  
+Iteration 3:  Log likelihood = -329.89242  
+Iteration 4:  Log likelihood = -329.87847  
+Iteration 5:  Log likelihood = -329.87832  
+Iteration 6:  Log likelihood = -329.87832  
+
+Mixed-effects Weibull PH regression             Number of obs     =         76
+Group variable: patient                         Number of groups  =         38
+
+                                                Obs per group:
+                                                              min =          2
+                                                              avg =        2.0
+                                                              max =          2
+
+Integration method: mvaghermite                 Integration pts.  =          7
+
+                                                Wald chi2(2)      =      10.12
+Log likelihood = -329.87832                     Prob > chi2       =     0.0063
+------------------------------------------------------------------------------
+          _t | Haz. ratio   Std. err.      z    P>|z|     [95% conf. interval]
+-------------+----------------------------------------------------------------
+         age |   1.007348    .013788     0.53   0.593     .9806828    1.034737
+      female |   .1904727    .099992    -3.16   0.002     .0680737    .5329493
+       _cons |   .0072901   .0072274    -4.96   0.000     .0010444    .0508881
+-------------+----------------------------------------------------------------
+       /ln_p |   .2243233   .1402795                     -.0506195    .4992661
+-------------+----------------------------------------------------------------
+patient      |
+   var(_cons)|   .8308495   .4978425                       .256735    2.688808
+------------------------------------------------------------------------------
+Note: Estimates are transformed only in the first equation to hazard ratios.
+Note: _cons estimates baseline hazard (conditional on zero random effects).
+LR test vs. Weibull model: chibar2(01) = 9.40         Prob >= chibar2 = 0.0011
+
+. tempfile test1
+
+. modexpt, filename(`test1')
+file /var/folders/xr/_y099f650fjcbdct28bmv2kc0000gn/T//St82331.000001 saved
+file /var/folders/xr/_y099f650fjcbdct28bmv2kc0000gn/T//St82331.000001 saved
+file /var/folders/xr/_y099f650fjcbdct28bmv2kc0000gn/T//St82331.000001 saved
+file /var/folders/xr/_y099f650fjcbdct28bmv2kc0000gn/T//St82331.000001 saved
+file /var/folders/xr/_y099f650fjcbdct28bmv2kc0000gn/T//St82331.000001 saved
+file /var/folders/xr/_y099f650fjcbdct28bmv2kc0000gn/T//St82331.000001 saved
+
+. modexpt, filename(`test1') replace
+file /var/folders/xr/_y099f650fjcbdct28bmv2kc0000gn/T//St82331.000001 saved
+file /var/folders/xr/_y099f650fjcbdct28bmv2kc0000gn/T//St82331.000001 saved
+file /var/folders/xr/_y099f650fjcbdct28bmv2kc0000gn/T//St82331.000001 saved
+file /var/folders/xr/_y099f650fjcbdct28bmv2kc0000gn/T//St82331.000001 saved
+file /var/folders/xr/_y099f650fjcbdct28bmv2kc0000gn/T//St82331.000001 saved
+file /var/folders/xr/_y099f650fjcbdct28bmv2kc0000gn/T//St82331.000001 saved
+
+. capture noisily modexpt, filename(`test1')
+File /var/folders/xr/_y099f650fjcbdct28bmv2kc0000gn/T//St82331.000001 already e
+> xists; you might want to specify the replace option.
+
+. 
+. //
+. clear all
+
+. webuse catheter
+(Kidney data, McGilchrist and Aisbett, Biometrics, 1991)
+
+. stmixed age female || patient:, distribution(weibull)
+Random effect M1: Intercept at level patient
+
+Fitting fixed effects model:
+
+Fitting full model:
+
+Iteration 0:  Log likelihood = -336.03604  
+Iteration 1:  Log likelihood = -330.58537  
+Iteration 2:  Log likelihood = -329.89524  
+Iteration 3:  Log likelihood = -329.87856  
+Iteration 4:  Log likelihood = -329.87832  
+Iteration 5:  Log likelihood = -329.87832  
+
+Mixed effects survival model                                Number of obs = 76
+Log likelihood = -329.87832
+------------------------------------------------------------------------------
+             | Coefficient  Std. err.      z    P>|z|     [95% conf. interval]
+-------------+----------------------------------------------------------------
+_t:          |            
+         age |   .0073207   .0136874     0.53   0.593    -.0195062    .0341476
+      female |  -1.658247   .5249674    -3.16   0.002    -2.687164   -.6293298
+ M1[patient] |          1          .        .       .            .           .
+       _cons |  -4.921237   .9913989    -4.96   0.000    -6.864343    -2.97813
+  log(gamma) |   .2243234   .1402791     1.60   0.110    -.0506186    .4992654
+-------------+----------------------------------------------------------------
+patient:     |            
+      sd(M1) |   .9115102    .273086                      .5066917    1.639756
+------------------------------------------------------------------------------
+
+. tempfile test2
+
+. modexpt, filename(`test2')
+file /var/folders/xr/_y099f650fjcbdct28bmv2kc0000gn/T//St82331.000002 saved
+file /var/folders/xr/_y099f650fjcbdct28bmv2kc0000gn/T//St82331.000002 saved
+file /var/folders/xr/_y099f650fjcbdct28bmv2kc0000gn/T//St82331.000002 saved
+file /var/folders/xr/_y099f650fjcbdct28bmv2kc0000gn/T//St82331.000002 saved
+file /var/folders/xr/_y099f650fjcbdct28bmv2kc0000gn/T//St82331.000002 saved
+file /var/folders/xr/_y099f650fjcbdct28bmv2kc0000gn/T//St82331.000002 saved
+
+. 
+end of do-file

@@ -12,7 +12,7 @@ set maxvar 120000
 clear all
 use "data/data3Lsim", clear
 
-// seed
+// seed, for reproducibility
 set seed 123
 
 // stset

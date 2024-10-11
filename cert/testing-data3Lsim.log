@@ -1,0 +1,367 @@
+
+  ___  ____  ____  ____  ____ ®
+ /__    /   ____/   /   ____/      StataNow 18.5
+___/   /   /___/   /   /___/       MP—Parallel Edition
+
+ Statistics and Data Science       Copyright 1985-2023 StataCorp LLC
+                                   StataCorp
+                                   4905 Lakeway Drive
+                                   College Station, Texas 77845 USA
+                                   800-782-8272        https://www.stata.com
+                                   979-696-4600        service@stata.com
+
+Stata license: 3-user 2-core network, expiring 12 Sep 2025
+Serial number: 501809300405
+  Licensed to: Alessandro Gasparini
+               Red Door Analytics AB
+
+Notes:
+      1. Stata is running in batch mode.
+      2. Unicode is supported; see help unicode_advice.
+      3. More than 2 billion observations are allowed; see help obs_advice.
+      4. Maximum number of variables is set to 5,000 but can be increased;
+          see help set_maxvar.
+
+. do "testing-data3Lsim.do" 
+
+. clear all
+
+. // clear all is enough to 'refresh' in the same session
+. cd "~/Stata-dev/stdmest"
+/Users/ellessenne/Stata-dev/stdmest
+
+. adopath ++ "stdmest"
+  [1]              "stdmest"
+  [2]  (BASE)      "/Applications/Stata/ado/base/"
+  [3]  (SITE)      "/Applications/Stata/ado/site/"
+  [4]              "."
+  [5]  (PERSONAL)  "/Users/ellessenne/Documents/Stata/ado/personal/"
+  [6]  (PLUS)      "/Users/ellessenne/Library/Application Support/Stata/ado/plu
+> s/"
+  [7]  (OLDPLACE)  "~/ado/"
+
+. adopath ++ "stdmestm"
+  [1]              "stdmestm"
+  [2]              "stdmest"
+  [3]  (BASE)      "/Applications/Stata/ado/base/"
+  [4]  (SITE)      "/Applications/Stata/ado/site/"
+  [5]              "."
+  [6]  (PERSONAL)  "/Users/ellessenne/Documents/Stata/ado/personal/"
+  [7]  (PLUS)      "/Users/ellessenne/Library/Application Support/Stata/ado/plu
+> s/"
+  [8]  (OLDPLACE)  "~/ado/"
+
+. clear all
+
+. do ./build/buildmlib.do
+
+. capture erase lstdmest.mlib
+
+. quietly {
+
+. 
+end of do-file
+
+. mata mata clear
+
+. set maxvar 120000
+
+
+. 
+. // data3CIA
+. clear all
+
+. use "data/data3Lsim", clear
+
+. 
+. // seed, for reproducibility
+. set seed 123
+
+. 
+. // stset
+. stset t, failure(d == 1)
+
+Survival-time data settings
+
+         Failure event: d==1
+Observed time interval: (0, t]
+     Exit on or before: failure
+
+--------------------------------------------------------------------------
+     25,000  total observations
+          0  exclusions
+--------------------------------------------------------------------------
+     25,000  observations remaining, representing
+     20,911  failures in single-record/single-failure data
+ 93,322.242  total analysis time at risk and under observation
+                                                At risk from t =         0
+                                     Earliest observed entry t =         0
+                                          Last observed exit t =        10
+
+. 
+. // mestreg Weibull model
+. mestreg c.X1 c.X2 i.X3 || hospital_id: || provider_id:, dist(weibull)
+
+        Failure _d: d==1
+  Analysis time _t: t
+
+Fitting fixed-effects model:
+
+Iteration 0:  Log likelihood = -557362.76  
+Iteration 1:  Log likelihood =  -59646.88  
+Iteration 2:  Log likelihood = -48868.874  
+Iteration 3:  Log likelihood = -48585.424  
+Iteration 4:  Log likelihood = -48585.207  
+Iteration 5:  Log likelihood = -48585.207  
+
+Refining starting values:
+
+Grid node 0:  Log likelihood = -39987.888
+
+Fitting full model:
+
+Iteration 0:  Log likelihood = -39987.888  (not concave)
+Iteration 1:  Log likelihood =  -39087.61  (not concave)
+Iteration 2:  Log likelihood = -38192.035  
+Iteration 3:  Log likelihood = -32151.121  
+Iteration 4:  Log likelihood = -31999.656  
+Iteration 5:  Log likelihood = -31961.113  
+Iteration 6:  Log likelihood = -31949.745  
+Iteration 7:  Log likelihood = -31947.836  
+Iteration 8:  Log likelihood =  -31947.81  
+Iteration 9:  Log likelihood =  -31947.81  
+
+Mixed-effects Weibull PH regression             Number of obs     =     25,000
+
+        Grouping information
+        -------------------------------------------------------------
+                        |     No. of       Observations per group
+         Group variable |     groups    Minimum    Average    Maximum
+        ----------------+--------------------------------------------
+            hospital_id |        500          2       50.0      1,035
+            provider_id |      4,534          1        5.5        881
+        -------------------------------------------------------------
+
+Integration method: mvaghermite                 Integration pts.  =          7
+
+                                                Wald chi2(3)      =    3673.77
+Log likelihood = -31947.81                      Prob > chi2       =     0.0000
+------------------------------------------------------------------------------
+          _t | Haz. ratio   Std. err.      z    P>|z|     [95% conf. interval]
+-------------+----------------------------------------------------------------
+          X1 |   1.078239    .009183     8.84   0.000      1.06039    1.096388
+          X2 |   1.248918   .0050522    54.95   0.000     1.239055    1.258859
+        1.X3 |   .6039983   .0125699   -24.23   0.000     .5798574    .6291443
+       _cons |    .131493   .0136072   -19.61   0.000     .1073541    .1610597
+-------------+----------------------------------------------------------------
+       /ln_p |   .6917516   .0060121                      .6799682     .703535
+-------------+----------------------------------------------------------------
+hospital_id  |
+   var(_cons)|   5.383432   .3573584                      4.726673    6.131447
+-------------+----------------------------------------------------------------
+hospital_id> |
+provider_id  |
+   var(_cons)|   .4087721   .0227995                      .3664418    .4559924
+------------------------------------------------------------------------------
+Note: Estimates are transformed only in the first equation to hazard ratios.
+Note: _cons estimates baseline hazard (conditional on zero random effects).
+LR test vs. Weibull model: chi2(2) = 33274.79             Prob > chi2 = 0.0000
+
+Note: LR test is conservative and provided only for reference.
+
+. 
+. // timevar
+. range tt 0 10 5
+(24,995 missing values generated)
+
+. 
+. // # # A tibble: 2 × 6
+. // #   hospital_id b_hospital bse_hospital provider_id b_provider bse_provide
+> r
+. // #         <dbl>      <dbl>        <dbl>       <dbl>      <dbl>        <dbl
+> >
+. // # 1          88      0.878        0.311        4420      0.122        0.57
+> 0
+. // # 2         397      2.65         0.407        3078     -0.298        0.52
+> 2
+. 
+. //
+. stdmest Sa1, reat(0.878 0.122) reatse(0.311 0.570) ci reps(2000) timevar(tt) 
+> verbose cinormal
+Deriving point estimates...
+Calculating 2000 linear predictors for the C.I. algorithm...
+Calculating 2000 standardised survival probabilities for the C.I. algorithm...
+Deriving confidence intervals...
+Done!
+
+. stdmest Sa2, reat(2.65 -0.298) reatse(0.407 0.522) ci reps(2000) timevar(tt) 
+> verbose cinormal
+Deriving point estimates...
+Calculating 2000 linear predictors for the C.I. algorithm...
+Calculating 2000 standardised survival probabilities for the C.I. algorithm...
+Deriving confidence intervals...
+Done!
+
+. list tt Sa1 Sa1_lower Sa1_upper Sa2 Sa2_lower Sa2_upper if tt != .
+
+       +-------------------------------------------------------------------+
+    1. |  tt |       Sa1 |  Sa1_lower | Sa1_upper |       Sa2 |  Sa2_lower |
+       |   0 |         1 |          1 |         1 |         1 |          1 |
+       |-------------------------------------------------------------------|
+       |                             Sa2_upper                             |
+       |                                     1                             |
+       +-------------------------------------------------------------------+
+
+       +-------------------------------------------------------------------+
+    2. |  tt |       Sa1 |  Sa1_lower | Sa1_upper |       Sa2 |  Sa2_lower |
+       | 2.5 | .20614102 | -.05937273 | .47165477 | .02954804 | -.08064121 |
+       |-------------------------------------------------------------------|
+       |                             Sa2_upper                             |
+       |                             .13973729                             |
+       +-------------------------------------------------------------------+
+
+       +-------------------------------------------------------------------+
+    3. |  tt |       Sa1 |  Sa1_lower | Sa1_upper |       Sa2 |  Sa2_lower |
+       |   5 | .02780236 | -.07160644 | .12721117 | .00114208 | -.01676068 |
+       |-------------------------------------------------------------------|
+       |                             Sa2_upper                             |
+       |                             .01904484                             |
+       +-------------------------------------------------------------------+
+
+       +-------------------------------------------------------------------+
+    4. |  tt |       Sa1 |  Sa1_lower | Sa1_upper |       Sa2 |  Sa2_lower |
+       | 7.5 | .00478674 | -.03132877 | .04090224 | .00009295 | -.00376065 |
+       |-------------------------------------------------------------------|
+       |                             Sa2_upper                             |
+       |                             .00394655                             |
+       +-------------------------------------------------------------------+
+
+       +-------------------------------------------------------------------+
+    5. |  tt |       Sa1 |  Sa1_lower | Sa1_upper |       Sa2 |  Sa2_lower |
+       |  10 | .00104153 | -.01313882 | .01522189 | .00001307 | -.00101575 |
+       |-------------------------------------------------------------------|
+       |                             Sa2_upper                             |
+       |                             .00104188                             |
+       +-------------------------------------------------------------------+
+
+. //        +------------------------------------------------------------------
+> ---------+
+. //        |  tt         Sa1   Sa1_lower   Sa1_up~r         Sa2   Sa2_lower   
+> Sa2_up~r |
+. //        |------------------------------------------------------------------
+> ---------|
+. //     1. |   0           1           1          1           1           1   
+>        1 |
+. //     2. | 2.5   .20614102   -.0593727   .4716548   .02954804   -.0806412   
+> .1397373 |
+. //     3. |   5   .02780236   -.0716064   .1272112   .00114208   -.0167607   
+> .0190448 |
+. //     4. | 7.5   .00478674   -.0313288   .0409022   .00009295   -.0037606   
+> .0039465 |
+. //     5. |  10   .00104153   -.0131388   .0152219   .00001307   -.0010158   
+> .0010419 |
+. //        +------------------------------------------------------------------
+> ---------+
+. 
+. // vs R results:
+. // #     tt         Sa1   Sa1_lower  Sa1_upper           Sa2    Sa2_lower   S
+> a2_upper
+. // # 1  0.0 1.000000000  1.00000000 1.00000000 1.00000000000  1.000000000 1.0
+> 00000000
+. // # 2  2.5 0.206141020 -0.05329716 0.46557920 0.02954803823 -0.079408427 0.1
+> 38504503
+. // # 3  5.0 0.027802364 -0.06700799 0.12261272 0.00114208034 -0.015675085 0.0
+> 17959246
+. // # 4  7.5 0.004786736 -0.02944316 0.03901663 0.00009295082 -0.003372755 0.0
+> 03558657
+. // # 5 10.0 0.001041533 -0.01251203 0.01459510 0.00001306697 -0.000879363 0.0
+> 00905497
+. 
+. // "Partially marginal" version
+. stdmestm Sam, reat(0.878) reatse(0.311) varmargname(hospital_id>provider_id) 
+> timevar(tt) contrast ci reps(2000) verbose cinormal
+Deriving point estimates...
+Calculating 2000 linear predictors for the C.I. algorithm...
+Calculating 2000 standardised survival probabilities for the C.I. algorithm...
+Deriving confidence intervals...
+Deriving contrasts...
+Deriving confidence intervals of contrasts...
+Done!
+
+. list tt Sam Sam_lower Sam_upper Sam_ref Sam_ref_lower Sam_ref_upper Sam_contr
+> ast Sam_contrast_lower Sam_contrast_upper if tt != .
+
+       +------------------------------------------------------------------+
+    1. |  tt |       Sam |  Sam_lower | Sam_upper |   Sam_ref | Sam_r~wer |
+       |   0 |         1 |          1 |         1 |         1 |         1 |
+       |------------------------------------------------------------------|
+       |   Sam_r~per   |   Sam_cont~t   |   Sam_co~wer   |   Sam_co~per   |
+       |           1   |            0   |            0   |            0   |
+       +------------------------------------------------------------------+
+
+       +------------------------------------------------------------------+
+    2. |  tt |       Sam |  Sam_lower | Sam_upper |   Sam_ref | Sam_r~wer |
+       | 2.5 |  .2520366 |  .11735448 | .38671872 | .45942711 | .40894786 |
+       |------------------------------------------------------------------|
+       |   Sam_r~per   |   Sam_cont~t   |   Sam_co~wer   |   Sam_co~per   |
+       |   .50990636   |   -.20739051   |   -.33252008   |   -.08226095   |
+       +------------------------------------------------------------------+
+
+       +------------------------------------------------------------------+
+    3. |  tt |       Sam |  Sam_lower | Sam_upper |   Sam_ref | Sam_r~wer |
+       |   5 | .05275904 |  .00044408 |   .105074 | .15662493 | .12320129 |
+       |------------------------------------------------------------------|
+       |   Sam_r~per   |   Sam_cont~t   |   Sam_co~wer   |   Sam_co~per   |
+       |   .19004857   |   -.10386589   |   -.15450069   |   -.05323109   |
+       +------------------------------------------------------------------+
+
+       +------------------------------------------------------------------+
+    4. |  tt |       Sam |  Sam_lower | Sam_upper |   Sam_ref | Sam_r~wer |
+       | 7.5 | .01390312 | -.00550085 | .03330709 | .05815525 | .04112992 |
+       |------------------------------------------------------------------|
+       |   Sam_r~per   |   Sam_cont~t   |   Sam_co~wer   |   Sam_co~per   |
+       |   .07518059   |   -.04425213   |   -.06486082   |   -.02364345   |
+       +------------------------------------------------------------------+
+
+       +------------------------------------------------------------------+
+    5. |  tt |       Sam |  Sam_lower | Sam_upper |   Sam_ref | Sam_r~wer |
+       |  10 | .00439153 |  -.0034138 | .01219686 | .02382806 | .01530838 |
+       |------------------------------------------------------------------|
+       |   Sam_r~per   |   Sam_cont~t   |   Sam_co~wer   |   Sam_co~per   |
+       |   .03234775   |   -.01943654   |   -.02867518   |    -.0101979   |
+       +------------------------------------------------------------------+
+
+. //        +------------------------------------------------------------------
+> --------------------------------------------+
+. //        |  tt         Sam   Sam_lower   Sam_up~r     Sam_ref   ~f_lower   ~
+> f_upper   Sam_con~t   Sam_c~wer   Sam_c~per |
+. //        |------------------------------------------------------------------
+> --------------------------------------------|
+. //     1. |   0           1           1          1           1          1    
+>       1           0           0           0 |
+. //     2. | 2.5    .2520366    .1173868   .3866864   .45942711   .4089614   .
+> 5098929   -.2073905   -.3324709   -.0823102 |
+. //     3. |   5   .05275904    .0003779   .1051402   .15662493    .123151   .
+> 1900989   -.1038659   -.1545267   -.0532051 |
+. //     4. | 7.5   .01390312   -.0055607   .0333669   .05815525   .0410741   .
+> 0752364   -.0442521   -.0648958   -.0236085 |
+. //     5. |  10   .00439153   -.0034523   .0122354   .02382806   .0152656   .
+> 0323906   -.0194365   -.0287043   -.0101688 |
+. //        +------------------------------------------------------------------
+> --------------------------------------------+
+. 
+. // vs R results:
+. // #      t           S    S_conf.low S_conf.high       Sref Sref_conf.low Sr
+> ef_conf.high       Sdiff Sdiff_conf.low Sdiff_conf.high
+. // # 1  0.0 1.000000000  1.0000000000  1.00000000 1.00000000    1.00000000   
+>   1.00000000  0.00000000     0.00000000     0.000000000
+. // # 2  2.5 0.252036599  0.1164155373  0.38765766 0.45942711    0.40991674   
+>   0.50893748 -0.20739051    -0.33674710    -0.078033924
+. // # 3  5.0 0.052759040  0.0002934933  0.10522459 0.15662493    0.12366405   
+>   0.18958581 -0.10386589    -0.15691719    -0.050814596
+. // # 4  7.5 0.013903120 -0.0054939075  0.03330015 0.05815525    0.04131102   
+>   0.07499948 -0.04425213    -0.06597111    -0.022533158
+. // # 5 10.0 0.004391529 -0.0033833830  0.01216644 0.02382806    0.01537816   
+>   0.03227796 -0.01943654    -0.02917959    -0.009693476
+. 
+end of do-file

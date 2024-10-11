@@ -7,6 +7,9 @@ clear all
 do ./build/buildmlib.do
 mata mata clear
 
+// seed, for reproducibility
+set seed 3588892
+
 // Three-levels example
 clear
 webuse jobhistory

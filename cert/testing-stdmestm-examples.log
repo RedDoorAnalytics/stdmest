@@ -65,6 +65,10 @@ end of do-file
 . mata mata clear
 
 . 
+. // seed, for reproducibility
+. set seed 3588892
+
+. 
 . // Three-levels example
 . clear
 
