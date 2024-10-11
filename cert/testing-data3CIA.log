@@ -205,7 +205,7 @@ Done!
 . timer off 1
 
 . timer list 1
-   1:     38.17 /        1 =      38.1710
+   1:     29.80 /        1 =      29.8000
 
 . 
 . // list Smin Smin_ref Smin_contrast if tt != .
@@ -254,7 +254,7 @@ Done!
 . timer off 1
 
 . timer list 1
-   1:     39.62 /        2 =      19.8075
+   1:     30.93 /        2 =      15.4635
 
 . 
 . list Smintt Smintt2 if tt != .
