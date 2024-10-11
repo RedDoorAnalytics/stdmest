@@ -1,4 +1,4 @@
-*! version 0.0.1-9000 Alessandro Gasparini 10Oct2024
+*! version 0.0.1-9000 Alessandro Gasparini 11Oct2024
 
 local RS real scalar
 local RC real colvector
@@ -241,6 +241,11 @@ mata:
 				Sci_upper = cloglog(Savg[, 1]) :+ crit * sqrt(Sci_var)
 				Sci_lower = invcloglog(Sci_lower)
 				Sci_upper = invcloglog(Sci_upper)
+				// cloglog is not defined for 0, 1 – deal with that by hand
+				Sci_lower = mm_cond(Savg[,1] :>= 1, 1, Sci_lower)
+				Sci_upper = mm_cond(Savg[,1] :>= 1, 1, Sci_upper)
+				Sci_lower = mm_cond(Savg[,1] :<= 0, 0, Sci_lower)
+				Sci_upper = mm_cond(Savg[,1] :<= 0, 0, Sci_upper)
 			}
 			else {
 				// otherwise, confidence intervals using the percentile method
@@ -282,7 +287,11 @@ mata:
 					Sciref_upper = cloglog(Savgref[, 1]) :+ crit * sqrt(Sciref_var)
 					Sciref_lower = invcloglog(Sciref_lower)
 					Sciref_upper = invcloglog(Sciref_upper)
-					// note: there is no guarantee that CIs are in the [0, 1] range
+					// cloglog is not defined for 0, 1 – deal with that by hand
+					Sciref_lower = mm_cond(Savgref[,1] :>= 1, 1, Sciref_lower)
+					Sciref_upper = mm_cond(Savgref[,1] :>= 1, 1, Sciref_upper)
+					Sciref_lower = mm_cond(Savgref[,1] :<= 0, 0, Sciref_lower)
+					Sciref_upper = mm_cond(Savgref[,1] :<= 0, 0, Sciref_upper)
 				}
 				else {
 					// otherwise, confidence intervals using the percentile method
