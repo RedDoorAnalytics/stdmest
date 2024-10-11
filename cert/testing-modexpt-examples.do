@@ -10,13 +10,14 @@ help modexpt
 clear all
 webuse catheter
 mestreg age female || patient:, distribution(weibull)
-modexpt, filename("test.xlsx")
-modexpt, filename("test.xlsx") replace
-modexpt, filename("test.xlsx")
+tempfile test1
+modexpt, filename(`test1')
+modexpt, filename(`test1') replace
+capture noisily modexpt, filename(`test1')
 
 //
 clear all
 webuse catheter
 stmixed age female || patient:, distribution(weibull)
-tempfile test
-modexpt, filename(`test')
+tempfile test2
+modexpt, filename(`test2')
