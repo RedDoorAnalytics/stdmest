@@ -28,3 +28,4 @@ ex:
 	cd cert && stata-mp -e testing-stdmestm.do
 	cd cert && stata-mp -e testing-stdmestm-examples.do
 	cd cert && stata-mp -e testing-verbose.do
+	cd cert && stata-mp -e testing-#7.do

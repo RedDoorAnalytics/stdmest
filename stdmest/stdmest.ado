@@ -82,16 +82,18 @@ program define stdmest, sortpreserve
 	if ("`contrast'" == "") {
 		if `nlevels' != `lreat' | `nlevels' != `lreatse' {
 			local numerr = 1
+			local mustbeset = "'reat', 'reatse'"
 		}
 	}
 	else {
 		if `nlevels' != `lreat' | `nlevels' != `lreatse' | `nlevels' != `lreatref' | `nlevels' != `lreatseref' {
 			local numerr = 1
+			local mustbeset = "'reat', 'reatse', 'reatref', 'reatseref'"
 		}
 	}
 	if ("`numerr'" == "1") {
-		display as error "The mestreg model has more levels than the number of values passed to 'reat', 'reatse' (or 'reatref', 'reatseref' if you are trying to calculate contrasts)." ///
-			_newline "Please check your input, they all must have the same number of elements as there are levels."
+		display as error "Wrong number of input values for a model with `nlevels' hierarchical levels:" ///
+			_newline "`nlevels' values must be set for each of `mustbeset'."
 		exit 198
 	}
 
