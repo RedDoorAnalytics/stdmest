@@ -242,10 +242,10 @@ mata:
 				Sci_lower = invcloglog(Sci_lower)
 				Sci_upper = invcloglog(Sci_upper)
 				// cloglog is not defined for 0, 1 – deal with that by hand
-				Sci_lower = mm_cond(Savg[,1] :>= 1, 1, Sci_lower)
-				Sci_upper = mm_cond(Savg[,1] :>= 1, 1, Sci_upper)
-				Sci_lower = mm_cond(Savg[,1] :<= 0, 0, Sci_lower)
-				Sci_upper = mm_cond(Savg[,1] :<= 0, 0, Sci_upper)
+				Sci_lower = mm_cond(Savg[, 1] :>= 1, 1, Sci_lower)
+				Sci_upper = mm_cond(Savg[, 1] :>= 1, 1, Sci_upper)
+				Sci_lower = mm_cond(Savg[, 1] :<= 0, 0, Sci_lower)
+				Sci_upper = mm_cond(Savg[, 1] :<= 0, 0, Sci_upper)
 			}
 			else {
 				// otherwise, confidence intervals using the percentile method
@@ -288,10 +288,10 @@ mata:
 					Sciref_lower = invcloglog(Sciref_lower)
 					Sciref_upper = invcloglog(Sciref_upper)
 					// cloglog is not defined for 0, 1 – deal with that by hand
-					Sciref_lower = mm_cond(Savgref[,1] :>= 1, 1, Sciref_lower)
-					Sciref_upper = mm_cond(Savgref[,1] :>= 1, 1, Sciref_upper)
-					Sciref_lower = mm_cond(Savgref[,1] :<= 0, 0, Sciref_lower)
-					Sciref_upper = mm_cond(Savgref[,1] :<= 0, 0, Sciref_upper)
+					Sciref_lower = mm_cond(Savgref[, 1] :>= 1, 1, Sciref_lower)
+					Sciref_upper = mm_cond(Savgref[, 1] :>= 1, 1, Sciref_upper)
+					Sciref_lower = mm_cond(Savgref[, 1] :<= 0, 0, Sciref_lower)
+					Sciref_upper = mm_cond(Savgref[, 1] :<= 0, 0, Sciref_upper)
 				}
 				else {
 					// otherwise, confidence intervals using the percentile method
