@@ -92,8 +92,8 @@ program define stdmest, sortpreserve
 		}
 	}
 	if ("`numerr'" == "1") {
-		display as error "Wrong number of input values for a model with `nlevels' hierarchical levels:" ///
-			_newline "`nlevels' values must be set for each of `mustbeset'."
+		display as error "Wrong number of input values for a `=`nlevels'+1'-level model:" ///
+			_newline "`nlevels' values must be set for each of `mustbeset', one for every random intercept."
 		exit 198
 	}
 

@@ -118,8 +118,9 @@ Observed time interval: (0, tt]
 . // error
 . capture noisily stdmest Stst, reat(-.4603618  -1.05416) reatse(.1427249 .5097
 > 189) ci reps(100) timevar(tt) contrast
-Wrong number of input values for a model with 2 hierarchical levels:
-2 values must be set for each of 'reat', 'reatse', 'reatref', 'reatrefse'.
+Wrong number of input values for a 3-level model:
+2 values must be set for each of 'reat', 'reatse', 'reatref', 'reatrefse', one 
+> for every random intercept.
 
 . 
 . // okay
