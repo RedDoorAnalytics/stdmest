@@ -65,17 +65,11 @@ end of do-file
 . mata mata clear
 
 . 
-<<<<<<< HEAD
-. set seed 34587
-
-. 
-=======
 . // seed, for reproducibility
 . set seed 347856
 
 . 
 . // data
->>>>>>> main
 . webuse jobhistory
 (Job history data, Event History Analysis with Stata, Blossfeld et al. 2007)
 
@@ -187,11 +181,7 @@ Deriving point estimates...
 Done!
 
 . stdmest S2a, reat(-.4603618 1.0) reatse(.1427249 0.1) reatref(0.0 0.0) reatse
-<<<<<<< HEAD
-> ref(0.0 0.0) timevar(tv) contrast verbose 
-=======
 > ref(0.0 0.0) timevar(tv) contrast verbose
->>>>>>> main
 Deriving point estimates...
 Deriving contrasts...
 Done!
@@ -293,8 +283,4 @@ Deriving confidence intervals of contrasts...
 Done!
 
 . 
-<<<<<<< HEAD
-. 
-=======
->>>>>>> main
 end of do-file
