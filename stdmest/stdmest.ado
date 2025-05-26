@@ -163,7 +163,7 @@ program define stdmest, sortpreserve
         tempname touseu
 		mark `touseu' `if' `in'
         if "`timevar'" != "" {
-			markout `touse' `timevar'
+			markout `touseu' `timevar'
             local ptvar ptvar(`timevar')					//uhtred_build_touses() updated on this
         }
 
@@ -189,6 +189,8 @@ program define stdmest, sortpreserve
 		// Recall uhtred
 		tempname tousem
 		display "okay here"
+		display "compare touse vars, in order: touse touseu timevartouse"
+		list `touse' `touseu' `timevartouse'
 		quietly `noisily' uhtred_parse `GML' ,          ///
 			touse(`tousem') : `cmd' ///
             , 		///
