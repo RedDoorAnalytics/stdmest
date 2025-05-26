@@ -23,22 +23,24 @@ program define stdmest, sortpreserve
 		exit  198
 	}
 
-	// Check that we run stdmest after mestreg
-	if "`e(cmd2)'" != "mestreg" {
-		display as error "This only works after fitting a mixed-effects survival model with -mestreg-."
+	// Check that we run stdmest after -mestreg- or -uhtred-
+	if !("`e(cmd)'" == "gsem" & "`e(cmd2)'" == "mestreg") & !("`e(cmd)'" == "uhtred") {
+		display as error "This only works after fitting a mixed-effects survival model with -mestreg- or -uhtred-."
 		exit 301
 	}
 
-	// Only support PH models (for now)
-	if "`e(frm2)'" != "hazard" {
-		display as error "Only proportional hazards models are supported."
-		exit 198
-	}
-
-	// Only support exponential and Weibull distributions (for now)
-	if "`e(distribution)'" != "exponential" & "`e(distribution)'" != "weibull" {
-		display as error "Only exponential and Weibull baseline hazard distributions are supported."
-		exit 198
+	// Special checks for -mestreg-:
+	if "`e(cmd)'" == "gsem" & "`e(cmd2)'" == "mestreg" {
+		// Only support -mestreg- PH models
+		if "`e(frm2)'" != "hazard" {
+			display as error "Only proportional hazards models are supported."
+			exit 198
+		}
+		// Only support exponential and Weibull distributions (for now)
+		if "`e(distribution)'" != "exponential" & "`e(distribution)'" != "weibull" {
+			display as error "Only exponential and Weibull baseline hazard distributions are supported."
+			exit 198
+		}
 	}
 
 	// Syntax
@@ -70,7 +72,14 @@ program define stdmest, sortpreserve
 	local NNN = `r(N)'
 
 	// Number of levels for this specific model
-	local nlevels = wordcount("`e(ivars)'")
+	if "`e(cmd)'" == "gsem" & "`e(cmd2)'" == "mestreg" {
+		// -mestreg-:
+		local nlevels = wordcount("`e(ivars)'")
+	}
+	if "`e(cmd)'" == "uhtred" {
+		// -uhtred-:
+		local nlevels = wordcount("`e(levelvars)'")
+	}
 
 	// Check how many elements in reat, reatse, reatref, reatrefse
 	local lreat = wordcount("`reat'")
@@ -143,6 +152,69 @@ program define stdmest, sortpreserve
 		matrix `eV' = e(V)
 		local eb_rown : rowfullnames e(b)
 		local eb_coln : colfullnames e(b)
+	}
+
+	// If -uhtred-, setup gml object
+	if ("`e(cmd)'" == "uhtred") {
+		// from: uhtred_p.ado
+		gettoken GML 0 : 0
+		// postestimation sample
+		// AG: touseu is the same as timevartouse
+        tempname touseu
+		mark `touseu' `if' `in'
+        if "`timevar'" != "" {
+			markout `touse' `timevar'
+            local ptvar ptvar(`timevar')					//uhtred_build_touses() updated on this
+        }
+
+		// Get coefficients and refill struct
+		tempname best
+		mat `best' = e(b)
+		// Remove any options
+		local cmd `e(cmdline)'
+		gettoken uhtred cmd : cmd
+        gettoken cmd rhs : cmd, parse(",") bind
+        if substr("`rhs'",1,1) == "," {
+			local opts substr("`rhs'",2,.)
+			local 0 , `opts'
+			syntax , [						///
+				COVariance(passthru)		///
+                REDISTribution(passthru)	///
+                DF(passthru)				///
+                Weights(passthru)			///
+                *							///
+            ]
+            local opts `covariance' `redistribution' `df' `weights'
+		}
+		// Recall uhtred
+		tempname tousem
+		display "okay here"
+		quietly `noisily' uhtred_parse `GML' ,          ///
+			touse(`tousem') : `cmd' ///
+            , 		///
+            `opts'				///
+            predict 			///
+            predtouse(`touseu')		///
+            nogen 				///
+			from(`best') 			///
+			`intmethods' 			///
+			`intpoints' 			///
+			`pchintpoints'			///
+			`ptvar'				///
+			`standardise'			///
+			`passtmat'			///
+			`reffects'			///
+			`reses'				///
+			`devcodes'			///
+			indicator(`e(indicator)')       ///
+			`debug'                         //
+		display "not okay here"
+
+        // Tidy up constraints
+		local mlcns		`"`r(constr)'"'
+		if "`mlcns'" != "" {
+			cap constraint drop `mlcns'
+		}
 	}
 
 	// Run algorithm in Mata
