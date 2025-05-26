@@ -157,7 +157,9 @@ program define stdmest, sortpreserve
 	// If -uhtred-, setup gml object
 	if ("`e(cmd)'" == "uhtred") {
 		// from: uhtred_p.ado
-		gettoken GML 0 : 0
+		//!! mjc
+		tempname GML
+		//!! mjc end
 		// postestimation sample
 		// AG: touseu is the same as timevartouse
         tempname touseu
