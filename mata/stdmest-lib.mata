@@ -23,6 +23,10 @@ mata:
 	)
 	{
 
+	// pick GML object
+	`gml' gml
+	swap(gml, *findexternal(object))
+	
 		// read in locals from Stata
 		// strings:
 		timevar = st_local("timevar")
@@ -105,14 +109,14 @@ mata:
 			}
 			for (r = 1; r <= Nuniqt; r++) {
                 if (!integrate) {
-                    unique_Savg[r, c] = mean(survfun(object, newreat[c, 1], unique_t[r, 1], c, neweb))
+                    unique_Savg[r, c] = mean(survfun(gml, newreat[c, 1], unique_t[r, 1], c, neweb))
                 }
                 else {
                     unique_Savg[r, c] = mean(intsurvfun(newreat[c, 1], unique_t[r, 1], c, neweb, varmarg, dnrm, GHx, GHw))
                 }
 				if (hascontrast) {
                     if (!integrate) {
-                        unique_Savgref[r, c] = mean(survfun(object, newreatref[c, 1], unique_t[r, 1], c, neweb))
+                        unique_Savgref[r, c] = mean(survfun(gml, newreatref[c, 1], unique_t[r, 1], c, neweb))
                     }
                     else {
                         unique_Savgref[r, c] = mean(intsurvfun(newreatref[c, 1], unique_t[r, 1], c, neweb, varmarg, dnrm, GHx, GHw))
@@ -288,7 +292,7 @@ mata:
 		}
 	}
 
-	`RC' survfun (`SS' object, `RS' re, `RS' t, `RS' i, `RM' neweb)
+	`RC' survfun (`gml' gml, `RS' re, `RS' t, `RS' i, `RM' neweb)
 	{
 		// model flags
 		i_am_mestreg = (st_global("e(cmd)") == "gsem") & (st_global("e(cmd2)") == "mestreg")
@@ -340,16 +344,19 @@ mata:
 
 		// If -uhtred-:
 		if (i_am_uhtred) {
-			// pick GML object
-			`gml' gml
-			swap(gml, *findexternal(object))
+			"t"
+			t
+			
 			gml.myb = neweb[i, ]
 			// linear predictor
 			xb = uhtred_util_p_xb(gml)
 			// time component
-			tb = uhtred_util_p_tb(gml, t)
+// 			xb
+// 			t
+			nobs = uhtred_util_nobs(gml)
+			tb = uhtred_util_p_tb(gml, J(nobs,1,t))
 			"tb:"
-			tb
+// 			tb
 			// combine xb, tb, and random effects
 			xbbb = xb :+ tb :+ re
 			// calculate survival
