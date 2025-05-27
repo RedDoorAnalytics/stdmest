@@ -157,18 +157,7 @@ program define stdmest, sortpreserve
 	// If -uhtred-, setup gml object
 	if ("`e(cmd)'" == "uhtred") {
 		// from: uhtred_p.ado
-		//!! mjc
 		tempname GML
-		//!! mjc end
-		// postestimation sample
-		// AG: touseu is the same as timevartouse
-        tempname touseu
-		mark `touseu' `if' `in'
-        if "`timevar'" != "" {
-			markout `touseu' `timevar'
-            local ptvar ptvar(`timevar')					//uhtred_build_touses() updated on this
-        }
-
 		// Get coefficients and refill struct
 		tempname best
 		mat `best' = e(b)
@@ -190,15 +179,12 @@ program define stdmest, sortpreserve
 		}
 		// Recall uhtred
 		tempname tousem
-		display "okay here"
-		display "compare touse vars, in order: touse touseu timevartouse"
-		list `touse' `touseu' `timevartouse'
 		quietly `noisily' uhtred_parse `GML' ,          ///
 			touse(`tousem') : `cmd' ///
             , 		///
             `opts'				///
             predict 			///
-            predtouse(`touseu')		///
+            predtouse(`touse')		///
             nogen 				///
 			from(`best') 			///
 			`intmethods' 			///
@@ -212,7 +198,6 @@ program define stdmest, sortpreserve
 			`devcodes'			///
 			indicator(`e(indicator)')       ///
 			`debug'                         //
-		display "not okay here"
 
         // Tidy up constraints
 		local mlcns		`"`r(constr)'"'
@@ -222,7 +207,7 @@ program define stdmest, sortpreserve
 	}
 
 	// Run algorithm in Mata
-	mata: stdmest_wf("`newvarname'", `reat_sum', `reatref_sum', (`vreat'), (`vreatse'), (`vreatref'), (`vreatrefse'), 0.0)
+	mata: stdmest_wf("`GML'", "`newvarname'", `reat_sum', `reatref_sum', (`vreat'), (`vreatse'), (`vreatref'), (`vreatrefse'), 0.0)
 
 	// Restore estimation results after (possibly) fiddling with stuff in Mata
 	if "`ci'" != "" {

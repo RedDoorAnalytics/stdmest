@@ -34,3 +34,15 @@ range tv 0 500 6
 
 uhtred (_t c.age i.female M1[patient]@1, family(rp, df(1) failure(_d)))
 stdmest Su, reat(.7613212) reatse(.6750813) reatref(0.0) reatrefse(0.0) contrast timevar(tv)
+
+// TEMPLATE:
+// for ()
+// 	b
+// 	gml.myb = b
+//
+// 	xb = uhtred_util_p_xb(gml)
+// 	tb = uhtred_util_p_tb(gml,t)
+//
+// 	zb = zb0 + zb1
+//
+// 	S = exp(-exp( xb + tb + zb))
