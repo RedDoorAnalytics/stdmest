@@ -22,11 +22,16 @@ mata:
 	`RS' integrate
 	)
 	{
+		// model flags
+		i_am_mestreg = (st_global("e(cmd)") == "gsem") & (st_global("e(cmd2)") == "mestreg")
+		i_am_uhtred = st_global("e(cmd)") == "uhtred"
 
-	// pick GML object
-	`gml' gml
-	swap(gml, *findexternal(object))
-	
+		if (i_am_uhtred) {
+			// pick GML object
+			`gml' gml
+			swap(gml, *findexternal(object))
+		}
+
 		// read in locals from Stata
 		// strings:
 		timevar = st_local("timevar")
@@ -66,13 +71,15 @@ mata:
 		if (hasci) {
 			Bp1 = B + 1
 			// if we need CIs, draw new model parameters and random effects
-			neweb = draw_newpars(B)
+			// random effects:
 			newreat = draw_newreat(B, vreat, vreatse)
 			newreat = rowsum(newreat)
 			if (contrast != "") {
 				newreatref = draw_newreat(B, vreatref, vreatrefse)
 				newreatref = rowsum(newreatref)
 			}
+			// model coefficients:
+			neweb = draw_newpars(B)
 			// stack e(b) with neweb
 			neweb = st_matrix("e(b)") \ neweb
 			// stack reat with newreat
@@ -82,11 +89,22 @@ mata:
 			}
 		}
 		else {
+			Bp1 = 1
 			neweb = st_matrix("e(b)")
 			newreat = J(1, 1, reat)
-			newreatref = J(1, 1, reatref)
-			Bp1 = 1
+			if (hascontrast) {
+				newreatref = J(1, 1, reatref)
+			}
 		}
+
+		// setup once rather than inside survfun()
+		touse = st_local("touse")
+		// temp column in data to use
+		new_xbname = st_tempname()
+		stata("tempvar " + new_xbname)
+		// stata calls to drop old temp column (if any) and predict xb
+		cmd_drop = "capture drop " + new_xbname
+		cmd_predict = "quietly _predict double " + new_xbname + " if " + touse + " == 1, xb"
 
 		// do calculations for the std. survival, looping over timevar
 		// actually, we loop over _unique_ values of timevar to be more efficient
@@ -109,14 +127,14 @@ mata:
 			}
 			for (r = 1; r <= Nuniqt; r++) {
                 if (!integrate) {
-                    unique_Savg[r, c] = mean(survfun(gml, newreat[c, 1], unique_t[r, 1], c, neweb))
+                    unique_Savg[r, c] = mean(survfun(gml, newreat[c, 1], unique_t[r, 1], c, neweb, i_am_mestreg, i_am_uhtred, new_xbname, cmd_drop, cmd_predict))
                 }
                 else {
                     unique_Savg[r, c] = mean(intsurvfun(newreat[c, 1], unique_t[r, 1], c, neweb, varmarg, dnrm, GHx, GHw))
                 }
 				if (hascontrast) {
                     if (!integrate) {
-                        unique_Savgref[r, c] = mean(survfun(gml, newreatref[c, 1], unique_t[r, 1], c, neweb))
+                        unique_Savgref[r, c] = mean(survfun(gml, newreatref[c, 1], unique_t[r, 1], c, neweb, i_am_mestreg, i_am_uhtred, new_xbname, cmd_drop, cmd_predict))
                     }
                     else {
                         unique_Savgref[r, c] = mean(intsurvfun(newreatref[c, 1], unique_t[r, 1], c, neweb, varmarg, dnrm, GHx, GHw))
@@ -292,11 +310,23 @@ mata:
 		}
 	}
 
-	`RC' survfun (`gml' gml, `RS' re, `RS' t, `RS' i, `RM' neweb)
+	`RC' survfun (
+	`gml' gml,
+	`RS' re,
+	`RS' t,
+	`RS' i,
+	`RM' neweb,
+	`RS' i_am_mestreg,
+	`RS' i_am_uhtred,
+	`SS' new_xbname,
+	`SS' cmd_drop,
+	`SS' cmd_predict)
 	{
-		// model flags
-		i_am_mestreg = (st_global("e(cmd)") == "gsem") & (st_global("e(cmd2)") == "mestreg")
-		i_am_uhtred = st_global("e(cmd)") == "uhtred"
+		// if t == 0 force survival to 1 and ignore the rest
+		if (t == 0) {
+			S = J(strtoreal(st_local("NNN")), 1, 1)
+			return(S)
+		}
 
 		// If -mestreg-:
 		if (i_am_mestreg) {
@@ -325,12 +355,7 @@ mata:
 			}
 			// pickup rows to use
 			touse = st_local("touse")
-			// temp column in data to use
-			new_xbname = st_tempname()
-			stata("tempvar " + new_xbname)
-			// stata calls to drop old temp column (if any) and predict xb
-			cmd_drop = "capture drop " + new_xbname
-			cmd_predict = "quietly _predict double " + new_xbname + " if " + touse + " == 1, xb"
+			// drop old temp column (if any) and predict xb
 			stata(cmd_drop)
 			stata(cmd_predict)
 			// get xb
@@ -344,25 +369,15 @@ mata:
 
 		// If -uhtred-:
 		if (i_am_uhtred) {
-			"t"
-			t
-			
 			gml.myb = neweb[i, ]
 			// linear predictor
 			xb = uhtred_util_p_xb(gml)
 			// time component
-// 			xb
-// 			t
 			nobs = uhtred_util_nobs(gml)
-			tb = uhtred_util_p_tb(gml, J(nobs,1,t))
-			"tb:"
-// 			tb
-			// combine xb, tb, and random effects
+			tb = uhtred_util_p_tb(gml, J(nobs, 1, t))
 			xbbb = xb :+ tb :+ re
 			// calculate survival
 			S = exp(-exp(xbbb))
-			"S:"
-			S
 		}
 
 		// Return survival
