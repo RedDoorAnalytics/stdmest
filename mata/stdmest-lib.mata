@@ -1,4 +1,4 @@
-*! version 0.0.1-9000 Alessandro Gasparini 27May2025
+*! version 0.0.1-9000 Alessandro Gasparini 29May2025
 
 local RS real scalar
 local RC real colvector
@@ -130,14 +130,14 @@ mata:
                     unique_Savg[r, c] = mean(survfun(gml, newreat[c, 1], unique_t[r, 1], c, neweb, i_am_mestreg, i_am_uhtred, new_xbname, cmd_drop, cmd_predict))
                 }
                 else {
-                    unique_Savg[r, c] = mean(intsurvfun(newreat[c, 1], unique_t[r, 1], c, neweb, varmarg, dnrm, GHx, GHw))
+                    unique_Savg[r, c] = mean(intsurvfun(gml, newreat[c, 1], unique_t[r, 1], c, neweb,i_am_mestreg, i_am_uhtred, new_xbname, cmd_drop, cmd_predict, varmarg, dnrm, GHx, GHw))
                 }
 				if (hascontrast) {
                     if (!integrate) {
                         unique_Savgref[r, c] = mean(survfun(gml, newreatref[c, 1], unique_t[r, 1], c, neweb, i_am_mestreg, i_am_uhtred, new_xbname, cmd_drop, cmd_predict))
                     }
                     else {
-                        unique_Savgref[r, c] = mean(intsurvfun(newreatref[c, 1], unique_t[r, 1], c, neweb, varmarg, dnrm, GHx, GHw))
+                        unique_Savgref[r, c] = mean(gml, intsurvfun(newreatref[c, 1], unique_t[r, 1], c, neweb, i_am_mestreg, i_am_uhtred, new_xbname, cmd_drop, cmd_predict, varmarg, dnrm, GHx, GHw))
                     }
 				}
 			}
@@ -385,10 +385,16 @@ mata:
 	}
 
 	`RC' intsurvfun(
+	`gml' gml,
 	`RS' re,
 	`RS' t,
 	`RS' i,
 	`RM' neweb,
+	`RS' i_am_mestreg,
+	`RS' i_am_uhtred,
+	`SS' new_xbname,
+	`SS' cmd_drop,
+	`SS' cmd_predict,
 	`RS' varmarg,
 	`RR' dnrm,
 	`RR' GHx,
