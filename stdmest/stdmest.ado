@@ -213,8 +213,8 @@ program define stdmest, sortpreserve
 	if "`ci'" != "" {
 		erepost b = `eb'
 	}
-	
-	//tidy up after uhtred
-        capture mata: rmexternal("`GML'")
+
+	// Tidy up after -uhtred-
+	capture mata: rmexternal("`GML'")
 
 end
