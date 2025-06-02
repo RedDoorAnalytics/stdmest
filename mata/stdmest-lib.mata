@@ -106,6 +106,29 @@ mata:
 		cmd_drop = "capture drop " + new_xbname
 		cmd_predict = "quietly _predict double " + new_xbname + " if " + touse + " == 1, xb"
 
+		// bits for new model parameters
+		eb_rown = st_local("eb_rown")
+		eb_coln = st_local("eb_coln")
+
+		// If -mestreg-, setup linear predictor (to speed up calculations):
+		xbmat = J(N, Bp1, .)
+		if (i_am_mestreg) {
+			// loop over Bp1
+			for (i = 1; i <= Bp1; i++) {
+				// if i > 1, repost
+				if (i > 1) {
+					tmpname = st_tempname()
+					st_matrix(tmpname, neweb[i, ])
+					stata("matrix rownames " + tmpname + " = " + eb_rown)
+					stata("matrix colnames " + tmpname + " = " + eb_coln)
+					stata("erepost b = " + tmpname)
+				}
+				stata(cmd_drop)
+				stata(cmd_predict)
+				xbmat[., i] = st_data(., new_xbname, touse) // copy back into Mata – might be inefficient?
+			}
+		}
+
 		// do calculations for the std. survival, looping over timevar
 		// actually, we loop over _unique_ values of timevar to be more efficient
 		unique_Savg = J(Nuniqt, Bp1, .)
@@ -127,17 +150,17 @@ mata:
 			}
 			for (r = 1; r <= Nuniqt; r++) {
                 if (!integrate) {
-                    unique_Savg[r, c] = mean(survfun(gml, newreat[c, 1], unique_t[r, 1], c, neweb, i_am_mestreg, i_am_uhtred, new_xbname, cmd_drop, cmd_predict))
+                    unique_Savg[r, c] = mean(survfun(gml, xbmat[., c], newreat[c, 1], unique_t[r, 1], c, neweb, i_am_mestreg, i_am_uhtred))
                 }
                 else {
-                    unique_Savg[r, c] = mean(intsurvfun(gml, newreat[c, 1], unique_t[r, 1], c, neweb,i_am_mestreg, i_am_uhtred, new_xbname, cmd_drop, cmd_predict, varmarg, dnrm, GHx, GHw))
+                    unique_Savg[r, c] = mean(intsurvfun(gml, xbmat[., c], newreat[c, 1], unique_t[r, 1], c, neweb,i_am_mestreg, i_am_uhtred, varmarg, dnrm, GHx, GHw))
                 }
 				if (hascontrast) {
                     if (!integrate) {
-                        unique_Savgref[r, c] = mean(survfun(gml, newreatref[c, 1], unique_t[r, 1], c, neweb, i_am_mestreg, i_am_uhtred, new_xbname, cmd_drop, cmd_predict))
+                        unique_Savgref[r, c] = mean(survfun(gml, xbmat[., c], newreatref[c, 1], unique_t[r, 1], c, neweb, i_am_mestreg, i_am_uhtred))
                     }
                     else {
-                        unique_Savgref[r, c] = mean(gml, intsurvfun(newreatref[c, 1], unique_t[r, 1], c, neweb, i_am_mestreg, i_am_uhtred, new_xbname, cmd_drop, cmd_predict, varmarg, dnrm, GHx, GHw))
+                        unique_Savgref[r, c] = mean(intsurvfun(gml, xbmat[., c], newreatref[c, 1], unique_t[r, 1], c, neweb, i_am_mestreg, i_am_uhtred, varmarg, dnrm, GHx, GHw))
                     }
 				}
 			}
@@ -312,15 +335,14 @@ mata:
 
 	`RC' survfun (
 	`gml' gml,
+	`RM' xb,
 	`RS' re,
 	`RS' t,
 	`RS' i,
 	`RM' neweb,
 	`RS' i_am_mestreg,
-	`RS' i_am_uhtred,
-	`SS' new_xbname,
-	`SS' cmd_drop,
-	`SS' cmd_predict)
+	`RS' i_am_uhtred
+	)
 	{
 		// if t == 0 force survival to 1 and ignore the rest
 		if (t == 0) {
@@ -330,17 +352,6 @@ mata:
 
 		// If -mestreg-:
 		if (i_am_mestreg) {
-			// repost if doing CIs
-			if (i > 1) {
-				tmpname = st_tempname()
-				st_matrix(tmpname, neweb[i, ])
-				// bits for new model parameters
-				eb_rown = st_local("eb_rown")
-				eb_coln = st_local("eb_coln")
-				stata("matrix rownames " + tmpname + " = " + eb_rown)
-				stata("matrix colnames " + tmpname + " = " + eb_coln)
-				stata("erepost b = " + tmpname)
-			}
 			// process ancillary parameter
 			// (depending on baseline hazard distribution)
 			distribution = st_global("e(distribution)")
@@ -353,14 +364,6 @@ mata:
 				s = selectindex(s)
 				anc = neweb[i, s]
 			}
-			// pickup rows to use
-			touse = st_local("touse")
-			// drop old temp column (if any) and predict xb
-			stata(cmd_drop)
-			stata(cmd_predict)
-			// get xb
-			xb = J(strtoreal(st_local("NNN")), 1, .)
-			xb = st_data(., new_xbname, touse)
 			// combine xb with re
 			xbb = xb :+ re
 			// calculate survival for exponential/Weibull:
@@ -386,15 +389,13 @@ mata:
 
 	`RC' intsurvfun(
 	`gml' gml,
+	`RM' xb,
 	`RS' re,
 	`RS' t,
 	`RS' i,
 	`RM' neweb,
 	`RS' i_am_mestreg,
 	`RS' i_am_uhtred,
-	`SS' new_xbname,
-	`SS' cmd_drop,
-	`SS' cmd_predict,
 	`RS' varmarg,
 	`RR' dnrm,
 	`RR' GHx,
@@ -405,7 +406,7 @@ mata:
 		for (j = 1; j <= cols(S1); j++) {
 			this_b = GHx[j] * exp(tmp)
 			this_b = this_b + re
-			S1[,j] = survfun(gml, this_b, t, i, neweb, i_am_mestreg, i_am_uhtred, new_xbname, cmd_drop, cmd_predict) * dnrm[j]
+			S1[,j] = survfun(gml, xb, this_b, t, i, neweb, i_am_mestreg, i_am_uhtred) * dnrm[j]
 		}
 		B = log(GHw) :+ (GHx:^2)
 		B = exp(B)

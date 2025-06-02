@@ -32,7 +32,7 @@
 {synopt: {cmdab: rep:s(#)}}Number of repetitions used by the algorithm used to calculate the confidence intervals. Defaults to 1000{p_end}
 {synopt: {cmdab: verb:ose}}If defined, display progress of the algorithm{p_end}
 {synopt: {cmdab: dots}}If defined, display additional details on progress of the algorithm{p_end}
-{synopt: {cmdab: varmarg:name}}Name of the random intercept to integrate (i.e., marginalise) over{p_end}
+{synopt: {cmdab: varmarg}}Variance of the random intercept to integrate (i.e., marginalise) over{p_end}
 {synopt: {cmdab: nk}}Number of Gauss-Hermite quadrature nodes used by the algorithm to numerically integrate out the random intercept denoted by {opt varmargname}. Defaults to 7{p_end}
 {synoptline}
 
@@ -123,7 +123,7 @@ Note that this has no effect is the {opt verbose} and {opt ci} options are not u
 {p_end}
 
 {phang}
-{opt varmargname} denotes the name of the random intercept to be marginalised over.
+{opt varmarg} denotes the variance of the random intercept to be marginalised over.
 This can be picked from the output table of {helpb mestreg}, from the variance components section – see the examples below for more details.
 {p_end}
 
@@ -160,10 +160,10 @@ Note that in the {helpb list} command above we filter on {cmd: jobno == 1} to en
 Then, we define a new {cmd: timevar} variable {cmd: tv} that we will predict for and we run {cmd: stdmestm} while fixing the BLUP for {cmd: birthyear == 1930}:
 
 {phang}{stata . range tv 0 365 100}{p_end}
-{phang}{stata . stdmestm S1930, reat(-.0795512) reatse(.1930458) varmargname(birthyear>id) timevar(tv) ci}{p_end}
+{phang}{stata . stdmestm S1930, reat(-.0795512) reatse(.1930458) varmarg(.507621) timevar(tv) ci}{p_end}
 
 {pstd}
-We pick the values of {opt reat} and {opt reatse} from the output of {helpb list}, above, and we integrate over the random intercept at the subject level (denoted with {cmd: birthyear>id} in the output table of {helpb mestreg}).
+We pick the values of {opt reat} and {opt reatse} from the output of {helpb list}, above, and we integrate over the random intercept at the subject level (with a variance of .507621, picked from the line denoted with {cmd: birthyear>id} in the output table of {helpb mestreg}).
 We also request confidence intervals, which are calculated using the default settings.
 
 {pstd}
