@@ -400,12 +400,12 @@ mata:
 	`RR' GHx,
 	`RR' GHw)
 	{
-		S1 = J(rows(xbb), cols(GHx), .)
+		S1 = J(strtoreal(st_local("NNN")), cols(GHx), .)
 		tmp = log(sqrt(varmarg)) + log(sqrt(2))
 		for (j = 1; j <= cols(S1); j++) {
 			this_b = GHx[j] * exp(tmp)
 			this_b = this_b + re
-			S1[,j] = survfun(this_b, t, i, neweb) * dnrm[j]
+			S1[,j] = survfun(gml, this_b, t, i, neweb, i_am_mestreg, i_am_uhtred, new_xbname, cmd_drop, cmd_predict) * dnrm[j]
 		}
 		B = log(GHw) :+ (GHx:^2)
 		B = exp(B)
