@@ -1,3 +1,5 @@
+//
+set linesize 255
 clear all
 // clear all is enough to 'refresh' in the same session
 // -uhtred-
@@ -23,7 +25,7 @@ range tv 0 562 50
 quietly mestreg c.age i.female || patient:, distribution(weibull)
 estimates store m_mestreg
 predict bm*, reffects reses(bmse*)
-list bm1 bmse1 if _n == 1 
+list bm1 bmse1 if _n == 1
 set seed 1993480
 stdmest Sm, reat(.7613212) reatse(.6750813) reatref(0.0) reatrefse(0.0) timevar(tv)
 list tv Sm* if tv != ., compress clean
@@ -56,8 +58,7 @@ list tv Sr2* if tv != ., compress clean
 stdmest Sr3, reat(.13558991) reatse(.55946738) reatref(0.0) reatrefse(0.0) timevar(tv)
 list tv Sr3* if tv != ., compress clean
 
-
-
+// ---
 twoway ///
 	(line Sm tv, sort lcolor(black)) ///
 	(line Su1 tv, sort lcolor(stred) lpattern(solid)) ///
@@ -66,8 +67,7 @@ twoway ///
 	(line Sr1 tv, sort lcolor(stred) lpattern(dash)) ///
 	(line Sr2 tv, sort lcolor(stblue) lpattern(dash))	///
 	(line Sr3 tv, sort lcolor(stgreen) lpattern(dash)) ///
-	, legend(order(1 "mestreg Weibull" 2 "uhtred Weibull ID=1" 3 "uhtred Weibull ID=3" 4 "uhtred Weibull ID=4" 5 "uhtred RP(5) ID=1" 6 "uhtred RP(5) ID=3" 7 "uhtred RP(7) ID=4" )) 
+	, legend(order(1 "mestreg Weibull" 2 "uhtred Weibull ID=1" 3 "uhtred Weibull ID=3" 4 "uhtred Weibull ID=4" 5 "uhtred RP(5) ID=1" 6 "uhtred RP(5) ID=3" 7 "uhtred RP(7) ID=4" ))
 
-
-
-
+// ---
+list tv Sm* Su1* Su2* Su3* Sr1* Sr2* Sr3* if tv != ., compress clean

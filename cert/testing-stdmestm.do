@@ -1,6 +1,18 @@
+//
+set linesize 255
 clear all
 // clear all is enough to 'refresh' in the same session
+// -uhtred-
+cd "~/Stata-dev/uhtred"
+adopath ++ "~/Stata-dev/uhtred"
+clear all
+adopath ++ "~/Stata-dev/uhtred/uhtred"
+clear all
+do ./build/buildmlib.do
+mata mata clear
+// -stdmest-
 cd "~/Stata-dev/stdmest"
+adopath ++ "stdmest"
 adopath ++ "stdmestm"
 clear all
 do ./build/buildmlib.do
@@ -17,14 +29,14 @@ range tv 0 365 30
 
 // seed, for reproducibility
 set seed 243958
-stdmestm Smin_perc, reat(-.4603618) reatse(.1427249) varmargname(birthyear>id) timevar(tv) contrast ci reps(10) verbose
-stdmestm Smax_perc, reat(.2269995) reatse(.1666193) varmargname(birthyear>id) timevar(tv) contrast ci reps(10) verbose
+stdmestm Smin_perc, reat(-.4603618) reatse(.1427249) varmarg(.507621) timevar(tv) contrast ci reps(10) verbose
+stdmestm Smax_perc, reat(.2269995) reatse(.1666193) varmarg(.507621) timevar(tv) contrast ci reps(10) verbose
 list tv Smin_perc* Smax_perc* if tv != .
 
 // seed, for reproducibility
 set seed 243958
-stdmestm Smin_norm, reat(-.4603618) reatse(.1427249) varmargname(birthyear>id) timevar(tv) contrast ci cinormal reps(10) verbose
-stdmestm Smax_norm, reat(.2269995) reatse(.1666193) varmargname(birthyear>id) timevar(tv) contrast ci cinormal reps(10) verbose
+stdmestm Smin_norm, reat(-.4603618) reatse(.1427249) varmarg(.507621) timevar(tv) contrast ci cinormal reps(10) verbose
+stdmestm Smax_norm, reat(.2269995) reatse(.1666193) varmarg(.507621) timevar(tv) contrast ci cinormal reps(10) verbose
 list tv Smin_norm* Smax_norm* if tv != .
 
 //
@@ -47,6 +59,6 @@ twoway ///
 
 // seed, for reproducibility
 set seed 33455
-stdmestm SA, reat(-.4603618) reatse(.1427249) varmargname(birthyear>id) timevar(tv) contrast ci reps(2000)
-stdmestm SB, reat(-.4603618) reatse(.1427249) varmargname(birthyear>id) timevar(tv) contrast ci cinormal reps(2000)
+stdmestm SA, reat(-.4603618) reatse(.1427249) varmarg(.507621) timevar(tv) contrast ci
+stdmestm SB, reat(-.4603618) reatse(.1427249) varmarg(.507621) timevar(tv) contrast ci cinormal
 list tv SA* SB* if tv != .

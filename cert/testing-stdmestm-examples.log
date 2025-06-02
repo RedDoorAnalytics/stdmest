@@ -24,32 +24,81 @@ Notes:
 
 . do "testing-stdmestm-examples.do" 
 
+. //
+. set linesize 255
+
 . clear all
 
 . // clear all is enough to 'refresh' in the same session
+. // -uhtred-
+. cd "~/Stata-dev/uhtred"
+/Users/ellessenne/Stata-dev/uhtred
+
+. adopath ++ "~/Stata-dev/uhtred"
+  [1]              "~/Stata-dev/uhtred"
+  [2]  (BASE)      "/Applications/Stata/ado/base/"
+  [3]  (SITE)      "/Applications/Stata/ado/site/"
+  [4]              "."
+  [5]  (PERSONAL)  "/Users/ellessenne/Documents/Stata/ado/personal/"
+  [6]  (PLUS)      "/Users/ellessenne/Library/Application Support/Stata/ado/plus/"
+  [7]  (OLDPLACE)  "~/ado/"
+
+. clear all
+
+. adopath ++ "~/Stata-dev/uhtred/uhtred"
+  [1]              "~/Stata-dev/uhtred/uhtred"
+  [2]              "~/Stata-dev/uhtred"
+  [3]  (BASE)      "/Applications/Stata/ado/base/"
+  [4]  (SITE)      "/Applications/Stata/ado/site/"
+  [5]              "."
+  [6]  (PERSONAL)  "/Users/ellessenne/Documents/Stata/ado/personal/"
+  [7]  (PLUS)      "/Users/ellessenne/Library/Application Support/Stata/ado/plus/"
+  [8]  (OLDPLACE)  "~/ado/"
+
+. clear all
+
+. do ./build/buildmlib.do
+
+. version 17
+
+. 
+. capture erase luhtred.mlib
+
+. mata: mata set matastrict off
+
+. qui {
+
+. 
+end of do-file
+
+. mata mata clear
+
+. // -stdmest-
 . cd "~/Stata-dev/stdmest"
 /Users/ellessenne/Stata-dev/stdmest
 
 . adopath ++ "stdmest"
   [1]              "stdmest"
-  [2]  (BASE)      "/Applications/Stata/ado/base/"
-  [3]  (SITE)      "/Applications/Stata/ado/site/"
-  [4]              "."
-  [5]  (PERSONAL)  "/Users/ellessenne/Documents/Stata/ado/personal/"
-  [6]  (PLUS)      "/Users/ellessenne/Library/Application Support/Stata/ado/plu
-> s/"
-  [7]  (OLDPLACE)  "~/ado/"
+  [2]              "~/Stata-dev/uhtred/uhtred"
+  [3]              "~/Stata-dev/uhtred"
+  [4]  (BASE)      "/Applications/Stata/ado/base/"
+  [5]  (SITE)      "/Applications/Stata/ado/site/"
+  [6]              "."
+  [7]  (PERSONAL)  "/Users/ellessenne/Documents/Stata/ado/personal/"
+  [8]  (PLUS)      "/Users/ellessenne/Library/Application Support/Stata/ado/plus/"
+  [9]  (OLDPLACE)  "~/ado/"
 
 . adopath ++ "stdmestm"
   [1]              "stdmestm"
   [2]              "stdmest"
-  [3]  (BASE)      "/Applications/Stata/ado/base/"
-  [4]  (SITE)      "/Applications/Stata/ado/site/"
-  [5]              "."
-  [6]  (PERSONAL)  "/Users/ellessenne/Documents/Stata/ado/personal/"
-  [7]  (PLUS)      "/Users/ellessenne/Library/Application Support/Stata/ado/plu
-> s/"
-  [8]  (OLDPLACE)  "~/ado/"
+  [3]              "~/Stata-dev/uhtred/uhtred"
+  [4]              "~/Stata-dev/uhtred"
+  [5]  (BASE)      "/Applications/Stata/ado/base/"
+  [6]  (SITE)      "/Applications/Stata/ado/site/"
+  [7]              "."
+  [8]  (PERSONAL)  "/Users/ellessenne/Documents/Stata/ado/personal/"
+  [9]  (PLUS)      "/Users/ellessenne/Library/Application Support/Stata/ado/plus/"
+  [10] (OLDPLACE)  "~/ado/"
 
 . clear all
 
@@ -96,8 +145,7 @@ Observed time interval: (0, tt]
                                      Earliest observed entry t =         0
                                           Last observed exit t =       428
 
-. mestreg education njobs prestige i.female || birthyear: || id:, distribution(
-> exponential)
+. mestreg education njobs prestige i.female || birthyear: || id:, distribution(exponential)
 
         Failure _d: failure
   Analysis time _t: tt
@@ -166,8 +214,7 @@ Note: LR test is conservative and provided only for reference.
 (using 7 quadrature points)
 
 . 
-. list birthyear id b_by b_by_se b_by_id b_by_id_se if birthyear == 1930 & jobn
-> o == 1
+. list birthyear id b_by b_by_se b_by_id b_by_id_se if birthyear == 1930 & jobno == 1
 
      +--------------------------------------------------------------+
      | birthy~r    id        b_by    b_by_se     b_by_id   b_by_i~e |
@@ -209,70 +256,54 @@ Note: LR test is conservative and provided only for reference.
 . 
 . 
 . // stdmestm for birthyear == 1930
+. // that is, we integrate over the birthyear>id random intercept
 . range tv 0 365 100
 (500 missing values generated)
 
-. stdmestm S1930, reat(-.0795512) reatse(.1930458) varmargname(birthyear>id) ti
-> mevar(tv) ci
+. stdmestm S1930, reat(-.0795512) reatse(.1930458) varmarg(.507621) timevar(tv) ci
 
 . twoway ///
 >         (rarea S1930_lower S1930_upper tv, sort color(stblue%10)) ///
 >         (line S1930 tv, sort lcolor(stblue))
 
 . 
-. // for reference, we want to predict fully conditional for all subjects born 
-> in 1930,
+. // for reference, we want to predict fully conditional for all subjects born in 1930,
 . //    the above should be about in the middle!
-. stdmest S1930_1, reat(-.0795512 -1.39209) reatse(.1930458 .4813395) timevar(t
-> v) ci
+. stdmest S1930_1, reat(-.0795512 -1.39209) reatse(.1930458 .4813395) timevar(tv) ci
 
-. stdmest S1930_2, reat(-.0795512 -.1309338) reatse(.1930458 .4605677) timevar(
-> tv) ci
+. stdmest S1930_2, reat(-.0795512 -.1309338) reatse(.1930458 .4605677) timevar(tv) ci
 
-. stdmest S1930_47, reat(-.0795512 .0648713) reatse(.1930458 .4757858) timevar(
-> tv) ci
+. stdmest S1930_47, reat(-.0795512 .0648713) reatse(.1930458 .4757858) timevar(tv) ci
 
-. stdmest S1930_52, reat(-.0795512 .0921726) reatse(.1930458 .6059889) timevar(
-> tv) ci
+. stdmest S1930_52, reat(-.0795512 .0921726) reatse(.1930458 .6059889) timevar(tv) ci
 
-. stdmest S1930_53, reat(-.0795512 .2572126) reatse(.1930458 .5502837) timevar(
-> tv) ci
+. stdmest S1930_53, reat(-.0795512 .2572126) reatse(.1930458 .5502837) timevar(tv) ci
 
-. stdmest S1930_73, reat(-.0795512 -.3866474) reatse(.1930458 .4431536) timevar
-> (tv) ci
+. stdmest S1930_73, reat(-.0795512 -.3866474) reatse(.1930458 .4431536) timevar(tv) ci
 
-. stdmest S1930_84, reat(-.0795512 .1991294) reatse(.1930458 .487356) timevar(t
-> v) ci
+. stdmest S1930_84, reat(-.0795512 .1991294) reatse(.1930458 .487356) timevar(tv) ci
 
-. stdmest S1930_100, reat(-.0795512 .9406086) reatse(.1930458 .4313854) timevar
-> (tv) ci
+. stdmest S1930_100, reat(-.0795512 .9406086) reatse(.1930458 .4313854) timevar(tv) ci
 
-. stdmest S1930_109, reat(-.0795512 -.0400392) reatse(.1930458 .4674065) timeva
-> r(tv) ci
+. stdmest S1930_109, reat(-.0795512 -.0400392) reatse(.1930458 .4674065) timevar(tv) ci
 
-. stdmest S1930_119, reat(-.0795512 -.4323267) reatse(.1930458 .4766487) timeva
-> r(tv) ci
+. stdmest S1930_119, reat(-.0795512 -.4323267) reatse(.1930458 .4766487) timevar(tv) ci
 
-. stdmest S1930_125, reat(-.0795512 -.1077823) reatse(.1930458 .4622744) timeva
-> r(tv) ci
+. stdmest S1930_125, reat(-.0795512 -.1077823) reatse(.1930458 .4622744) timevar(tv) ci
 
-. stdmest S1930_161, reat(-.0795512 .3662371) reatse(.1930458 .5660748) timevar
-> (tv) ci
+. stdmest S1930_161, reat(-.0795512 .3662371) reatse(.1930458 .5660748) timevar(tv) ci
 
 . //
 . levelsof id if birthyear == 1930, local(ids_1930)
 1 2 47 52 53 73 84 100 109 119 125 161
 
 . foreach i of local ids_1930 {
-  2.         local addplot `addplot' (rarea S1930_`i'_lower S1930_`i'_upper tv,
->  sort color(black%05)) (line S1930_`i' tv, sort lcolor(black) lpattern(dash))
+  2.         local addplot `addplot' (rarea S1930_`i'_lower S1930_`i'_upper tv, sort color(black%05)) (line S1930_`i' tv, sort lcolor(black) lpattern(dash))
   3. }
 
-. local margplot (rarea S1930_lower S1930_upper tv, sort color(stblue%20)) (lin
-> e S1930 tv, sort lcolor(stblue) lwidth(thick))
+. local margplot (rarea S1930_lower S1930_upper tv, sort color(stblue%20)) (line S1930 tv, sort lcolor(stblue) lwidth(thick))
 
-. twoway `addplot' `margplot', legend(order(25 "95% C.I." 26 "birthyear = 1930"
-> ))
+. twoway `addplot' `margplot', legend(order(25 "95% C.I." 26 "birthyear = 1930"))
 
 . 
 end of do-file

@@ -1,5 +1,16 @@
+//
+set linesize 255
 clear all
 // clear all is enough to 'refresh' in the same session
+// -uhtred-
+cd "~/Stata-dev/uhtred"
+adopath ++ "~/Stata-dev/uhtred"
+clear all
+adopath ++ "~/Stata-dev/uhtred/uhtred"
+clear all
+do ./build/buildmlib.do
+mata mata clear
+// -stdmest-
 cd "~/Stata-dev/stdmest"
 adopath ++ "stdmest"
 clear all
@@ -34,8 +45,8 @@ list b bse if _n == 1 | _n == _N
 capture drop Smin*
 capture drop Smin2*
 timer on 1
-stdmest Smin, reat(-1.006262) reatse(.2222539) reatref(0.0) reatrefse(0.0) contrast verbose ci reps(100) cinormal
-stdmest Smin2 if cohort == 18, reat(-1.006262) reatse(.2222539) reatref(0.0) reatrefse(0.0) contrast verbose ci reps(100) cinormal
+stdmest Smin, reat(-1.006262) reatse(.2222539) reatref(0.0) reatrefse(0.0) contrast verbose ci cinormal
+stdmest Smin2 if cohort == 18, reat(-1.006262) reatse(.2222539) reatref(0.0) reatrefse(0.0) contrast verbose ci cinormal
 timer off 1
 timer list 1
 
@@ -54,8 +65,8 @@ range tt 0 260.88 20
 capture drop Smintt*
 capture drop Smintt2*
 timer on 1
-stdmest Smintt, reat(-1.006262) reatse(.2222539) reatref(0.0) reatrefse(0.0) timevar(tt) contrast verbose ci reps(100) cinormal
-stdmest Smintt2 if cohort == 18, reat(-1.006262) reatse(.2222539) reatref(0.0) reatrefse(0.0) timevar(tt) contrast verbose ci reps(100) cinormal
+stdmest Smintt, reat(-1.006262) reatse(.2222539) reatref(0.0) reatrefse(0.0) timevar(tt) contrast verbose ci cinormal
+stdmest Smintt2 if cohort == 18, reat(-1.006262) reatse(.2222539) reatref(0.0) reatrefse(0.0) timevar(tt) contrast verbose ci cinormal
 timer off 1
 timer list 1
 
@@ -69,13 +80,6 @@ twoway ///
 	(line Smintt_contrast tt, sort lcolor(blue)) ///
 	, name("with_timevar", replace)
 
-// Comparison with results from R:
-// #    tt      Smin Smin_lower Smin_upper     Smin2 Smin2_lower Smin2_upper
-// # 1   0 1.0000000  1.0000000  1.0000000 1.0000000   1.0000000   1.0000000
-// # 2  50 0.9319127  0.8929531  0.9571315 0.9245237   0.8830277   0.9533136
-// # 3 100 0.8373119  0.7583575  0.8940225 0.8198216   0.7327097   0.8853843
-// # 4 150 0.7428443  0.6347484  0.8260286 0.7159733   0.5979398   0.8129497
-// # 5 200 0.6561102  0.5315389  0.7571369 0.6216718   0.4896364   0.7419416
 quietly {
 	clear all
 	cd "~/Stata-dev/stdmest"
@@ -85,16 +89,7 @@ quietly {
 	stset months, failure(status == 1)
 	mestreg c.age c.fev1pp ib0.mmrc || cohort: , dist(wei) nohr
 	range tt 0 200 5
-	stdmest Smin, reat(-1.006262) reatse(.2222539) reatref(0.0) reatrefse(0.0) ci reps(2000) timevar(tt)
-	stdmest Smin2 if cohort == 18, reat(-1.006262) reatse(.2222539) reatref(0.0) reatrefse(0.0) ci reps(2000) timevar(tt)
+	stdmest Smin, reat(-1.006262) reatse(.2222539) reatref(0.0) reatrefse(0.0) ci timevar(tt)
+	stdmest Smin2 if cohort == 18, reat(-1.006262) reatse(.2222539) reatref(0.0) reatrefse(0.0) ci timevar(tt)
 }
 list tt Smin Smin_lower Smin_upper Smin2 Smin2_lower Smin2_upper if tt != .
-//       +-------------------------------------------------------------------------+
-//       |  tt        Smin   Smin_l~r   Smin_u~r       Smin2   Smin2_l~   Smin2_u~ |
-//       |-------------------------------------------------------------------------|
-//    1. |   0           1          1          1           1          1          1 |
-//    2. |  50    .9319127   .8908648   .9567641    .9245237   .8805603   .9523867 |
-//    3. | 100   .83731194   .7529303   .8930812   .81982162   .7299135      .8818 |
-//    4. | 150   .74284435   .6295867   .8252876   .71597334   .5951086   .8066548 |
-//    5. | 200   .65611022   .5254201   .7584257   .62167184    .484746    .732971 |
-//       +-------------------------------------------------------------------------+

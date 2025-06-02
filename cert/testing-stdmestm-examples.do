@@ -1,5 +1,16 @@
+//
+set linesize 255
 clear all
 // clear all is enough to 'refresh' in the same session
+// -uhtred-
+cd "~/Stata-dev/uhtred"
+adopath ++ "~/Stata-dev/uhtred"
+clear all
+adopath ++ "~/Stata-dev/uhtred/uhtred"
+clear all
+do ./build/buildmlib.do
+mata mata clear
+// -stdmest-
 cd "~/Stata-dev/stdmest"
 adopath ++ "stdmest"
 adopath ++ "stdmestm"
@@ -40,8 +51,9 @@ list birthyear id b_by b_by_se b_by_id b_by_id_se if birthyear == 1930 & jobno =
 
 
 // stdmestm for birthyear == 1930
+// that is, we integrate over the birthyear>id random intercept
 range tv 0 365 100
-stdmestm S1930, reat(-.0795512) reatse(.1930458) varmargname(birthyear>id) timevar(tv) ci
+stdmestm S1930, reat(-.0795512) reatse(.1930458) varmarg(.507621) timevar(tv) ci
 twoway ///
 	(rarea S1930_lower S1930_upper tv, sort color(stblue%10)) ///
 	(line S1930 tv, sort lcolor(stblue))

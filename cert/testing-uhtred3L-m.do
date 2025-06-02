@@ -13,6 +13,7 @@ mata mata clear
 // -stdmest-
 cd "~/Stata-dev/stdmest"
 adopath ++ "stdmest"
+adopath ++ "stdmestm"
 clear all
 do ./build/buildmlib.do
 mata mata clear
@@ -22,26 +23,23 @@ clear all
 webuse jobhistory
 gen tt = tend - tstart
 stset tt, fail(failure)
+capture drop tv
+range tv 0 365 20
 
 // ---
 mestreg education njobs prestige i.female || birthyear: || id:, distribution(weibull) nohr
-predict bm*, reffects reses(bmse*)
+stdmestm Sm, reat(-.4603618) reatse(.1427249) varmarg(.8728384) timevar(tv) nk(15)
+// predict bm*, reffects reses(bmse*)
 
 // ---
-capture drop tv
-range tv 0 365 10
-
-// ---
-capture drop Sm*
-set seed 37246
-stdmest Sm, reat(-.0921738 -2.028026) reatse(.2263078 .5722969) timevar(tv) ci reps(2000)
-list tv Sm* if tv != .
+// capture drop Sm*
+// set seed 37246
+// stdmest Sm, reat(-.0921738 -2.028026) reatse(.2263078 .5722969) timevar(tv) ci reps(2000)
+// list tv Sm* if tv != .
 
 // ---
 uhtred (_t education njobs prestige i.female M1[birthyear]@1 M2[birthyear>id]@1, family(rp, df(1) failure(_d)))
-predict bu*, reffects
-predict buse*, reses
-capture drop Su*
-set seed 37246
-stdmest Su, reat(-.0921738 -2.028026) reatse(.2263078 .5722969) timevar(tv) ci reps(2000)
-list tv Su* Sm* if tv != .
+stdmestm Su, reat(-.4603618) reatse(.1427249) varmarg(`=.9314487^2') timevar(tv) nk(15)
+
+// ---
+list tv Sm Su if tv != .

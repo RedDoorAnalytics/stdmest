@@ -24,21 +24,69 @@ Notes:
 
 . do "testing-data3CIA.do" 
 
+. //
+. set linesize 255
+
 . clear all
 
 . // clear all is enough to 'refresh' in the same session
+. // -uhtred-
+. cd "~/Stata-dev/uhtred"
+/Users/ellessenne/Stata-dev/uhtred
+
+. adopath ++ "~/Stata-dev/uhtred"
+  [1]              "~/Stata-dev/uhtred"
+  [2]  (BASE)      "/Applications/Stata/ado/base/"
+  [3]  (SITE)      "/Applications/Stata/ado/site/"
+  [4]              "."
+  [5]  (PERSONAL)  "/Users/ellessenne/Documents/Stata/ado/personal/"
+  [6]  (PLUS)      "/Users/ellessenne/Library/Application Support/Stata/ado/plus/"
+  [7]  (OLDPLACE)  "~/ado/"
+
+. clear all
+
+. adopath ++ "~/Stata-dev/uhtred/uhtred"
+  [1]              "~/Stata-dev/uhtred/uhtred"
+  [2]              "~/Stata-dev/uhtred"
+  [3]  (BASE)      "/Applications/Stata/ado/base/"
+  [4]  (SITE)      "/Applications/Stata/ado/site/"
+  [5]              "."
+  [6]  (PERSONAL)  "/Users/ellessenne/Documents/Stata/ado/personal/"
+  [7]  (PLUS)      "/Users/ellessenne/Library/Application Support/Stata/ado/plus/"
+  [8]  (OLDPLACE)  "~/ado/"
+
+. clear all
+
+. do ./build/buildmlib.do
+
+. version 17
+
+. 
+. capture erase luhtred.mlib
+
+. mata: mata set matastrict off
+
+. qui {
+
+. 
+end of do-file
+
+. mata mata clear
+
+. // -stdmest-
 . cd "~/Stata-dev/stdmest"
 /Users/ellessenne/Stata-dev/stdmest
 
 . adopath ++ "stdmest"
   [1]              "stdmest"
-  [2]  (BASE)      "/Applications/Stata/ado/base/"
-  [3]  (SITE)      "/Applications/Stata/ado/site/"
-  [4]              "."
-  [5]  (PERSONAL)  "/Users/ellessenne/Documents/Stata/ado/personal/"
-  [6]  (PLUS)      "/Users/ellessenne/Library/Application Support/Stata/ado/plu
-> s/"
-  [7]  (OLDPLACE)  "~/ado/"
+  [2]              "~/Stata-dev/uhtred/uhtred"
+  [3]              "~/Stata-dev/uhtred"
+  [4]  (BASE)      "/Applications/Stata/ado/base/"
+  [5]  (SITE)      "/Applications/Stata/ado/site/"
+  [6]              "."
+  [7]  (PERSONAL)  "/Users/ellessenne/Documents/Stata/ado/personal/"
+  [8]  (PLUS)      "/Users/ellessenne/Library/Application Support/Stata/ado/plus/"
+  [9]  (OLDPLACE)  "~/ado/"
 
 . clear all
 
@@ -180,23 +228,21 @@ LR test vs. Weibull model: chibar2(01) = 205.78       Prob >= chibar2 = 0.0000
 
 . timer on 1
 
-. stdmest Smin, reat(-1.006262) reatse(.2222539) reatref(0.0) reatrefse(0.0) co
-> ntrast verbose ci reps(100) cinormal
+. stdmest Smin, reat(-1.006262) reatse(.2222539) reatref(0.0) reatrefse(0.0) contrast verbose ci cinormal
 timevar() not specified, _t will be used instead
+
 Deriving point estimates...
-Calculating 100 linear predictors for the C.I. algorithm...
-Calculating 100 standardised survival probabilities for the C.I. algorithm...
+
 Deriving confidence intervals...
 Deriving contrasts...
 Deriving confidence intervals of contrasts...
 Done!
 
-. stdmest Smin2 if cohort == 18, reat(-1.006262) reatse(.2222539) reatref(0.0) 
-> reatrefse(0.0) contrast verbose ci reps(100) cinormal
+. stdmest Smin2 if cohort == 18, reat(-1.006262) reatse(.2222539) reatref(0.0) reatrefse(0.0) contrast verbose ci cinormal
 timevar() not specified, _t will be used instead
+
 Deriving point estimates...
-Calculating 100 linear predictors for the C.I. algorithm...
-Calculating 100 standardised survival probabilities for the C.I. algorithm...
+
 Deriving confidence intervals...
 Deriving contrasts...
 Deriving confidence intervals of contrasts...
@@ -205,15 +251,13 @@ Done!
 . timer off 1
 
 . timer list 1
-   1:     29.80 /        1 =      29.8000
+   1:    465.70 /        1 =     465.7010
 
 . 
 . // list Smin Smin_ref Smin_contrast if tt != .
 . twoway ///
->         (rarea Smin2_contrast_lower Smin2_contrast_upper _t, sort color(red%1
-> 0)) ///
->         (rarea Smin_contrast_lower Smin_contrast_upper _t, sort color(blue%10
-> )) ///
+>         (rarea Smin2_contrast_lower Smin2_contrast_upper _t, sort color(red%10)) ///
+>         (rarea Smin_contrast_lower Smin_contrast_upper _t, sort color(blue%10)) ///
 >         (line Smin2_contrast _t, sort lcolor(red)) ///
 >         (line Smin_contrast _t, sort lcolor(blue)) ///
 >         , name("no_timevar", replace)
@@ -231,21 +275,19 @@ Done!
 
 . timer on 1
 
-. stdmest Smintt, reat(-1.006262) reatse(.2222539) reatref(0.0) reatrefse(0.0) 
-> timevar(tt) contrast verbose ci reps(100) cinormal
+. stdmest Smintt, reat(-1.006262) reatse(.2222539) reatref(0.0) reatrefse(0.0) timevar(tt) contrast verbose ci cinormal
+
 Deriving point estimates...
-Calculating 100 linear predictors for the C.I. algorithm...
-Calculating 100 standardised survival probabilities for the C.I. algorithm...
+
 Deriving confidence intervals...
 Deriving contrasts...
 Deriving confidence intervals of contrasts...
 Done!
 
-. stdmest Smintt2 if cohort == 18, reat(-1.006262) reatse(.2222539) reatref(0.0
-> ) reatrefse(0.0) timevar(tt) contrast verbose ci reps(100) cinormal
+. stdmest Smintt2 if cohort == 18, reat(-1.006262) reatse(.2222539) reatref(0.0) reatrefse(0.0) timevar(tt) contrast verbose ci cinormal
+
 Deriving point estimates...
-Calculating 100 linear predictors for the C.I. algorithm...
-Calculating 100 standardised survival probabilities for the C.I. algorithm...
+
 Deriving confidence intervals...
 Deriving contrasts...
 Deriving confidence intervals of contrasts...
@@ -254,7 +296,7 @@ Done!
 . timer off 1
 
 . timer list 1
-   1:     30.93 /        2 =      15.4635
+   1:    477.48 /        2 =     238.7380
 
 . 
 . list Smintt Smintt2 if tt != .
@@ -290,83 +332,26 @@ Done!
 . 
 . // list Smin Smin_ref Smin_contrast if tt != .
 . twoway ///
->         (rarea Smintt2_contrast_lower Smintt2_contrast_upper tt, sort color(r
-> ed%10)) ///
->         (rarea Smintt_contrast_lower Smintt_contrast_upper tt, sort color(blu
-> e%10)) ///
+>         (rarea Smintt2_contrast_lower Smintt2_contrast_upper tt, sort color(red%10)) ///
+>         (rarea Smintt_contrast_lower Smintt_contrast_upper tt, sort color(blue%10)) ///
 >         (line Smintt2_contrast tt, sort lcolor(red)) ///
 >         (line Smintt_contrast tt, sort lcolor(blue)) ///
 >         , name("with_timevar", replace)
 
 . 
-. // Comparison with results from R:
-. // #    tt      Smin Smin_lower Smin_upper     Smin2 Smin2_lower Smin2_upper
-. // # 1   0 1.0000000  1.0000000  1.0000000 1.0000000   1.0000000   1.0000000
-. // # 2  50 0.9319127  0.8929531  0.9571315 0.9245237   0.8830277   0.9533136
-. // # 3 100 0.8373119  0.7583575  0.8940225 0.8198216   0.7327097   0.8853843
-. // # 4 150 0.7428443  0.6347484  0.8260286 0.7159733   0.5979398   0.8129497
-. // # 5 200 0.6561102  0.5315389  0.7571369 0.6216718   0.4896364   0.7419416
 . quietly {
 
 . list tt Smin Smin_lower Smin_upper Smin2 Smin2_lower Smin2_upper if tt != .
 
-      +-----------------------------------------------------------------+
-   1. |  tt |      Smin | Smin_lo~r | Smin_up~r |     Smin2 | Smin2_l~r |
-      |   0 |         1 |         1 |         1 |         1 |         1 |
-      |-----------------------------------------------------------------|
-      |                            Smin2_u~r                            |
-      |                                    1                            |
-      +-----------------------------------------------------------------+
+      +-----------------------------------------------------------------------------+
+      |  tt        Smin   Smin_lo~r   Smin_up~r       Smin2   Smin2_l~r   Smin2_u~r |
+      |-----------------------------------------------------------------------------|
+   1. |   0           1           1           1           1           1           1 |
+   2. |  50    .9319127   .89797248   .95722741    .9245237   .88571468   .95339358 |
+   3. | 100   .83731194   .76832804   .89462513   .81982162    .7414637   .88452194 |
+   4. | 150   .74284435   .64856987   .82807162   .71597334   .60992336   .81112252 |
+   5. | 200   .65611022   .54730488    .7623425   .62167184   .49960935   .73978297 |
+      +-----------------------------------------------------------------------------+
 
-      +-----------------------------------------------------------------+
-   2. |  tt |      Smin | Smin_lo~r | Smin_up~r |     Smin2 | Smin2_l~r |
-      |  50 |  .9319127 | .89194266 | .95521315 |  .9245237 | .88114407 |
-      |-----------------------------------------------------------------|
-      |                            Smin2_u~r                            |
-      |                            .95291734                            |
-      +-----------------------------------------------------------------+
-
-      +-----------------------------------------------------------------+
-   3. |  tt |      Smin | Smin_lo~r | Smin_up~r |     Smin2 | Smin2_l~r |
-      | 100 | .83731194 | .75654833 |  .8900413 | .81982162 | .73160634 |
-      |-----------------------------------------------------------------|
-      |                            Smin2_u~r                            |
-      |                            .88340277                            |
-      +-----------------------------------------------------------------+
-
-      +-----------------------------------------------------------------+
-   4. |  tt |      Smin | Smin_lo~r | Smin_up~r |     Smin2 | Smin2_l~r |
-      | 150 | .74284435 | .63248659 | .82111168 | .71597334 |  .5983204 |
-      |-----------------------------------------------------------------|
-      |                            Smin2_u~r                            |
-      |                             .8089513                            |
-      +-----------------------------------------------------------------+
-
-      +-----------------------------------------------------------------+
-   5. |  tt |      Smin | Smin_lo~r | Smin_up~r |     Smin2 | Smin2_l~r |
-      | 200 | .65611022 | .52938009 | .75393563 | .62167184 | .49031608 |
-      |-----------------------------------------------------------------|
-      |                            Smin2_u~r                            |
-      |                            .73533689                            |
-      +-----------------------------------------------------------------+
-
-. //       +-------------------------------------------------------------------
-> ------+
-. //       |  tt        Smin   Smin_l~r   Smin_u~r       Smin2   Smin2_l~   Smi
-> n2_u~ |
-. //       |-------------------------------------------------------------------
-> ------|
-. //    1. |   0           1          1          1           1          1      
->     1 |
-. //    2. |  50    .9319127   .8908648   .9567641    .9245237   .8805603   .95
-> 23867 |
-. //    3. | 100   .83731194   .7529303   .8930812   .81982162   .7299135      
-> .8818 |
-. //    4. | 150   .74284435   .6295867   .8252876   .71597334   .5951086   .80
-> 66548 |
-. //    5. | 200   .65611022   .5254201   .7584257   .62167184    .484746    .7
-> 32971 |
-. //       +-------------------------------------------------------------------
-> ------+
 . 
 end of do-file

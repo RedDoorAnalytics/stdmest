@@ -24,32 +24,81 @@ Notes:
 
 . do "testing-verbose.do" 
 
+. //
+. set linesize 255
+
 . clear all
 
 . // clear all is enough to 'refresh' in the same session
+. // -uhtred-
+. cd "~/Stata-dev/uhtred"
+/Users/ellessenne/Stata-dev/uhtred
+
+. adopath ++ "~/Stata-dev/uhtred"
+  [1]              "~/Stata-dev/uhtred"
+  [2]  (BASE)      "/Applications/Stata/ado/base/"
+  [3]  (SITE)      "/Applications/Stata/ado/site/"
+  [4]              "."
+  [5]  (PERSONAL)  "/Users/ellessenne/Documents/Stata/ado/personal/"
+  [6]  (PLUS)      "/Users/ellessenne/Library/Application Support/Stata/ado/plus/"
+  [7]  (OLDPLACE)  "~/ado/"
+
+. clear all
+
+. adopath ++ "~/Stata-dev/uhtred/uhtred"
+  [1]              "~/Stata-dev/uhtred/uhtred"
+  [2]              "~/Stata-dev/uhtred"
+  [3]  (BASE)      "/Applications/Stata/ado/base/"
+  [4]  (SITE)      "/Applications/Stata/ado/site/"
+  [5]              "."
+  [6]  (PERSONAL)  "/Users/ellessenne/Documents/Stata/ado/personal/"
+  [7]  (PLUS)      "/Users/ellessenne/Library/Application Support/Stata/ado/plus/"
+  [8]  (OLDPLACE)  "~/ado/"
+
+. clear all
+
+. do ./build/buildmlib.do
+
+. version 17
+
+. 
+. capture erase luhtred.mlib
+
+. mata: mata set matastrict off
+
+. qui {
+
+. 
+end of do-file
+
+. mata mata clear
+
+. // -stdmest-
 . cd "~/Stata-dev/stdmest"
 /Users/ellessenne/Stata-dev/stdmest
 
 . adopath ++ "stdmest"
   [1]              "stdmest"
-  [2]  (BASE)      "/Applications/Stata/ado/base/"
-  [3]  (SITE)      "/Applications/Stata/ado/site/"
-  [4]              "."
-  [5]  (PERSONAL)  "/Users/ellessenne/Documents/Stata/ado/personal/"
-  [6]  (PLUS)      "/Users/ellessenne/Library/Application Support/Stata/ado/plu
-> s/"
-  [7]  (OLDPLACE)  "~/ado/"
+  [2]              "~/Stata-dev/uhtred/uhtred"
+  [3]              "~/Stata-dev/uhtred"
+  [4]  (BASE)      "/Applications/Stata/ado/base/"
+  [5]  (SITE)      "/Applications/Stata/ado/site/"
+  [6]              "."
+  [7]  (PERSONAL)  "/Users/ellessenne/Documents/Stata/ado/personal/"
+  [8]  (PLUS)      "/Users/ellessenne/Library/Application Support/Stata/ado/plus/"
+  [9]  (OLDPLACE)  "~/ado/"
 
 . adopath ++ "stdmestm"
   [1]              "stdmestm"
   [2]              "stdmest"
-  [3]  (BASE)      "/Applications/Stata/ado/base/"
-  [4]  (SITE)      "/Applications/Stata/ado/site/"
-  [5]              "."
-  [6]  (PERSONAL)  "/Users/ellessenne/Documents/Stata/ado/personal/"
-  [7]  (PLUS)      "/Users/ellessenne/Library/Application Support/Stata/ado/plu
-> s/"
-  [8]  (OLDPLACE)  "~/ado/"
+  [3]              "~/Stata-dev/uhtred/uhtred"
+  [4]              "~/Stata-dev/uhtred"
+  [5]  (BASE)      "/Applications/Stata/ado/base/"
+  [6]  (SITE)      "/Applications/Stata/ado/site/"
+  [7]              "."
+  [8]  (PERSONAL)  "/Users/ellessenne/Documents/Stata/ado/personal/"
+  [9]  (PLUS)      "/Users/ellessenne/Library/Application Support/Stata/ado/plus/"
+  [10] (OLDPLACE)  "~/ado/"
 
 . clear all
 
@@ -94,8 +143,7 @@ Observed time interval: (0, tt]
                                      Earliest observed entry t =         0
                                           Last observed exit t =       428
 
-. mestreg education njobs prestige i.female || birthyear: || id:, distribution(
-> exponential)
+. mestreg education njobs prestige i.female || birthyear: || id:, distribution(exponential)
 
         Failure _d: failure
   Analysis time _t: tt
@@ -164,59 +212,55 @@ Note: LR test is conservative and provided only for reference.
 
 . 
 . //
-. stdmest S0a, reat(-.4603618 1.0) reatse(.1427249 0.1) reatref(0.0 0.0) reatre
-> fse(0.0 0.0) timevar(tv)
+. stdmest S0a, reat(-.4603618 1.0) reatse(.1427249 0.1) reatref(0.0 0.0) reatrefse(0.0 0.0) timevar(tv)
 
-. stdmest S0b, reat(-.4603618 1.0) reatse(.1427249 0.1) reatref(0.0 0.0) reatre
-> fse(0.0 0.0) timevar(tv) dots
+. stdmest S0b, reat(-.4603618 1.0) reatse(.1427249 0.1) reatref(0.0 0.0) reatrefse(0.0 0.0) timevar(tv) dots
 
-. stdmest S1a, reat(-.4603618 1.0) reatse(.1427249 0.1) reatref(0.0 0.0) reatre
-> fse(0.0 0.0) timevar(tv) verbose
+. stdmest S1a, reat(-.4603618 1.0) reatse(.1427249 0.1) reatref(0.0 0.0) reatrefse(0.0 0.0) timevar(tv) verbose
+
 Deriving point estimates...
+
 Done!
 
-. stdmest S1b, reat(-.4603618 1.0) reatse(.1427249 0.1) reatref(0.0 0.0) reatre
-> fse(0.0 0.0) timevar(tv) verbose dots
+. stdmest S1b, reat(-.4603618 1.0) reatse(.1427249 0.1) reatref(0.0 0.0) reatrefse(0.0 0.0) timevar(tv) verbose dots
+
 Deriving point estimates...
+
 Done!
 
-. stdmest S2a, reat(-.4603618 1.0) reatse(.1427249 0.1) reatref(0.0 0.0) reatre
-> fse(0.0 0.0) timevar(tv) contrast verbose
+. stdmest S2a, reat(-.4603618 1.0) reatse(.1427249 0.1) reatref(0.0 0.0) reatrefse(0.0 0.0) timevar(tv) contrast verbose
+
 Deriving point estimates...
+
 Deriving contrasts...
 Done!
 
-. stdmest S2b, reat(-.4603618 1.0) reatse(.1427249 0.1) reatref(0.0 0.0) reatre
-> fse(0.0 0.0) timevar(tv) contrast verbose dots
+. stdmest S2b, reat(-.4603618 1.0) reatse(.1427249 0.1) reatref(0.0 0.0) reatrefse(0.0 0.0) timevar(tv) contrast verbose dots
+
 Deriving point estimates...
+
 Deriving contrasts...
 Done!
 
-. stdmest S3a, reat(-.4603618 1.0) reatse(.1427249 0.1) reatref(0.0 0.0) reatre
-> fse(0.0 0.0) timevar(tv) contrast ci reps(200) verbose
+. stdmest S3a, reat(-.4603618 1.0) reatse(.1427249 0.1) reatref(0.0 0.0) reatrefse(0.0 0.0) timevar(tv) contrast ci reps(200) verbose
+
 Deriving point estimates...
-Calculating 200 linear predictors for the C.I. algorithm...
-Calculating 200 standardised survival probabilities for the C.I. algorithm...
+
 Deriving confidence intervals...
 Deriving contrasts...
 Deriving confidence intervals of contrasts...
 Done!
 
-. stdmest S3b, reat(-.4603618 1.0) reatse(.1427249 0.1) reatref(0.0 0.0) reatre
-> fse(0.0 0.0) timevar(tv) contrast ci reps(200) verbose dots
+. stdmest S3b, reat(-.4603618 1.0) reatse(.1427249 0.1) reatref(0.0 0.0) reatrefse(0.0 0.0) timevar(tv) contrast ci reps(200) verbose dots
+
 Deriving point estimates...
-Calculating 200 linear predictors for the C.I. algorithm...
+Calculating standardised survival probabilities for the C.I. algorithm... (200)
 ----+--- 1 ---+--- 2 ---+--- 3 ---+--- 4 ---+--- 5 
 ..................................................    50
 ..................................................   100
 ..................................................   150
 ..................................................   200
-Calculating 200 standardised survival probabilities for the C.I. algorithm...
-----+--- 1 ---+--- 2 ---+--- 3 ---+--- 4 ---+--- 5 
-..................................................    50
-..................................................   100
-..................................................   150
-..................................................   200
+
 Deriving confidence intervals...
 Deriving contrasts...
 Deriving confidence intervals of contrasts...
@@ -224,59 +268,55 @@ Done!
 
 . 
 . //
-. stdmestm Sm0a, reat(-.4603618) reatse(.1427249) varmargname(birthyear>id) tim
-> evar(tv)
+. stdmestm Sm0a, reat(-.4603618) reatse(.1427249) varmarg(.507621) timevar(tv)
 
-. stdmestm Sm0b, reat(-.4603618) reatse(.1427249) varmargname(birthyear>id) tim
-> evar(tv) dots
+. stdmestm Sm0b, reat(-.4603618) reatse(.1427249) varmarg(.507621) timevar(tv) dots
 
-. stdmestm Sm1a, reat(-.4603618) reatse(.1427249) varmargname(birthyear>id) tim
-> evar(tv) verbose
+. stdmestm Sm1a, reat(-.4603618) reatse(.1427249) varmarg(.507621) timevar(tv) verbose
+
 Deriving point estimates...
+
 Done!
 
-. stdmestm Sm1b, reat(-.4603618) reatse(.1427249) varmargname(birthyear>id) tim
-> evar(tv) verbose dots
+. stdmestm Sm1b, reat(-.4603618) reatse(.1427249) varmarg(.507621) timevar(tv) verbose dots
+
 Deriving point estimates...
+
 Done!
 
-. stdmestm Sm2a, reat(-.4603618) reatse(.1427249) varmargname(birthyear>id) tim
-> evar(tv) contrast verbose
+. stdmestm Sm2a, reat(-.4603618) reatse(.1427249) varmarg(.507621) timevar(tv) contrast verbose
+
 Deriving point estimates...
+
 Deriving contrasts...
 Done!
 
-. stdmestm Sm2b, reat(-.4603618) reatse(.1427249) varmargname(birthyear>id) tim
-> evar(tv) contrast verbose dots
+. stdmestm Sm2b, reat(-.4603618) reatse(.1427249) varmarg(.507621) timevar(tv) contrast verbose dots
+
 Deriving point estimates...
+
 Deriving contrasts...
 Done!
 
-. stdmestm Sm3a, reat(-.4603618) reatse(.1427249) varmargname(birthyear>id) tim
-> evar(tv) contrast ci reps(200) verbose
+. stdmestm Sm3a, reat(-.4603618) reatse(.1427249) varmarg(.507621) timevar(tv) contrast ci reps(200) verbose
+
 Deriving point estimates...
-Calculating 200 linear predictors for the C.I. algorithm...
-Calculating 200 standardised survival probabilities for the C.I. algorithm...
+
 Deriving confidence intervals...
 Deriving contrasts...
 Deriving confidence intervals of contrasts...
 Done!
 
-. stdmestm Sm3b, reat(-.4603618) reatse(.1427249) varmargname(birthyear>id) tim
-> evar(tv) contrast ci reps(200) verbose dots
+. stdmestm Sm3b, reat(-.4603618) reatse(.1427249) varmarg(.507621) timevar(tv) contrast ci reps(200) verbose dots
+
 Deriving point estimates...
-Calculating 200 linear predictors for the C.I. algorithm...
+Calculating standardised survival probabilities for the C.I. algorithm... (200)
 ----+--- 1 ---+--- 2 ---+--- 3 ---+--- 4 ---+--- 5 
 ..................................................    50
 ..................................................   100
 ..................................................   150
 ..................................................   200
-Calculating 200 standardised survival probabilities for the C.I. algorithm...
-----+--- 1 ---+--- 2 ---+--- 3 ---+--- 4 ---+--- 5 
-..................................................    50
-..................................................   100
-..................................................   150
-..................................................   200
+
 Deriving confidence intervals...
 Deriving contrasts...
 Deriving confidence intervals of contrasts...
