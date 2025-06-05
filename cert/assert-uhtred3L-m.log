@@ -1,0 +1,172 @@
+
+  ___  ____  ____  ____  ____ ®
+ /__    /   ____/   /   ____/      StataNow 18.5
+___/   /   /___/   /   /___/       MP—Parallel Edition
+
+ Statistics and Data Science       Copyright 1985-2023 StataCorp LLC
+                                   StataCorp
+                                   4905 Lakeway Drive
+                                   College Station, Texas 77845 USA
+                                   800-782-8272        https://www.stata.com
+                                   979-696-4600        service@stata.com
+
+Stata license: 3-user 2-core network, expiring 12 Sep 2025
+Serial number: 501809300405
+  Licensed to: Alessandro Gasparini
+               Red Door Analytics AB
+
+Notes:
+      1. Stata is running in batch mode.
+      2. Unicode is supported; see help unicode_advice.
+      3. More than 2 billion observations are allowed; see help obs_advice.
+      4. Maximum number of variables is set to 5,000 but can be increased;
+          see help set_maxvar.
+
+. do "assert-uhtred3L-m.do" 
+
+. //
+. set linesize 255
+
+. clear all
+
+. // clear all is enough to 'refresh' in the same session
+. // -uhtred-
+. cd "~/Stata-dev/uhtred"
+/Users/ellessenne/Stata-dev/uhtred
+
+. adopath ++ "~/Stata-dev/uhtred"
+  [1]              "~/Stata-dev/uhtred"
+  [2]  (BASE)      "/Applications/Stata/ado/base/"
+  [3]  (SITE)      "/Applications/Stata/ado/site/"
+  [4]              "."
+  [5]  (PERSONAL)  "/Users/ellessenne/Documents/Stata/ado/personal/"
+  [6]  (PLUS)      "/Users/ellessenne/Library/Application Support/Stata/ado/plus/"
+  [7]  (OLDPLACE)  "~/ado/"
+
+. clear all
+
+. adopath ++ "~/Stata-dev/uhtred/uhtred"
+  [1]              "~/Stata-dev/uhtred/uhtred"
+  [2]              "~/Stata-dev/uhtred"
+  [3]  (BASE)      "/Applications/Stata/ado/base/"
+  [4]  (SITE)      "/Applications/Stata/ado/site/"
+  [5]              "."
+  [6]  (PERSONAL)  "/Users/ellessenne/Documents/Stata/ado/personal/"
+  [7]  (PLUS)      "/Users/ellessenne/Library/Application Support/Stata/ado/plus/"
+  [8]  (OLDPLACE)  "~/ado/"
+
+. clear all
+
+. do ./build/buildmlib.do
+
+. version 17
+
+. 
+. capture erase luhtred.mlib
+
+. mata: mata set matastrict off
+
+. qui {
+
+. 
+end of do-file
+
+. mata mata clear
+
+. // -stdmest-
+. cd "~/Stata-dev/stdmest"
+/Users/ellessenne/Stata-dev/stdmest
+
+. adopath ++ "stdmest"
+  [1]              "stdmest"
+  [2]              "~/Stata-dev/uhtred/uhtred"
+  [3]              "~/Stata-dev/uhtred"
+  [4]  (BASE)      "/Applications/Stata/ado/base/"
+  [5]  (SITE)      "/Applications/Stata/ado/site/"
+  [6]              "."
+  [7]  (PERSONAL)  "/Users/ellessenne/Documents/Stata/ado/personal/"
+  [8]  (PLUS)      "/Users/ellessenne/Library/Application Support/Stata/ado/plus/"
+  [9]  (OLDPLACE)  "~/ado/"
+
+. adopath ++ "stdmestm"
+  [1]              "stdmestm"
+  [2]              "stdmest"
+  [3]              "~/Stata-dev/uhtred/uhtred"
+  [4]              "~/Stata-dev/uhtred"
+  [5]  (BASE)      "/Applications/Stata/ado/base/"
+  [6]  (SITE)      "/Applications/Stata/ado/site/"
+  [7]              "."
+  [8]  (PERSONAL)  "/Users/ellessenne/Documents/Stata/ado/personal/"
+  [9]  (PLUS)      "/Users/ellessenne/Library/Application Support/Stata/ado/plus/"
+  [10] (OLDPLACE)  "~/ado/"
+
+. clear all
+
+. do ./build/buildmlib.do
+
+. capture erase lstdmest.mlib
+
+. quietly {
+
+. 
+end of do-file
+
+. mata mata clear
+
+. 
+. // ---
+. clear all
+
+. webuse jobhistory
+(Job history data, Event History Analysis with Stata, Blossfeld et al. 2007)
+
+. gen tt = tend - tstart
+
+. stset tt, fail(failure)
+
+Survival-time data settings
+
+         Failure event: failure!=0 & failure<.
+Observed time interval: (0, tt]
+     Exit on or before: failure
+
+--------------------------------------------------------------------------
+        600  total observations
+          0  exclusions
+--------------------------------------------------------------------------
+        600  observations remaining, representing
+        458  failures in single-record/single-failure data
+     40,782  total analysis time at risk and under observation
+                                                At risk from t =         0
+                                     Earliest observed entry t =         0
+                                          Last observed exit t =       428
+
+. 
+. // ---
+. capture drop tv
+
+. range tv 0 365 10
+(590 missing values generated)
+
+. 
+. // ---
+. quietly mestreg education njobs prestige i.female || birthyear: || id:, distribution(weibull) nohr
+
+. stdmestm Sm, reat(-.4603618) reatse(.1427249) reatref(0.0) reatrefse(0.0) varmarg(.8728384) timevar(tv) contrast
+
+. 
+. // ---
+. quietly uhtred (_t education njobs prestige i.female M1[birthyear]@1 M2[birthyear>id]@1, family(rp, df(1) failure(_d)))
+
+. stdmestm Su, reat(-.4603618) reatse(.1427249) reatref(0.0) reatrefse(0.0) varmarg(`=.9314487^2') timevar(tv) contrast
+
+. 
+. // ---
+. assert reldif(Sm, Su) <= 1e-3
+
+. assert reldif(Sm_ref, Su_ref) <= 1e-3
+
+. assert reldif(Sm_contrast, Su_contrast) <= 1e-3
+
+. 
+end of do-file
