@@ -24,6 +24,9 @@ Notes:
 
 . do "assert-modexpt.do" 
 
+. //
+. set linesize 255
+
 . clear all
 
 . cd "~/Stata-dev/stdmest"
@@ -35,8 +38,7 @@ Notes:
   [3]  (SITE)      "/Applications/Stata/ado/site/"
   [4]              "."
   [5]  (PERSONAL)  "/Users/ellessenne/Documents/Stata/ado/personal/"
-  [6]  (PLUS)      "/Users/ellessenne/Library/Application Support/Stata/ado/plu
-> s/"
+  [6]  (PLUS)      "/Users/ellessenne/Library/Application Support/Stata/ado/plus/"
   [7]  (OLDPLACE)  "~/ado/"
 
 . clear all
@@ -87,12 +89,12 @@ Notes:
 . 
 . //
 . modexpt, filename("`test1'")
-file /var/folders/xr/_y099f650fjcbdct28bmv2kc0000gn/T//St87708.000002 saved
-file /var/folders/xr/_y099f650fjcbdct28bmv2kc0000gn/T//St87708.000002 saved
-file /var/folders/xr/_y099f650fjcbdct28bmv2kc0000gn/T//St87708.000002 saved
-file /var/folders/xr/_y099f650fjcbdct28bmv2kc0000gn/T//St87708.000002 saved
-file /var/folders/xr/_y099f650fjcbdct28bmv2kc0000gn/T//St87708.000002 saved
-file /var/folders/xr/_y099f650fjcbdct28bmv2kc0000gn/T//St87708.000002 saved
+file /var/folders/xr/_y099f650fjcbdct28bmv2kc0000gn/T//St14677.000002 saved
+file /var/folders/xr/_y099f650fjcbdct28bmv2kc0000gn/T//St14677.000002 saved
+file /var/folders/xr/_y099f650fjcbdct28bmv2kc0000gn/T//St14677.000002 saved
+file /var/folders/xr/_y099f650fjcbdct28bmv2kc0000gn/T//St14677.000002 saved
+file /var/folders/xr/_y099f650fjcbdct28bmv2kc0000gn/T//St14677.000002 saved
+file /var/folders/xr/_y099f650fjcbdct28bmv2kc0000gn/T//St14677.000002 saved
 
 . assert fileexists("`test1'") == 1
 
@@ -103,12 +105,12 @@ file /var/folders/xr/_y099f650fjcbdct28bmv2kc0000gn/T//St87708.000002 saved
 . 
 . //
 . modexpt, filename("`test1'") replace
-file /var/folders/xr/_y099f650fjcbdct28bmv2kc0000gn/T//St87708.000002 saved
-file /var/folders/xr/_y099f650fjcbdct28bmv2kc0000gn/T//St87708.000002 saved
-file /var/folders/xr/_y099f650fjcbdct28bmv2kc0000gn/T//St87708.000002 saved
-file /var/folders/xr/_y099f650fjcbdct28bmv2kc0000gn/T//St87708.000002 saved
-file /var/folders/xr/_y099f650fjcbdct28bmv2kc0000gn/T//St87708.000002 saved
-file /var/folders/xr/_y099f650fjcbdct28bmv2kc0000gn/T//St87708.000002 saved
+file /var/folders/xr/_y099f650fjcbdct28bmv2kc0000gn/T//St14677.000002 saved
+file /var/folders/xr/_y099f650fjcbdct28bmv2kc0000gn/T//St14677.000002 saved
+file /var/folders/xr/_y099f650fjcbdct28bmv2kc0000gn/T//St14677.000002 saved
+file /var/folders/xr/_y099f650fjcbdct28bmv2kc0000gn/T//St14677.000002 saved
+file /var/folders/xr/_y099f650fjcbdct28bmv2kc0000gn/T//St14677.000002 saved
+file /var/folders/xr/_y099f650fjcbdct28bmv2kc0000gn/T//St14677.000002 saved
 
 . rcof "modexpt, filename(`test1') replace" == 0
 
@@ -126,12 +128,12 @@ file /var/folders/xr/_y099f650fjcbdct28bmv2kc0000gn/T//St87708.000002 saved
 . 
 . //
 . modexpt, filename("`test2'")
-file /var/folders/xr/_y099f650fjcbdct28bmv2kc0000gn/T//St87708.000003 saved
-file /var/folders/xr/_y099f650fjcbdct28bmv2kc0000gn/T//St87708.000003 saved
-file /var/folders/xr/_y099f650fjcbdct28bmv2kc0000gn/T//St87708.000003 saved
-file /var/folders/xr/_y099f650fjcbdct28bmv2kc0000gn/T//St87708.000003 saved
-file /var/folders/xr/_y099f650fjcbdct28bmv2kc0000gn/T//St87708.000003 saved
-file /var/folders/xr/_y099f650fjcbdct28bmv2kc0000gn/T//St87708.000003 saved
+file /var/folders/xr/_y099f650fjcbdct28bmv2kc0000gn/T//St14677.000003 saved
+file /var/folders/xr/_y099f650fjcbdct28bmv2kc0000gn/T//St14677.000003 saved
+file /var/folders/xr/_y099f650fjcbdct28bmv2kc0000gn/T//St14677.000003 saved
+file /var/folders/xr/_y099f650fjcbdct28bmv2kc0000gn/T//St14677.000003 saved
+file /var/folders/xr/_y099f650fjcbdct28bmv2kc0000gn/T//St14677.000003 saved
+file /var/folders/xr/_y099f650fjcbdct28bmv2kc0000gn/T//St14677.000003 saved
 
 . assert fileexists("`test2'") == 1
 
@@ -142,12 +144,12 @@ file /var/folders/xr/_y099f650fjcbdct28bmv2kc0000gn/T//St87708.000003 saved
 . 
 . //
 . modexpt, filename("`test2'") replace
-file /var/folders/xr/_y099f650fjcbdct28bmv2kc0000gn/T//St87708.000003 saved
-file /var/folders/xr/_y099f650fjcbdct28bmv2kc0000gn/T//St87708.000003 saved
-file /var/folders/xr/_y099f650fjcbdct28bmv2kc0000gn/T//St87708.000003 saved
-file /var/folders/xr/_y099f650fjcbdct28bmv2kc0000gn/T//St87708.000003 saved
-file /var/folders/xr/_y099f650fjcbdct28bmv2kc0000gn/T//St87708.000003 saved
-file /var/folders/xr/_y099f650fjcbdct28bmv2kc0000gn/T//St87708.000003 saved
+file /var/folders/xr/_y099f650fjcbdct28bmv2kc0000gn/T//St14677.000003 saved
+file /var/folders/xr/_y099f650fjcbdct28bmv2kc0000gn/T//St14677.000003 saved
+file /var/folders/xr/_y099f650fjcbdct28bmv2kc0000gn/T//St14677.000003 saved
+file /var/folders/xr/_y099f650fjcbdct28bmv2kc0000gn/T//St14677.000003 saved
+file /var/folders/xr/_y099f650fjcbdct28bmv2kc0000gn/T//St14677.000003 saved
+file /var/folders/xr/_y099f650fjcbdct28bmv2kc0000gn/T//St14677.000003 saved
 
 . rcof "modexpt, filename(`test2') replace" == 0
 
@@ -166,15 +168,15 @@ variables created: _rcs1_1 to _rcs1_3
 . 
 . //
 . modexpt, filename("`test3'")
-file /var/folders/xr/_y099f650fjcbdct28bmv2kc0000gn/T//St87708.000004 saved
-file /var/folders/xr/_y099f650fjcbdct28bmv2kc0000gn/T//St87708.000004 saved
-file /var/folders/xr/_y099f650fjcbdct28bmv2kc0000gn/T//St87708.000004 saved
-file /var/folders/xr/_y099f650fjcbdct28bmv2kc0000gn/T//St87708.000004 saved
-file /var/folders/xr/_y099f650fjcbdct28bmv2kc0000gn/T//St87708.000004 saved
-file /var/folders/xr/_y099f650fjcbdct28bmv2kc0000gn/T//St87708.000004 saved
-file /var/folders/xr/_y099f650fjcbdct28bmv2kc0000gn/T//St87708.000004 saved
-file /var/folders/xr/_y099f650fjcbdct28bmv2kc0000gn/T//St87708.000004 saved
-file /var/folders/xr/_y099f650fjcbdct28bmv2kc0000gn/T//St87708.000004 saved
+file /var/folders/xr/_y099f650fjcbdct28bmv2kc0000gn/T//St14677.000004 saved
+file /var/folders/xr/_y099f650fjcbdct28bmv2kc0000gn/T//St14677.000004 saved
+file /var/folders/xr/_y099f650fjcbdct28bmv2kc0000gn/T//St14677.000004 saved
+file /var/folders/xr/_y099f650fjcbdct28bmv2kc0000gn/T//St14677.000004 saved
+file /var/folders/xr/_y099f650fjcbdct28bmv2kc0000gn/T//St14677.000004 saved
+file /var/folders/xr/_y099f650fjcbdct28bmv2kc0000gn/T//St14677.000004 saved
+file /var/folders/xr/_y099f650fjcbdct28bmv2kc0000gn/T//St14677.000004 saved
+file /var/folders/xr/_y099f650fjcbdct28bmv2kc0000gn/T//St14677.000004 saved
+file /var/folders/xr/_y099f650fjcbdct28bmv2kc0000gn/T//St14677.000004 saved
 
 . assert fileexists("`test3'") == 1
 
@@ -185,15 +187,15 @@ file /var/folders/xr/_y099f650fjcbdct28bmv2kc0000gn/T//St87708.000004 saved
 . 
 . //
 . modexpt, filename("`test3'") replace
-file /var/folders/xr/_y099f650fjcbdct28bmv2kc0000gn/T//St87708.000004 saved
-file /var/folders/xr/_y099f650fjcbdct28bmv2kc0000gn/T//St87708.000004 saved
-file /var/folders/xr/_y099f650fjcbdct28bmv2kc0000gn/T//St87708.000004 saved
-file /var/folders/xr/_y099f650fjcbdct28bmv2kc0000gn/T//St87708.000004 saved
-file /var/folders/xr/_y099f650fjcbdct28bmv2kc0000gn/T//St87708.000004 saved
-file /var/folders/xr/_y099f650fjcbdct28bmv2kc0000gn/T//St87708.000004 saved
-file /var/folders/xr/_y099f650fjcbdct28bmv2kc0000gn/T//St87708.000004 saved
-file /var/folders/xr/_y099f650fjcbdct28bmv2kc0000gn/T//St87708.000004 saved
-file /var/folders/xr/_y099f650fjcbdct28bmv2kc0000gn/T//St87708.000004 saved
+file /var/folders/xr/_y099f650fjcbdct28bmv2kc0000gn/T//St14677.000004 saved
+file /var/folders/xr/_y099f650fjcbdct28bmv2kc0000gn/T//St14677.000004 saved
+file /var/folders/xr/_y099f650fjcbdct28bmv2kc0000gn/T//St14677.000004 saved
+file /var/folders/xr/_y099f650fjcbdct28bmv2kc0000gn/T//St14677.000004 saved
+file /var/folders/xr/_y099f650fjcbdct28bmv2kc0000gn/T//St14677.000004 saved
+file /var/folders/xr/_y099f650fjcbdct28bmv2kc0000gn/T//St14677.000004 saved
+file /var/folders/xr/_y099f650fjcbdct28bmv2kc0000gn/T//St14677.000004 saved
+file /var/folders/xr/_y099f650fjcbdct28bmv2kc0000gn/T//St14677.000004 saved
+file /var/folders/xr/_y099f650fjcbdct28bmv2kc0000gn/T//St14677.000004 saved
 
 . rcof "modexpt, filename(`test3') replace" == 0
 
