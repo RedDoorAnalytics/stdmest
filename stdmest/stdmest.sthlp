@@ -1,13 +1,14 @@
 {smcl}
 {* *! version 1.0.0}{...}
 {vieweralsosee "mestreg" "help mestreg"}{...}
+{vieweralsosee "uhtred" "help uhtred"}{...}
 {viewerjumpto "Syntax" "stdmest##syntax"}{...}
 {viewerjumpto "Description" "stdmest##description"}{...}
 {viewerjumpto "Options" "stdmest##options"}{...}
 {viewerjumpto "Remarks" "stdmest##remarks"}{...}
 {viewerjumpto "Examples" "stdmest##examples"}{...}
 
-{synopt :{cmd: stdmest} {hline 2} Regression standardisation for standardised survival probabilities and contrasts between hierarchical units after fitting {cmd: mestreg} models}
+{synopt :{cmd: stdmest} {hline 2} Regression standardisation for standardised survival probabilities and contrasts between hierarchical units after fitting {cmd: mestreg} and {cmd: uhtred} models}
 
 {marker syntax}{...}
 {title: Syntax}
@@ -38,22 +39,22 @@
 {title: Description}
 
 {phang}
-{cmd: stdmest} is a post-estimation command that can be used to estimate standardised survival probabilities (and contrasts thereof) after fitting {helpb mestreg} models, using regression standardisation.
-The goal is to obtain standardised survival probabilities, standardising over the observed covariates distributions (i.e., the fixed effects that were included in your {helpb mestreg} model) while fixing certain random effect values.
+{cmd: stdmest} is a post-estimation command that can be used to estimate standardised survival probabilities (and contrasts thereof) after fitting {helpb mestreg} and {helpb uhtred} models, using regression standardisation.
+The goal is to obtain standardised survival probabilities, standardising over the observed covariates distributions (i.e., the fixed effects that were included in your multilevel survival model) while fixing certain random effect values.
 {p_end}
 
 {phang}
-{helpb mestreg} models with random intercepts at any possible hierarchical level are supported, as long as they are all fixed for prediction purposes.
+{helpb mestreg} and {helpb uhtred} models with random intercepts at any possible hierarchical level are supported, as long as they are all fixed for prediction purposes.
 Examples with two- and three-level models are included below.
-Note however that only models using the proportional hazards metric and assuming an exponential or Weibull baseline hazard distribution are supported, at the moment.
+Note however that, for {cmd: mestreg}, only models using the proportional hazards metric and assuming an exponential or Weibull baseline hazard distribution are supported, at the moment.
 {p_end}
 
 {marker options}{...}
 {title: Options}
 
 {phang}
-{opt reat(#)} is a vector of values for the random effect (intercept) to be fixed at each level of the hierarchy, and to calculate standardised survival probabilities for.
-These are usually the predicted BLUPs, obtained using the {helpb mestreg postestimation##predict:predict, reffects} post-estimation command of {helpb mestreg}.
+{opt reat(#)} is a vector of values for the random effect (intercept) to be fixed at each level of the hierarchy for calculating standardised survival probabilities.
+These are usually the predicted BLUPs, obtained using the {cmd: predict} post-estimation command of {helpb mestreg} and {helpb uhtred}.
 {p_end}
 
 {phang}
@@ -63,7 +64,7 @@ These are usually the predicted BLUPs, obtained using the {helpb mestreg postest
 {phang}
 {opt reatse(#)} is a vector of standard errors of {opt reat}, which are used by the algorithm computing the confidence intervals.
 Note that values in {opt reat} and {opt reatse} must be in the same order, as they are picked according to their position: the first value in {opt reat} has a standard error given by the first element in {opt reatse}, and so on.
-These are usually obtained with the {helpb mestreg postestimation##predict:reses} option of {helpb mestreg postestimation##predict:predict, reffects}, a post-estimation command of {helpb mestreg}.
+These are also usually obtained with the {cmd: predict} post-estimation command of {helpb mestreg} and {helpb uhtred}.
 {p_end}
 
 {phang}
@@ -175,6 +176,7 @@ We also pass the {opt reps(1000)} options to run 1,000 repetitions of the algori
 
 {pstd}
 If we add the {opt dots} options, more details on progress are provided:
+
 {phang}{stata . stdmest s4b, ci timevar(tt) reps(1000) verbose dots}{p_end}
 
 {pstd}
