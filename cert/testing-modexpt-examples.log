@@ -24,6 +24,9 @@ Notes:
 
 . do "testing-modexpt-examples.do" 
 
+. //
+. set linesize 255
+
 . clear all
 
 . cd "~/Stata-dev/stdmest"
@@ -35,8 +38,7 @@ Notes:
   [3]  (SITE)      "/Applications/Stata/ado/site/"
   [4]              "."
   [5]  (PERSONAL)  "/Users/ellessenne/Documents/Stata/ado/personal/"
-  [6]  (PLUS)      "/Users/ellessenne/Library/Application Support/Stata/ado/plu
-> s/"
+  [6]  (PLUS)      "/Users/ellessenne/Library/Application Support/Stata/ado/plus/"
   [7]  (OLDPLACE)  "~/ado/"
 
 . clear all
@@ -113,24 +115,23 @@ LR test vs. Weibull model: chibar2(01) = 9.40         Prob >= chibar2 = 0.0011
 . tempfile test1
 
 . modexpt, filename(`test1')
-file /var/folders/xr/_y099f650fjcbdct28bmv2kc0000gn/T//St87632.000001 saved
-file /var/folders/xr/_y099f650fjcbdct28bmv2kc0000gn/T//St87632.000001 saved
-file /var/folders/xr/_y099f650fjcbdct28bmv2kc0000gn/T//St87632.000001 saved
-file /var/folders/xr/_y099f650fjcbdct28bmv2kc0000gn/T//St87632.000001 saved
-file /var/folders/xr/_y099f650fjcbdct28bmv2kc0000gn/T//St87632.000001 saved
-file /var/folders/xr/_y099f650fjcbdct28bmv2kc0000gn/T//St87632.000001 saved
+file /var/folders/xr/_y099f650fjcbdct28bmv2kc0000gn/T//St31469.000001 saved
+file /var/folders/xr/_y099f650fjcbdct28bmv2kc0000gn/T//St31469.000001 saved
+file /var/folders/xr/_y099f650fjcbdct28bmv2kc0000gn/T//St31469.000001 saved
+file /var/folders/xr/_y099f650fjcbdct28bmv2kc0000gn/T//St31469.000001 saved
+file /var/folders/xr/_y099f650fjcbdct28bmv2kc0000gn/T//St31469.000001 saved
+file /var/folders/xr/_y099f650fjcbdct28bmv2kc0000gn/T//St31469.000001 saved
 
 . modexpt, filename(`test1') replace
-file /var/folders/xr/_y099f650fjcbdct28bmv2kc0000gn/T//St87632.000001 saved
-file /var/folders/xr/_y099f650fjcbdct28bmv2kc0000gn/T//St87632.000001 saved
-file /var/folders/xr/_y099f650fjcbdct28bmv2kc0000gn/T//St87632.000001 saved
-file /var/folders/xr/_y099f650fjcbdct28bmv2kc0000gn/T//St87632.000001 saved
-file /var/folders/xr/_y099f650fjcbdct28bmv2kc0000gn/T//St87632.000001 saved
-file /var/folders/xr/_y099f650fjcbdct28bmv2kc0000gn/T//St87632.000001 saved
+file /var/folders/xr/_y099f650fjcbdct28bmv2kc0000gn/T//St31469.000001 saved
+file /var/folders/xr/_y099f650fjcbdct28bmv2kc0000gn/T//St31469.000001 saved
+file /var/folders/xr/_y099f650fjcbdct28bmv2kc0000gn/T//St31469.000001 saved
+file /var/folders/xr/_y099f650fjcbdct28bmv2kc0000gn/T//St31469.000001 saved
+file /var/folders/xr/_y099f650fjcbdct28bmv2kc0000gn/T//St31469.000001 saved
+file /var/folders/xr/_y099f650fjcbdct28bmv2kc0000gn/T//St31469.000001 saved
 
 . capture noisily modexpt, filename(`test1')
-File /var/folders/xr/_y099f650fjcbdct28bmv2kc0000gn/T//St87632.000001 already e
-> xists; you might want to specify the replace option.
+File /var/folders/xr/_y099f650fjcbdct28bmv2kc0000gn/T//St31469.000001 already exists; you might want to specify the replace option.
 
 . 
 . //
@@ -172,12 +173,12 @@ patient:     |
 . tempfile test2
 
 . modexpt, filename(`test2')
-file /var/folders/xr/_y099f650fjcbdct28bmv2kc0000gn/T//St87632.000002 saved
-file /var/folders/xr/_y099f650fjcbdct28bmv2kc0000gn/T//St87632.000002 saved
-file /var/folders/xr/_y099f650fjcbdct28bmv2kc0000gn/T//St87632.000002 saved
-file /var/folders/xr/_y099f650fjcbdct28bmv2kc0000gn/T//St87632.000002 saved
-file /var/folders/xr/_y099f650fjcbdct28bmv2kc0000gn/T//St87632.000002 saved
-file /var/folders/xr/_y099f650fjcbdct28bmv2kc0000gn/T//St87632.000002 saved
+file /var/folders/xr/_y099f650fjcbdct28bmv2kc0000gn/T//St31469.000002 saved
+file /var/folders/xr/_y099f650fjcbdct28bmv2kc0000gn/T//St31469.000002 saved
+file /var/folders/xr/_y099f650fjcbdct28bmv2kc0000gn/T//St31469.000002 saved
+file /var/folders/xr/_y099f650fjcbdct28bmv2kc0000gn/T//St31469.000002 saved
+file /var/folders/xr/_y099f650fjcbdct28bmv2kc0000gn/T//St31469.000002 saved
+file /var/folders/xr/_y099f650fjcbdct28bmv2kc0000gn/T//St31469.000002 saved
 
 . 
 end of do-file

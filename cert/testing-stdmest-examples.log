@@ -24,21 +24,69 @@ Notes:
 
 . do "testing-stdmest-examples.do" 
 
+. //
+. set linesize 255
+
 . clear all
 
 . // clear all is enough to 'refresh' in the same session
+. // -uhtred-
+. cd "~/Stata-dev/uhtred"
+/Users/ellessenne/Stata-dev/uhtred
+
+. adopath ++ "~/Stata-dev/uhtred"
+  [1]              "~/Stata-dev/uhtred"
+  [2]  (BASE)      "/Applications/Stata/ado/base/"
+  [3]  (SITE)      "/Applications/Stata/ado/site/"
+  [4]              "."
+  [5]  (PERSONAL)  "/Users/ellessenne/Documents/Stata/ado/personal/"
+  [6]  (PLUS)      "/Users/ellessenne/Library/Application Support/Stata/ado/plus/"
+  [7]  (OLDPLACE)  "~/ado/"
+
+. clear all
+
+. adopath ++ "~/Stata-dev/uhtred/uhtred"
+  [1]              "~/Stata-dev/uhtred/uhtred"
+  [2]              "~/Stata-dev/uhtred"
+  [3]  (BASE)      "/Applications/Stata/ado/base/"
+  [4]  (SITE)      "/Applications/Stata/ado/site/"
+  [5]              "."
+  [6]  (PERSONAL)  "/Users/ellessenne/Documents/Stata/ado/personal/"
+  [7]  (PLUS)      "/Users/ellessenne/Library/Application Support/Stata/ado/plus/"
+  [8]  (OLDPLACE)  "~/ado/"
+
+. clear all
+
+. do ./build/buildmlib.do
+
+. version 17
+
+. 
+. capture erase luhtred.mlib
+
+. mata: mata set matastrict off
+
+. qui {
+
+. 
+end of do-file
+
+. mata mata clear
+
+. // -stdmest-
 . cd "~/Stata-dev/stdmest"
 /Users/ellessenne/Stata-dev/stdmest
 
 . adopath ++ "stdmest"
   [1]              "stdmest"
-  [2]  (BASE)      "/Applications/Stata/ado/base/"
-  [3]  (SITE)      "/Applications/Stata/ado/site/"
-  [4]              "."
-  [5]  (PERSONAL)  "/Users/ellessenne/Documents/Stata/ado/personal/"
-  [6]  (PLUS)      "/Users/ellessenne/Library/Application Support/Stata/ado/plu
-> s/"
-  [7]  (OLDPLACE)  "~/ado/"
+  [2]              "~/Stata-dev/uhtred/uhtred"
+  [3]              "~/Stata-dev/uhtred"
+  [4]  (BASE)      "/Applications/Stata/ado/base/"
+  [5]  (SITE)      "/Applications/Stata/ado/site/"
+  [6]              "."
+  [7]  (PERSONAL)  "/Users/ellessenne/Documents/Stata/ado/personal/"
+  [8]  (PLUS)      "/Users/ellessenne/Library/Application Support/Stata/ado/plus/"
+  [9]  (OLDPLACE)  "~/ado/"
 
 . clear all
 
@@ -141,24 +189,22 @@ timevar() not specified, _t will be used instead
 . stdmest S2, reat(0.0) reatse(0.0) ci
 timevar() not specified, _t will be used instead
 
-. twoway (rarea S2_lower S2_upper _t, sort color(stblue%10)) (line S2 _t, sort 
-> lcolor(stblue))
+. twoway (rarea S2_lower S2_upper _t, sort color(stblue%10)) (line S2 _t, sort lcolor(stblue))
 
 . 
 . stdmest S3, reat(0.0) reatse(0.0) ci cinormal
 timevar() not specified, _t will be used instead
 
-. twoway (rarea S3_lower S3_upper _t, sort color(stgreen%10)) (line S3 _t, sort
->  lcolor(stgreen))
+. twoway (rarea S3_lower S3_upper _t, sort color(stgreen%10)) (line S3 _t, sort lcolor(stgreen))
 
 . 
 . range tt 0 100 5
 (71 missing values generated)
 
 . stdmest S4, reat(0.0) reatse(0.0) ci timevar(tt) reps(1000) verbose
+
 Deriving point estimates...
-Calculating 1000 linear predictors for the C.I. algorithm...
-Calculating 1000 standardised survival probabilities for the C.I. algorithm...
+
 Deriving confidence intervals...
 Done!
 
@@ -176,8 +222,9 @@ Done!
 
 . 
 . stdmest S4b, reat(0.0) reatse(0.0) ci timevar(tt) reps(1000) verbose dots
+
 Deriving point estimates...
-Calculating 1000 linear predictors for the C.I. algorithm...
+Calculating standardised survival probabilities for the C.I. algorithm... (1,000)
 ----+--- 1 ---+--- 2 ---+--- 3 ---+--- 4 ---+--- 5 
 ..................................................    50
 ..................................................   100
@@ -199,28 +246,7 @@ Calculating 1000 linear predictors for the C.I. algorithm...
 ..................................................   900
 ..................................................   950
 .................................................. 1,000
-Calculating 1000 standardised survival probabilities for the C.I. algorithm...
-----+--- 1 ---+--- 2 ---+--- 3 ---+--- 4 ---+--- 5 
-..................................................    50
-..................................................   100
-..................................................   150
-..................................................   200
-..................................................   250
-..................................................   300
-..................................................   350
-..................................................   400
-..................................................   450
-..................................................   500
-..................................................   550
-..................................................   600
-..................................................   650
-..................................................   700
-..................................................   750
-..................................................   800
-..................................................   850
-..................................................   900
-..................................................   950
-.................................................. 1,000
+
 Deriving confidence intervals...
 Done!
 
@@ -235,11 +261,10 @@ Done!
   1. | -2.098768   .4285454 |
      +----------------------+
 
-. stdmest S5, ci timevar(tt) reps(1000) verbose contrast reat(-2.098768) reatse
-> (.4285454) reatref(0.0) reatrefse(0.0)
+. stdmest S5, ci timevar(tt) reps(1000) verbose contrast reat(-2.098768) reatse(.4285454) reatref(0.0) reatrefse(0.0)
+
 Deriving point estimates...
-Calculating 1000 linear predictors for the C.I. algorithm...
-Calculating 1000 standardised survival probabilities for the C.I. algorithm...
+
 Deriving confidence intervals...
 Deriving contrasts...
 Deriving confidence intervals of contrasts...
@@ -249,45 +274,15 @@ Done!
 
 . list tt S5* if tt != .
 
-     +-----------------------------------------------------------------+
-  1. |  tt |        S5 |  S5_lower |  S5_upper |    S5_ref | S5_re~wer |
-     |   0 |         1 |         1 |         1 |         1 |         1 |
-     |-----------------------------------------------------------------|
-     |   S5_re~per   |   S5_cont~t   |   S5_co~wer    |   S5_co~per    |
-     |           1   |           0   |           0    |           0    |
-     +-----------------------------------------------------------------+
-
-     +-----------------------------------------------------------------+
-  2. |  tt |        S5 |  S5_lower |  S5_upper |    S5_ref | S5_re~wer |
-     |  25 | .97265828 | .91987811 | .98971863 | .81105926 | .67791199 |
-     |-----------------------------------------------------------------|
-     |   S5_re~per   |   S5_cont~t   |   S5_co~wer    |   S5_co~per    |
-     |   .87641929   |   .16159902   |   .09859428    |   .26857249    |
-     +-----------------------------------------------------------------+
-
-     +-----------------------------------------------------------------+
-  3. |  tt |        S5 |  S5_lower |  S5_upper |    S5_ref | S5_re~wer |
-     |  50 | .93706276 | .83831568 | .97523259 | .63895822 | .48797692 |
-     |-----------------------------------------------------------------|
-     |   S5_re~per   |   S5_cont~t   |   S5_co~wer    |   S5_co~per    |
-     |   .72909634   |   .29810454   |   .20437297    |    .4186368    |
-     +-----------------------------------------------------------------+
-
-     +-----------------------------------------------------------------+
-  4. |  tt |        S5 |  S5_lower |  S5_upper |    S5_ref | S5_re~wer |
-     |  75 |  .8992979 | .76460658 | .95978906 | .50994906 | .36053396 |
-     |-----------------------------------------------------------------|
-     |   S5_re~per   |   S5_cont~t   |   S5_co~wer    |   S5_co~per    |
-     |   .61009833   |   .38934884   |   .26255797    |   .51488878    |
-     +-----------------------------------------------------------------+
-
-     +-----------------------------------------------------------------+
-  5. |  tt |        S5 |  S5_lower |  S5_upper |    S5_ref | S5_re~wer |
-     | 100 | .86124665 | .69377258 |  .9434395 | .41147107 | .26177349 |
-     |-----------------------------------------------------------------|
-     |   S5_re~per   |   S5_cont~t   |   S5_co~wer    |   S5_co~per    |
-     |   .51846483   |   .44977557   |    .2939867    |   .58079005    |
-     +-----------------------------------------------------------------+
+     +-----------------------------------------------------------------------------------------------------------------+
+     |  tt          S5    S5_lower    S5_upper      S5_ref   S5_re~wer   S5_re~per   S5_cont~t   S5_co~wer   S5_co~per |
+     |-----------------------------------------------------------------------------------------------------------------|
+  1. |   0           1           1           1           1           1           1           0           0           0 |
+  2. |  25   .97265828   .91893234   .98941327   .81105926   .68010315   .87730185   .16159902   .09903169   .26840786 |
+  3. |  50   .93706276   .83812684   .97288936   .63895822   .49389648   .72902252   .29810454   .20317778   .41959441 |
+  4. |  75    .8992979   .75565761   .95587504   .50994906   .36413826   .61326679   .38934884   .25720867   .52108814 |
+  5. | 100   .86124665   .68806135   .93812155   .41147107   .26279119   .51941636   .44977557   .28479915   .58453648 |
+     +-----------------------------------------------------------------------------------------------------------------+
 
 . 
 . // Three-levels example
@@ -317,8 +312,7 @@ Observed time interval: (0, tt]
                                      Earliest observed entry t =         0
                                           Last observed exit t =       428
 
-. mestreg education njobs prestige i.female || birthyear: || id:, distribution(
-> exponential)
+. mestreg education njobs prestige i.female || birthyear: || id:, distribution(exponential)
 
         Failure _d: failure
   Analysis time _t: tt
@@ -413,12 +407,10 @@ timevar() not specified, _t will be used instead
 
 . 
 . //
-. stdmest S3, reat(-.0795512 -1.39209) reatse(.1930458 .4813395) reatref(-.0795
-> 512 -.1309338) reatrefse(.1930458 .4605677) ci contrast
+. stdmest S3, reat(-.0795512 -1.39209) reatse(.1930458 .4813395) reatref(-.0795512 -.1309338) reatrefse(.1930458 .4605677) ci contrast
 timevar() not specified, _t will be used instead
 
-. twoway (rarea S3_contrast_lower S3_contrast_upper _t, sort color(stgreen%10))
->  (line S3_contrast _t, sort lcolor(stgreen))
+. twoway (rarea S3_contrast_lower S3_contrast_upper _t, sort color(stgreen%10)) (line S3_contrast _t, sort lcolor(stgreen))
 
 . 
 end of do-file

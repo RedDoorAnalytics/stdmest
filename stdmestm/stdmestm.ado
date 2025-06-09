@@ -23,29 +23,37 @@ program define stdmestm, sortpreserve
 		exit  198
 	}
 
-	// Check that we run stdmest after mestreg
-	if "`e(cmd2)'" != "mestreg" {
-		display as error "This only works after fitting a mixed-effects survival model with -mestreg-."
+	// Check that we run stdmest after -mestreg- or -uhtred-
+	if !("`e(cmd)'" == "gsem" & "`e(cmd2)'" == "mestreg") & !("`e(cmd)'" == "uhtred") {
+		display as error "This only works after fitting a mixed-effects survival model with -mestreg- or -uhtred-."
 		exit 301
 	}
 
-	// Only support PH models (for now)
-	if "`e(frm2)'" != "hazard" {
-		display as error "Only proportional hazards models are supported."
-		exit 198
-	}
-
-	// Only support exponential and Weibull distributions (for now)
-	if "`e(distribution)'" != "exponential" & "`e(distribution)'" != "weibull" {
-		display as error "Only exponential and Weibull baseline hazard distributions are supported."
-		exit 198
+	// Special checks for -mestreg-:
+	if "`e(cmd)'" == "gsem" & "`e(cmd2)'" == "mestreg" {
+		// Only support -mestreg- PH models
+		if "`e(frm2)'" != "hazard" {
+			display as error "Only proportional hazards models are supported."
+			exit 198
+		}
+		// Only support exponential and Weibull distributions (for now)
+		if "`e(distribution)'" != "exponential" & "`e(distribution)'" != "weibull" {
+			display as error "Only exponential and Weibull baseline hazard distributions are supported."
+			exit 198
+		}
 	}
 
 	// Number of levels for this specific model
-	// Must be a three-levels model (nlevels == 2)
-	local nlevels = wordcount("`e(ivars)'")
-	if (`nlevels' != 2) {
-		display as error "Only three-level models are supported, but `=`nlevels'+1' were detected.
+	if "`e(cmd)'" == "gsem" & "`e(cmd2)'" == "mestreg" {
+		local nlevels = wordcount("`e(ivars)'") + 1
+	}
+	if "`e(cmd)'" == "uhtred" {
+		local nlevels = `e(Nlevels)'
+	}
+
+	// Must be a three-levels model
+	if (`nlevels' != 3) {
+		display as error "Only three-level models are supported, but `nlevels' were detected.
 		exit 198
 	}
 
@@ -64,7 +72,7 @@ program define stdmestm, sortpreserve
 		VERBose ///
 		DOTS ///
 		NK(integer 7) ///
-		VARMARGname(string) ///
+		VARMARG(real 0.0) ///
 		]
 
 	// The number of quadrature nodes nk must be greater than zero
@@ -82,11 +90,7 @@ program define stdmestm, sortpreserve
 	quietly replace `touse' = 0 if _st == 0
 
 	// Pick variance of random effect to marginalise over
-	capture local vartoint = _b[/var(_cons[`varmargname'])]
-	if _rc > 0 {
-		display as error "Could not pick the variance to marginalise over (I tried with /var(_cons[`varmargname']))."
-		exit 198
-	}
+	capture local vartoint = `varmarg'
 
 	// Process timevar
 	tempvar tv
@@ -117,12 +121,67 @@ program define stdmestm, sortpreserve
 		local eb_coln : colfullnames e(b)
 	}
 
+	// If -uhtred-, setup gml object
+	if ("`e(cmd)'" == "uhtred") {
+		// from: uhtred_p.ado
+		tempname GML
+		// Get coefficients and refill struct
+		tempname best
+		mat `best' = e(b)
+		// Remove any options
+		local cmd `e(cmdline)'
+		gettoken uhtred cmd : cmd
+        gettoken cmd rhs : cmd, parse(",") bind
+        if substr("`rhs'",1,1) == "," {
+			local opts substr("`rhs'",2,.)
+			local 0 , `opts'
+			syntax , [						///
+				COVariance(passthru)		///
+                REDISTribution(passthru)	///
+                DF(passthru)				///
+                Weights(passthru)			///
+                *							///
+            ]
+            local opts `covariance' `redistribution' `df' `weights'
+		}
+		// Recall uhtred
+		tempname tousem
+		quietly `noisily' uhtred_parse `GML' ,          ///
+			touse(`tousem') : `cmd' ///
+            , 		///
+            `opts'				///
+            predict 			///
+            predtouse(`touse')		///
+            nogen 				///
+			from(`best') 			///
+			`intmethods' 			///
+			`intpoints' 			///
+			`pchintpoints'			///
+			`ptvar'				///
+			`standardise'			///
+			`passtmat'			///
+			`reffects'			///
+			`reses'				///
+			`devcodes'			///
+			indicator(`e(indicator)')       ///
+			`debug'                         //
+
+        // Tidy up constraints
+		local mlcns		`"`r(constr)'"'
+		if "`mlcns'" != "" {
+			cap constraint drop `mlcns'
+		}
+	}
+
 	// Run algorithm in Mata
-	mata: stdmest_wf("`newvarname'", `reat', `reatref', (`reat'), (`reatse'), (`reatref'), (`reatrefse'), 1.0)
+	mata: stdmest_wf("`GML'", "`newvarname'", `reat', `reatref', (`reat'), (`reatse'), (`reatref'), (`reatrefse'), 1.0)
 
 	// Restore estimation results after (possibly) fiddling with stuff in Mata
 	if "`ci'" != "" {
 		erepost b = `eb'
 	}
+
+	// Tidy up after -uhtred-
+	capture mata: rmexternal("`GML'")
 
 end

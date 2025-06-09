@@ -1,15 +1,17 @@
-*! version 0.0.1-9000 Alessandro Gasparini 11Oct2024
+*! version 0.0.1-9000 Alessandro Gasparini 29May2025
 
 local RS real scalar
 local RC real colvector
 local RR real rowvector
 local SS string scalar
 local RM real matrix
+local gml struct uhtred_struct scalar
 
 version 18.0
 mata:
 
 	void stdmest_wf(
+	`SS' object,
 	`SS' out,
 	`RS' reat,
 	`RS' reatref,
@@ -20,13 +22,20 @@ mata:
 	`RS' integrate
 	)
 	{
+		// model flags
+		i_am_mestreg = (st_global("e(cmd)") == "gsem") & (st_global("e(cmd2)") == "mestreg")
+		i_am_uhtred = st_global("e(cmd)") == "uhtred"
+
+		if (i_am_uhtred) {
+			// pick GML object
+			`gml' gml
+			swap(gml, *findexternal(object))
+		}
 
 		// read in locals from Stata
 		// strings:
 		timevar = st_local("timevar")
 		timevartouse = st_local("timevartouse")
-		// pickup rows to use
-		touse = st_local("touse")
 		// numbers:
 		B = strtoreal(st_local("reps"))
 		N = strtoreal(st_local("NNN"))
@@ -62,100 +71,61 @@ mata:
 		if (hasci) {
 			Bp1 = B + 1
 			// if we need CIs, draw new model parameters and random effects
-			neweb = draw_newpars(B)
+			// random effects:
 			newreat = draw_newreat(B, vreat, vreatse)
 			newreat = rowsum(newreat)
 			if (contrast != "") {
 				newreatref = draw_newreat(B, vreatref, vreatrefse)
 				newreatref = rowsum(newreatref)
 			}
-			// bits for new model parameters
-			eb_rown = st_local("eb_rown")
-			eb_coln = st_local("eb_coln")
+			// model coefficients:
+			neweb = draw_newpars(B)
 			// stack e(b) with neweb
 			neweb = st_matrix("e(b)") \ neweb
+			// stack reat with newreat
+			newreat = reat \ newreat
+			if (hascontrast) {
+				newreatref = reatref \ newreatref
+			}
 		}
 		else {
-			neweb = st_matrix("e(b)")
 			Bp1 = 1
+			neweb = st_matrix("e(b)")
+			newreat = J(1, 1, reat)
+			if (hascontrast) {
+				newreatref = J(1, 1, reatref)
+			}
 		}
 
-		// process ancillary parameter
-		// (depending on baseline hazard distribution)
-		distribution = st_global("e(distribution)")
-		if (distribution == "exponential") {
-			ln_p = J(Bp1, 1, 0.0)
-		}
-		else {
-			clabels = st_matrixcolstripe("e(b)")
-			s = (clabels[,2] :== "ln_p")'
-			s = selectindex(s)
-			ln_p = neweb[., s]
-		}
-
-		// matrix to store the linear predictors across repetitions
-		xbmat = J(N, Bp1, .)
-		xbbmat = J(N, Bp1, .)
-		if (contrast != "") {
-			xbbmatref = J(N, Bp1, .)
-		}
-
+		// setup once rather than inside survfun()
+		touse = st_local("touse")
 		// temp column in data to use
 		new_xbname = st_tempname()
 		stata("tempvar " + new_xbname)
-
 		// stata calls to drop old temp column (if any) and predict xb
 		cmd_drop = "capture drop " + new_xbname
 		cmd_predict = "quietly _predict double " + new_xbname + " if " + touse + " == 1, xb"
 
-		// display progress (if required by the user)
-		if (hasverbose) {
-			display("{text}Deriving point estimates...")
-			if (hasci) {
-				display("{text}Calculating " + strofreal(B) + " linear predictors for the C.I. algorithm...")
-				if (hasdots) {
-					stata("noisily _dots 0, reps(" + strofreal(B) + ")")
-				}
-			}
-		}
+		// bits for new model parameters
+		eb_rown = st_local("eb_rown")
+		eb_coln = st_local("eb_coln")
 
-		// loop over Bp1
-		for (i = 1; i <= Bp1; i++) {
-			if (i > 1) {
-				tmpname = st_tempname()
-				st_matrix(tmpname, neweb[i, ])
-				stata("matrix rownames " + tmpname + " = " + eb_rown)
-				stata("matrix colnames " + tmpname + " = " + eb_coln)
-				stata("erepost b = " + tmpname)
-			}
-			stata(cmd_drop)
-			stata(cmd_predict)
-			xbmat[., i] = st_data(., new_xbname, touse) // copy back into Mata – might be inefficient?
-			if (i == 1) {
-				xbbmat[., i] = xbmat[., i] :+ reat
-				if (hascontrast) {
-					xbbmatref[., i] = xbmat[., i] :+ reatref
+		// If -mestreg-, setup linear predictor (to speed up calculations):
+		xbmat = J(N, Bp1, .)
+		if (i_am_mestreg) {
+			// loop over Bp1
+			for (i = 1; i <= Bp1; i++) {
+				// if i > 1, repost
+				if (i > 1) {
+					tmpname = st_tempname()
+					st_matrix(tmpname, neweb[i, ])
+					stata("matrix rownames " + tmpname + " = " + eb_rown)
+					stata("matrix colnames " + tmpname + " = " + eb_coln)
+					stata("erepost b = " + tmpname)
 				}
-			}
-			else {
-				xbbmat[., i] = xbmat[., i] :+ newreat[i - 1]
-				if (hascontrast) {
-					xbbmatref[., i] = xbmat[., i] :+ newreatref[i - 1]
-				}
-			}
-			// iterate
-			if (hasverbose) {
-				if (i > 1 & hasdots) {
-					stata("noisily _dots " + strofreal(i - 1) + " 0")
-				}
-			}
-		}
-
-		// display progress (if required by the user)
-		if (hasverbose & hasci) {
-			display("{text}Calculating "+ strofreal(B) + " standardised survival probabilities for the C.I. algorithm...")
-			if (hasdots) {
-				stata("noisily _dots 0, reps(" + strofreal(B) + ")")
+				stata(cmd_drop)
+				stata(cmd_predict)
+				xbmat[., i] = st_data(., new_xbname, touse) // copy back into Mata – might be inefficient?
 			}
 		}
 
@@ -166,19 +136,31 @@ mata:
 			unique_Savgref = J(Nuniqt, Bp1, .)
 		}
 		for (c = 1; c <= Bp1; c++) {
+			if (c == 1) {
+				if (hasverbose) {
+					printf("\n{text:Deriving point estimates...}\n")
+				}
+			}
+			else if (c == 2) {
+				if (hasverbose & hasci) {
+					if (hasdots) {
+						stata("noisily _dots 0, title(Calculating standardised survival probabilities for the C.I. algorithm...) reps(" + strofreal(B) + ")")
+					}
+				}
+			}
 			for (r = 1; r <= Nuniqt; r++) {
                 if (!integrate) {
-                    unique_Savg[r, c] = mean(survfun(xbbmat[., c], unique_t[r, 1], ln_p[c, 1]))
+                    unique_Savg[r, c] = mean(survfun(gml, xbmat[., c], newreat[c, 1], unique_t[r, 1], c, neweb, i_am_mestreg, i_am_uhtred))
                 }
                 else {
-                    unique_Savg[r, c] = mean(intsurvfun(xbbmat[., c], unique_t[r, 1], ln_p[c, 1], varmarg, dnrm, GHx, GHw))
+                    unique_Savg[r, c] = mean(intsurvfun(gml, xbmat[., c], newreat[c, 1], unique_t[r, 1], c, neweb,i_am_mestreg, i_am_uhtred, varmarg, dnrm, GHx, GHw))
                 }
 				if (hascontrast) {
                     if (!integrate) {
-                        unique_Savgref[r, c] = mean(survfun(xbbmatref[., c], unique_t[r, 1], ln_p[c, 1]))
+                        unique_Savgref[r, c] = mean(survfun(gml, xbmat[., c], newreatref[c, 1], unique_t[r, 1], c, neweb, i_am_mestreg, i_am_uhtred))
                     }
                     else {
-                        unique_Savgref[r, c] = mean(intsurvfun(xbbmatref[., c], unique_t[r, 1], ln_p[c, 1], varmarg, dnrm, GHx, GHw))
+                        unique_Savgref[r, c] = mean(intsurvfun(gml, xbmat[., c], newreatref[c, 1], unique_t[r, 1], c, neweb, i_am_mestreg, i_am_uhtred, varmarg, dnrm, GHx, GHw))
                     }
 				}
 			}
@@ -220,7 +202,7 @@ mata:
 		if (hasci) {
 			// display progress (if required by the user)
 			if (hasverbose) {
-				display("{text}Deriving confidence intervals...")
+				printf("\n{text:Deriving confidence intervals...}")
 			}
 			// rescale level to 0-1
 			level = level / 100
@@ -262,7 +244,7 @@ mata:
 		if (hascontrast) {
 			// display progress (if required by the user)
 			if (hasverbose) {
-				display("{text}Deriving contrasts...")
+				printf("\n{text:Deriving contrasts...}")
 			}
 			//
 			outiref = st_addvar("double", out + "_ref")
@@ -311,7 +293,7 @@ mata:
 			if (hasci) {
 				// display progress (if required by the user)
 				if (hasverbose) {
-					display("{text}Deriving confidence intervals of contrasts...")
+					printf("\n{text:Deriving confidence intervals of contrasts...}")
 				}
 				// no need to rescale level to 0-1,
 				// should already be done above
@@ -347,31 +329,84 @@ mata:
 
 		// display progress (if required by the user)
 		if (hasverbose) {
-			display("{text}Done!")
+			printf("\n{text:Done!}\n")
 		}
 	}
 
-	`RC' survfun (`RC' xb, `RS' t, `RS' anc)
+	`RC' survfun (
+	`gml' gml,
+	`RM' xb,
+	`RS' re,
+	`RS' t,
+	`RS' i,
+	`RM' neweb,
+	`RS' i_am_mestreg,
+	`RS' i_am_uhtred
+	)
 	{
-		S = exp(-exp(xb) :* (t:^exp(anc)))
+		// if t == 0 force survival to 1 and ignore the rest
+		if (t == 0) {
+			S = J(strtoreal(st_local("NNN")), 1, 1)
+			return(S)
+		}
+
+		// If -mestreg-:
+		if (i_am_mestreg) {
+			// process ancillary parameter
+			// (depending on baseline hazard distribution)
+			distribution = st_global("e(distribution)")
+			if (distribution == "exponential") {
+				anc = 0.0
+			}
+			else {
+				clabels = st_matrixcolstripe("e(b)")
+				s = (clabels[,2] :== "ln_p")'
+				s = selectindex(s)
+				anc = neweb[i, s]
+			}
+			// combine xb with re
+			xbb = xb :+ re
+			// calculate survival for exponential/Weibull:
+			S = exp(-exp(xbb) :* (t:^exp(anc)))
+		}
+
+		// If -uhtred-:
+		if (i_am_uhtred) {
+			gml.myb = neweb[i, ]
+			// linear predictor
+			xb = uhtred_util_p_xb(gml)
+			// time component
+			nobs = uhtred_util_nobs(gml)
+			tb = uhtred_util_p_tb(gml, J(nobs, 1, t))
+			xbbb = xb :+ tb :+ re
+			// calculate survival
+			S = exp(-exp(xbbb))
+		}
+
+		// Return survival
 		return(S)
 	}
 
 	`RC' intsurvfun(
-	`RC' xbb,
+	`gml' gml,
+	`RM' xb,
+	`RS' re,
 	`RS' t,
-	`RS' anc,
+	`RS' i,
+	`RM' neweb,
+	`RS' i_am_mestreg,
+	`RS' i_am_uhtred,
 	`RS' varmarg,
 	`RR' dnrm,
 	`RR' GHx,
 	`RR' GHw)
 	{
-		S1 = J(rows(xbb), cols(GHx), .)
+		S1 = J(strtoreal(st_local("NNN")), cols(GHx), .)
 		tmp = log(sqrt(varmarg)) + log(sqrt(2))
-		for (i = 1; i <= cols(S1); i++) {
-			this_b = GHx[i] * exp(tmp)
-			xbbb = xbb :+ this_b
-			S1[,i] = survfun(xbbb, t, anc) * dnrm[i]
+		for (j = 1; j <= cols(S1); j++) {
+			this_b = GHx[j] * exp(tmp)
+			this_b = this_b + re
+			S1[,j] = survfun(gml, xb, this_b, t, i, neweb, i_am_mestreg, i_am_uhtred) * dnrm[j]
 		}
 		B = log(GHw) :+ (GHx:^2)
 		B = exp(B)
@@ -388,7 +423,7 @@ mata:
 		C = U * (diag(s):^(1/2))
 		draw = rnormal(B, cols(eb), 0, 1)
 		if (missing(draw)) {
-			errprintf("Invalid samples for the confidence intervals algorithm. Please try again.\n")
+			errprintf("\nInvalid samples for the confidence intervals algorithm. Please try again.\n")
 			exit(198)
 		}
 		neweb = draw * C'

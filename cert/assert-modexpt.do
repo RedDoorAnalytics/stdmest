@@ -1,3 +1,5 @@
+//
+set linesize 255
 clear all
 cd "~/Stata-dev/stdmest"
 adopath ++ "modexpt"

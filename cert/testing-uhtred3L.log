@@ -1,0 +1,309 @@
+
+  ___  ____  ____  ____  ____ ®
+ /__    /   ____/   /   ____/      StataNow 18.5
+___/   /   /___/   /   /___/       MP—Parallel Edition
+
+ Statistics and Data Science       Copyright 1985-2023 StataCorp LLC
+                                   StataCorp
+                                   4905 Lakeway Drive
+                                   College Station, Texas 77845 USA
+                                   800-782-8272        https://www.stata.com
+                                   979-696-4600        service@stata.com
+
+Stata license: 3-user 2-core network, expiring 12 Sep 2025
+Serial number: 501809300405
+  Licensed to: Alessandro Gasparini
+               Red Door Analytics AB
+
+Notes:
+      1. Stata is running in batch mode.
+      2. Unicode is supported; see help unicode_advice.
+      3. More than 2 billion observations are allowed; see help obs_advice.
+      4. Maximum number of variables is set to 5,000 but can be increased;
+          see help set_maxvar.
+
+. do "testing-uhtred3L.do" 
+
+. //
+. set linesize 255
+
+. clear all
+
+. // clear all is enough to 'refresh' in the same session
+. // -uhtred-
+. cd "~/Stata-dev/uhtred"
+/Users/ellessenne/Stata-dev/uhtred
+
+. adopath ++ "~/Stata-dev/uhtred"
+  [1]              "~/Stata-dev/uhtred"
+  [2]  (BASE)      "/Applications/Stata/ado/base/"
+  [3]  (SITE)      "/Applications/Stata/ado/site/"
+  [4]              "."
+  [5]  (PERSONAL)  "/Users/ellessenne/Documents/Stata/ado/personal/"
+  [6]  (PLUS)      "/Users/ellessenne/Library/Application Support/Stata/ado/plus/"
+  [7]  (OLDPLACE)  "~/ado/"
+
+. clear all
+
+. adopath ++ "~/Stata-dev/uhtred/uhtred"
+  [1]              "~/Stata-dev/uhtred/uhtred"
+  [2]              "~/Stata-dev/uhtred"
+  [3]  (BASE)      "/Applications/Stata/ado/base/"
+  [4]  (SITE)      "/Applications/Stata/ado/site/"
+  [5]              "."
+  [6]  (PERSONAL)  "/Users/ellessenne/Documents/Stata/ado/personal/"
+  [7]  (PLUS)      "/Users/ellessenne/Library/Application Support/Stata/ado/plus/"
+  [8]  (OLDPLACE)  "~/ado/"
+
+. clear all
+
+. do ./build/buildmlib.do
+
+. version 17
+
+. 
+. capture erase luhtred.mlib
+
+. mata: mata set matastrict off
+
+. qui {
+
+. 
+end of do-file
+
+. mata mata clear
+
+. // -stdmest-
+. cd "~/Stata-dev/stdmest"
+/Users/ellessenne/Stata-dev/stdmest
+
+. adopath ++ "stdmest"
+  [1]              "stdmest"
+  [2]              "~/Stata-dev/uhtred/uhtred"
+  [3]              "~/Stata-dev/uhtred"
+  [4]  (BASE)      "/Applications/Stata/ado/base/"
+  [5]  (SITE)      "/Applications/Stata/ado/site/"
+  [6]              "."
+  [7]  (PERSONAL)  "/Users/ellessenne/Documents/Stata/ado/personal/"
+  [8]  (PLUS)      "/Users/ellessenne/Library/Application Support/Stata/ado/plus/"
+  [9]  (OLDPLACE)  "~/ado/"
+
+. clear all
+
+. do ./build/buildmlib.do
+
+. capture erase lstdmest.mlib
+
+. quietly {
+
+. 
+end of do-file
+
+. mata mata clear
+
+. 
+. // ---
+. clear all
+
+. webuse jobhistory
+(Job history data, Event History Analysis with Stata, Blossfeld et al. 2007)
+
+. gen tt = tend - tstart
+
+. stset tt, fail(failure)
+
+Survival-time data settings
+
+         Failure event: failure!=0 & failure<.
+Observed time interval: (0, tt]
+     Exit on or before: failure
+
+--------------------------------------------------------------------------
+        600  total observations
+          0  exclusions
+--------------------------------------------------------------------------
+        600  observations remaining, representing
+        458  failures in single-record/single-failure data
+     40,782  total analysis time at risk and under observation
+                                                At risk from t =         0
+                                     Earliest observed entry t =         0
+                                          Last observed exit t =       428
+
+. 
+. // ---
+. mestreg education njobs prestige i.female || birthyear: || id:, distribution(weibull) nohr
+
+        Failure _d: failure
+  Analysis time _t: tt
+
+Fitting fixed-effects model:
+
+Iteration 0:  Log likelihood = -5736904.5  
+Iteration 1:  Log likelihood = -2664.7487  
+Iteration 2:  Log likelihood = -2484.7829  
+Iteration 3:  Log likelihood = -2477.4358  
+Iteration 4:  Log likelihood = -2477.3338  
+Iteration 5:  Log likelihood = -2477.3337  
+
+Refining starting values:
+
+Grid node 0:  Log likelihood = -2496.7341
+
+Fitting full model:
+
+Iteration 0:  Log likelihood = -2496.7341  (not concave)
+Iteration 1:  Log likelihood = -2470.0717  (not concave)
+Iteration 2:  Log likelihood = -2466.1546  (not concave)
+Iteration 3:  Log likelihood = -2464.5512  
+Iteration 4:  Log likelihood = -2442.8992  
+Iteration 5:  Log likelihood = -2440.1356  
+Iteration 6:  Log likelihood = -2439.9074  
+Iteration 7:  Log likelihood = -2439.9066  
+Iteration 8:  Log likelihood = -2439.9066  
+
+Mixed-effects Weibull PH regression             Number of obs     =        600
+
+        Grouping information
+        -------------------------------------------------------------
+                        |     No. of       Observations per group
+         Group variable |     groups    Minimum    Average    Maximum
+        ----------------+--------------------------------------------
+              birthyear |         12          3       50.0         99
+                     id |        201          1        3.0          9
+        -------------------------------------------------------------
+
+Integration method: mvaghermite                 Integration pts.  =          7
+
+                                                Wald chi2(4)      =      83.20
+Log likelihood = -2439.9066                     Prob > chi2       =     0.0000
+------------------------------------------------------------------------------
+          _t | Coefficient  Std. err.      z    P>|z|     [95% conf. interval]
+-------------+----------------------------------------------------------------
+   education |   .1136613   .0403464     2.82   0.005     .0345839    .1927387
+       njobs |  -.3311191   .0518074    -6.39   0.000    -.4326596   -.2295785
+    prestige |  -.0340046   .0071582    -4.75   0.000    -.0480345   -.0199747
+    1.female |    .550567    .174283     3.16   0.002     .2089786    .8921554
+       _cons |  -5.131267   .5374395    -9.55   0.000    -6.184629   -4.077905
+-------------+----------------------------------------------------------------
+       /ln_p |   .1685641   .0454824                      .0794203     .257708
+-------------+----------------------------------------------------------------
+birthyear    |
+   var(_cons)|   .0950371   .0741445                      .0205976    .4385006
+-------------+----------------------------------------------------------------
+birthyear>id |
+   var(_cons)|   .8728384   .2020938                      .5544339    1.374099
+------------------------------------------------------------------------------
+LR test vs. Weibull model: chi2(2) = 74.85                Prob > chi2 = 0.0000
+
+Note: LR test is conservative and provided only for reference.
+
+. predict bm*, reffects reses(bmse*)
+(calculating posterior means of random effects)
+(using 7 quadrature points)
+
+. 
+. // ---
+. capture drop tv
+
+. range tv 0 365 10
+(590 missing values generated)
+
+. 
+. // ---
+. capture drop Sm*
+
+. set seed 37246
+
+. stdmest Sm, reat(-.0921738 -2.028026) reatse(.2263078 .5722969) timevar(tv) ci reps(2000)
+
+. list tv Sm* if tv != .
+
+     +----------------------------------------------+
+     |       tv          Sm    Sm_lower    Sm_upper |
+     |----------------------------------------------|
+  1. |        0           1           1           1 |
+  2. | 40.55556   .94737379   .83339419      .98431 |
+  3. | 81.11111    .8862377   .67845853   .96391789 |
+  4. | 121.6667   .82549496   .54720526   .94243698 |
+  5. | 162.2222   .76735635   .44825681   .91991785 |
+     |----------------------------------------------|
+  6. | 202.7778   .71268016   .37305907   .89717192 |
+  7. | 243.3333   .66176513   .31236978   .87512934 |
+  8. | 283.8889    .6146351   .26058257   .85282158 |
+  9. | 324.4445   .57117035   .21985504   .83156486 |
+ 10. |      365   .53117678   .18632383   .81051998 |
+     +----------------------------------------------+
+
+. 
+. // ---
+. uhtred (_t education njobs prestige i.female M1[birthyear]@1 M2[birthyear>id]@1, family(rp, df(1) failure(_d)))
+
+Fitting fixed effects model:
+
+Fitting full model:
+
+Iteration 0:  Log likelihood = -2462.6365  
+Iteration 1:  Log likelihood = -2455.0104  
+Iteration 2:  Log likelihood = -2440.3248  
+Iteration 3:  Log likelihood = -2439.9247  
+Iteration 4:  Log likelihood = -2439.9177  
+Iteration 5:  Log likelihood = -2439.9177  
+
+Mixed effects regression model                             Number of obs = 600
+Log likelihood = -2439.9177
+------------------------------------------------------------------------------
+             | Coefficient  Std. err.      z    P>|z|     [95% conf. interval]
+-------------+----------------------------------------------------------------
+xb1          |
+   education |   .1136082   .0403822     2.81   0.005     .0344605    .1927559
+       njobs |  -.3303314   .0516109    -6.40   0.000    -.4314869   -.2291759
+    prestige |  -.0339884   .0071615    -4.75   0.000    -.0480246   -.0199522
+    1.female |   .5502266   .1744767     3.15   0.002     .2082585    .8921948
+       _cons |  -.8077983   .4833048    -1.67   0.095    -1.755058    .1394617
+-------------+----------------------------------------------------------------
+tb1          |
+    _brcs1_1 |   1.303774   .0590925    22.06   0.000     1.187955    1.419593
+-------------+----------------------------------------------------------------
+zb1_1        |
+      _re_M1 |          1  (constrained)
+-------------+----------------------------------------------------------------
+zb1_2        |
+      _re_M2 |          1  (constrained)
+-------------+----------------------------------------------------------------
+birthyear:   |            
+      sd(M1) |   .3083936   .1211842                      .1427654    .6661739
+-------------+----------------------------------------------------------------
+id:          |            
+      sd(M2) |   .9314487   .1067389                      .7440737    1.166009
+------------------------------------------------------------------------------
+
+. predict bu*, reffects
+
+. predict buse*, reses
+
+. capture drop Su*
+
+. set seed 37246
+
+. stdmest Su, reat(-.0921738 -2.028026) reatse(.2263078 .5722969) timevar(tv) ci reps(2000)
+
+. list tv Su* Sm* if tv != .
+
+     +----------------------------------------------------------------------------------+
+     |       tv          Su    Su_lower    Su_upper          Sm    Sm_lower    Sm_upper |
+     |----------------------------------------------------------------------------------|
+  1. |        0           1           1           1           1           1           1 |
+  2. | 40.55556   .94739672   .83399344   .98462537   .94737379   .83339419      .98431 |
+  3. | 81.11111   .88634013   .67981317   .96612581    .8862377   .67845853   .96391789 |
+  4. | 121.6667   .82568827   .54721372   .94660937   .82549496   .54720526   .94243698 |
+  5. | 162.2222    .7676376   .44521676   .92679887   .76735635   .44825681   .91991785 |
+     |----------------------------------------------------------------------------------|
+  6. | 202.7778   .71304029   .36467103   .90644941   .71268016   .37305907   .89717192 |
+  7. | 243.3333   .66219265   .30278883   .88593184   .66176513   .31236978   .87512934 |
+  8. | 283.8889   .61511801   .25228334   .86567431    .6146351   .26058257   .85282158 |
+  9. | 324.4445   .57169715   .21089116   .84558708   .57117035   .21985504   .83156486 |
+ 10. |      365   .53173696   .17918717   .82626249   .53117678   .18632383   .81051998 |
+     +----------------------------------------------------------------------------------+
+
+. 
+end of do-file

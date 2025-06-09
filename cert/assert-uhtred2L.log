@@ -22,7 +22,7 @@ Notes:
       4. Maximum number of variables is set to 5,000 but can be increased;
           see help set_maxvar.
 
-. do "testing-#7.do" 
+. do "assert-uhtred2L.do" 
 
 . //
 . set linesize 255
@@ -102,64 +102,35 @@ end of do-file
 . mata mata clear
 
 . 
-. // seed, for reproducibility
-. set seed 347856
+. // ---
+. clear all
+
+. // use catheter.dta
+. webuse catheter
+(Kidney data, McGilchrist and Aisbett, Biometrics, 1991)
+
+. range tv 0 562 100
+Number of observations (_N) was 76, now 100.
 
 . 
-. // data
-. webuse jobhistory
-(Job history data, Event History Analysis with Stata, Blossfeld et al. 2007)
+. // -mestreg- model:
+. quietly mestreg c.age i.female || patient:, distribution(weibull)
 
-. gen tt = tend - tstart
-
-. stset tt, fail(failure)
-
-Survival-time data settings
-
-         Failure event: failure!=0 & failure<.
-Observed time interval: (0, tt]
-     Exit on or before: failure
-
---------------------------------------------------------------------------
-        600  total observations
-          0  exclusions
---------------------------------------------------------------------------
-        600  observations remaining, representing
-        458  failures in single-record/single-failure data
-     40,782  total analysis time at risk and under observation
-                                                At risk from t =         0
-                                     Earliest observed entry t =         0
-                                          Last observed exit t =       428
+. stdmest Sm, reat(.7613212) reatse(.6750813) reatref(0.0) reatrefse(0.0) timevar(tv) contrast
 
 . 
-. // model
-. quietly mestreg education njobs prestige i.female || birthyear: || id:, distribution(exponential)
+. // -uhtred- model:
+. quietly uhtred (_t c.age i.female M1[patient]@1, family(rp, df(1) failure(_d)))
 
-. predict b*, reffects reses(bse*)
-(calculating posterior means of random effects)
-(using 7 quadrature points)
-
-. sort b1 b2
-
-. list b1 bse1 b2 bse2 if _n == 1 | _n == _N
-
-     +--------------------------------------------+
-     |        b1       bse1         b2       bse2 |
-     |--------------------------------------------|
-  1. | -.4603618   .1427249   -1.05416   .5097189 |
-600. |  .2269995   .1666193   1.550484   .4326237 |
-     +--------------------------------------------+
+. stdmest Su, reat(.7613212) reatse(.6750813) reatref(0.0) reatrefse(0.0) timevar(tv) contrast
 
 . 
-. // error
-. capture noisily stdmest Stst, reat(-.4603618  -1.05416) reatse(.1427249 .5097189) ci reps(100) timevar(tt) contrast
-Wrong number of input values for a 3-level model:
-2 values must be set for each of 'reat', 'reatse', 'reatref', 'reatrefse', one for every random intercept.
+. // ---
+. assert reldif(Sm, Su) <= 1e-6
 
-. 
-. // okay
-. capture noisily stdmest Stst, reat(-.4603618  -1.05416) reatse(.1427249 .5097189) ci reps(100) timevar(tt) contrast ///
->         reatref(0.0 0.0) reatrefse(0.0 0.0)
+. assert reldif(Sm_ref, Su_ref) <= 1e-6
+
+. assert reldif(Sm_contrast, Su_contrast) <= 1e-6
 
 . 
 end of do-file

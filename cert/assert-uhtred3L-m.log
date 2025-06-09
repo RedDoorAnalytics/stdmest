@@ -22,7 +22,7 @@ Notes:
       4. Maximum number of variables is set to 5,000 but can be increased;
           see help set_maxvar.
 
-. do "testing-#7.do" 
+. do "assert-uhtred3L-m.do" 
 
 . //
 . set linesize 255
@@ -88,6 +88,18 @@ end of do-file
   [8]  (PLUS)      "/Users/ellessenne/Library/Application Support/Stata/ado/plus/"
   [9]  (OLDPLACE)  "~/ado/"
 
+. adopath ++ "stdmestm"
+  [1]              "stdmestm"
+  [2]              "stdmest"
+  [3]              "~/Stata-dev/uhtred/uhtred"
+  [4]              "~/Stata-dev/uhtred"
+  [5]  (BASE)      "/Applications/Stata/ado/base/"
+  [6]  (SITE)      "/Applications/Stata/ado/site/"
+  [7]              "."
+  [8]  (PERSONAL)  "/Users/ellessenne/Documents/Stata/ado/personal/"
+  [9]  (PLUS)      "/Users/ellessenne/Library/Application Support/Stata/ado/plus/"
+  [10] (OLDPLACE)  "~/ado/"
+
 . clear all
 
 . do ./build/buildmlib.do
@@ -102,11 +114,9 @@ end of do-file
 . mata mata clear
 
 . 
-. // seed, for reproducibility
-. set seed 347856
+. // ---
+. clear all
 
-. 
-. // data
 . webuse jobhistory
 (Job history data, Event History Analysis with Stata, Blossfeld et al. 2007)
 
@@ -132,34 +142,31 @@ Observed time interval: (0, tt]
                                           Last observed exit t =       428
 
 . 
-. // model
-. quietly mestreg education njobs prestige i.female || birthyear: || id:, distribution(exponential)
+. // ---
+. capture drop tv
 
-. predict b*, reffects reses(bse*)
-(calculating posterior means of random effects)
-(using 7 quadrature points)
-
-. sort b1 b2
-
-. list b1 bse1 b2 bse2 if _n == 1 | _n == _N
-
-     +--------------------------------------------+
-     |        b1       bse1         b2       bse2 |
-     |--------------------------------------------|
-  1. | -.4603618   .1427249   -1.05416   .5097189 |
-600. |  .2269995   .1666193   1.550484   .4326237 |
-     +--------------------------------------------+
+. range tv 0 365 10
+(590 missing values generated)
 
 . 
-. // error
-. capture noisily stdmest Stst, reat(-.4603618  -1.05416) reatse(.1427249 .5097189) ci reps(100) timevar(tt) contrast
-Wrong number of input values for a 3-level model:
-2 values must be set for each of 'reat', 'reatse', 'reatref', 'reatrefse', one for every random intercept.
+. // ---
+. quietly mestreg education njobs prestige i.female || birthyear: || id:, distribution(weibull) nohr
+
+. stdmestm Sm, reat(-.4603618) reatse(.1427249) reatref(0.0) reatrefse(0.0) varmarg(.8728384) timevar(tv) contrast
 
 . 
-. // okay
-. capture noisily stdmest Stst, reat(-.4603618  -1.05416) reatse(.1427249 .5097189) ci reps(100) timevar(tt) contrast ///
->         reatref(0.0 0.0) reatrefse(0.0 0.0)
+. // ---
+. quietly uhtred (_t education njobs prestige i.female M1[birthyear]@1 M2[birthyear>id]@1, family(rp, df(1) failure(_d)))
+
+. stdmestm Su, reat(-.4603618) reatse(.1427249) reatref(0.0) reatrefse(0.0) varmarg(`=.9314487^2') timevar(tv) contrast
+
+. 
+. // ---
+. assert reldif(Sm, Su) <= 1e-3
+
+. assert reldif(Sm_ref, Su_ref) <= 1e-3
+
+. assert reldif(Sm_contrast, Su_contrast) <= 1e-3
 
 . 
 end of do-file

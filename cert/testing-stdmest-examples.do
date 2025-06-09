@@ -1,5 +1,16 @@
+//
+set linesize 255
 clear all
 // clear all is enough to 'refresh' in the same session
+// -uhtred-
+cd "~/Stata-dev/uhtred"
+adopath ++ "~/Stata-dev/uhtred"
+clear all
+adopath ++ "~/Stata-dev/uhtred/uhtred"
+clear all
+do ./build/buildmlib.do
+mata mata clear
+// -stdmest-
 cd "~/Stata-dev/stdmest"
 adopath ++ "stdmest"
 clear all

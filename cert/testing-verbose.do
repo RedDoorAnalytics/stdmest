@@ -1,5 +1,16 @@
+//
+set linesize 255
 clear all
 // clear all is enough to 'refresh' in the same session
+// -uhtred-
+cd "~/Stata-dev/uhtred"
+adopath ++ "~/Stata-dev/uhtred"
+clear all
+adopath ++ "~/Stata-dev/uhtred/uhtred"
+clear all
+do ./build/buildmlib.do
+mata mata clear
+// -stdmest-
 cd "~/Stata-dev/stdmest"
 adopath ++ "stdmest"
 adopath ++ "stdmestm"
@@ -28,11 +39,11 @@ stdmest S3a, reat(-.4603618 1.0) reatse(.1427249 0.1) reatref(0.0 0.0) reatrefse
 stdmest S3b, reat(-.4603618 1.0) reatse(.1427249 0.1) reatref(0.0 0.0) reatrefse(0.0 0.0) timevar(tv) contrast ci reps(200) verbose dots
 
 //
-stdmestm Sm0a, reat(-.4603618) reatse(.1427249) varmargname(birthyear>id) timevar(tv)
-stdmestm Sm0b, reat(-.4603618) reatse(.1427249) varmargname(birthyear>id) timevar(tv) dots
-stdmestm Sm1a, reat(-.4603618) reatse(.1427249) varmargname(birthyear>id) timevar(tv) verbose
-stdmestm Sm1b, reat(-.4603618) reatse(.1427249) varmargname(birthyear>id) timevar(tv) verbose dots
-stdmestm Sm2a, reat(-.4603618) reatse(.1427249) varmargname(birthyear>id) timevar(tv) contrast verbose
-stdmestm Sm2b, reat(-.4603618) reatse(.1427249) varmargname(birthyear>id) timevar(tv) contrast verbose dots
-stdmestm Sm3a, reat(-.4603618) reatse(.1427249) varmargname(birthyear>id) timevar(tv) contrast ci reps(200) verbose
-stdmestm Sm3b, reat(-.4603618) reatse(.1427249) varmargname(birthyear>id) timevar(tv) contrast ci reps(200) verbose dots
+stdmestm Sm0a, reat(-.4603618) reatse(.1427249) varmarg(.507621) timevar(tv)
+stdmestm Sm0b, reat(-.4603618) reatse(.1427249) varmarg(.507621) timevar(tv) dots
+stdmestm Sm1a, reat(-.4603618) reatse(.1427249) varmarg(.507621) timevar(tv) verbose
+stdmestm Sm1b, reat(-.4603618) reatse(.1427249) varmarg(.507621) timevar(tv) verbose dots
+stdmestm Sm2a, reat(-.4603618) reatse(.1427249) varmarg(.507621) timevar(tv) contrast verbose
+stdmestm Sm2b, reat(-.4603618) reatse(.1427249) varmarg(.507621) timevar(tv) contrast verbose dots
+stdmestm Sm3a, reat(-.4603618) reatse(.1427249) varmarg(.507621) timevar(tv) contrast ci reps(200) verbose
+stdmestm Sm3b, reat(-.4603618) reatse(.1427249) varmarg(.507621) timevar(tv) contrast ci reps(200) verbose dots

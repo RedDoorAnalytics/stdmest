@@ -1,13 +1,14 @@
 {smcl}
 {* *! version 1.0.0}{...}
 {vieweralsosee "mestreg" "help mestreg"}{...}
+{vieweralsosee "uhtred" "help uhtred"}{...}
 {viewerjumpto "Syntax" "stdmestm##syntax"}{...}
 {viewerjumpto "Description" "stdmestm##description"}{...}
 {viewerjumpto "Options" "stdmestm##options"}{...}
 {viewerjumpto "Remarks" "stdmestm##remarks"}{...}
 {viewerjumpto "Examples" "stdmestm##examples"}{...}
 
-{synopt :{cmd: stdmestm} {hline 2} Partially marginal regression standardisation for standardised survival probabilities and contrasts between hierarchical units after fitting {cmd: mestreg} models}
+{synopt :{cmd: stdmestm} {hline 2} Partially marginal regression standardisation for standardised survival probabilities and contrasts between hierarchical units after fitting {cmd: mestreg} and {cmd: uhtred} models}
 
 {marker syntax}{...}
 {title: Syntax}
@@ -32,7 +33,7 @@
 {synopt: {cmdab: rep:s(#)}}Number of repetitions used by the algorithm used to calculate the confidence intervals. Defaults to 1000{p_end}
 {synopt: {cmdab: verb:ose}}If defined, display progress of the algorithm{p_end}
 {synopt: {cmdab: dots}}If defined, display additional details on progress of the algorithm{p_end}
-{synopt: {cmdab: varmarg:name}}Name of the random intercept to integrate (i.e., marginalise) over{p_end}
+{synopt: {cmdab: varmarg}}Variance of the random intercept to integrate (i.e., marginalise) over{p_end}
 {synopt: {cmdab: nk}}Number of Gauss-Hermite quadrature nodes used by the algorithm to numerically integrate out the random intercept denoted by {opt varmargname}. Defaults to 7{p_end}
 {synoptline}
 
@@ -40,14 +41,15 @@
 {title: Description}
 
 {phang}
-{cmd: stdmestm} is a post-estimation command that can be used to estimate standardised survival probabilities (and contrasts thereof) after fitting three-level {helpb mestreg} models, using regression standardisation.
-The goal is to obtain standardised survival probabilities, standardising over the observed covariates distributions (i.e., the fixed effects that were included in your {helpb mestreg} model).
+{cmd: stdmestm} is a post-estimation command that can be used to estimate standardised survival probabilities (and contrasts thereof) after fitting three-level {helpb mestreg} and {helpb uhtred} models, using regression standardisation.
+The goal is to obtain standardised survival probabilities, standardising over the observed covariates distributions (i.e., the fixed effects that were included in the model).
 This is accomplished by 1) fixing the random intercept for a certain level and 2) marginalising over the random intercept for the other level.
 We denote these predictions as {it: partially marginal} because we marginalise over {it: only} one of the two hierarchical levels of a three-level survival model.
 {p_end}
 
 {phang}
 Note that only three-level {helpb mestreg} models using the proportional hazards metric and assuming an exponential or Weibull baseline hazard distribution are supported, at the moment.
+Any three-level {helpb uhtred} model is supported, however, as long as only random intercepts are used.
 {p_end}
 
 {phang}
@@ -59,7 +61,7 @@ The difference between {cmd: stdmestm} and {helpb stdmest} is that the latter fi
 
 {phang}
 {opt reat(#)} is a value for the random (intercept) to be fixed for a certain level, and to calculate standardised survival probabilities for.
-This is usually the predicted BLUP, obtained using the {helpb mestreg postestimation##predict:predict, reffects} post-estimation command of {helpb mestreg}.
+This is usually the predicted BLUP, obtained using the {cmd: predict} post-estimation command of {helpb mestreg} and {helpb uhtred}.
 {p_end}
 
 {phang}
@@ -69,7 +71,7 @@ Thus, this must be a value referring to the same hierarchical level fixed by {op
 
 {phang}
 {opt reatse(#)} is the standard error of {opt reat}, which is used by the algorithm computing the confidence intervals.
-This is usually obtained with the {helpb mestreg postestimation##predict:reses} option of {helpb mestreg postestimation##predict:predict, reffects}, a post-estimation command of {helpb mestreg}.
+This is also usually obtained with the {cmd: predict} post-estimation command of {helpb mestreg} and {helpb uhtred}.
 {p_end}
 
 {phang}
@@ -123,8 +125,8 @@ Note that this has no effect is the {opt verbose} and {opt ci} options are not u
 {p_end}
 
 {phang}
-{opt varmargname} denotes the name of the random intercept to be marginalised over.
-This can be picked from the output table of {helpb mestreg}, from the variance components section – see the examples below for more details.
+{opt varmarg} denotes the variance of the random intercept to be marginalised over.
+This can be picked from the output table of {helpb mestreg} and {helpb uhtred}, from the variance components section – see the examples below for more details.
 {p_end}
 
 {phang}
@@ -160,10 +162,10 @@ Note that in the {helpb list} command above we filter on {cmd: jobno == 1} to en
 Then, we define a new {cmd: timevar} variable {cmd: tv} that we will predict for and we run {cmd: stdmestm} while fixing the BLUP for {cmd: birthyear == 1930}:
 
 {phang}{stata . range tv 0 365 100}{p_end}
-{phang}{stata . stdmestm S1930, reat(-.0795512) reatse(.1930458) varmargname(birthyear>id) timevar(tv) ci}{p_end}
+{phang}{stata . stdmestm S1930, reat(-.0795512) reatse(.1930458) varmarg(.507621) timevar(tv) ci}{p_end}
 
 {pstd}
-We pick the values of {opt reat} and {opt reatse} from the output of {helpb list}, above, and we integrate over the random intercept at the subject level (denoted with {cmd: birthyear>id} in the output table of {helpb mestreg}).
+We pick the values of {opt reat} and {opt reatse} from the output of {helpb list}, above, and we integrate over the random intercept at the subject level (with a variance of .507621, picked from the line denoted with {cmd: birthyear>id} in the output table of {helpb mestreg}).
 We also request confidence intervals, which are calculated using the default settings.
 
 {pstd}

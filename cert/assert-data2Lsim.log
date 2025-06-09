@@ -24,32 +24,81 @@ Notes:
 
 . do "assert-data2Lsim.do" 
 
+. //
+. set linesize 255
+
 . clear all
 
 . // clear all is enough to 'refresh' in the same session
+. // -uhtred-
+. cd "~/Stata-dev/uhtred"
+/Users/ellessenne/Stata-dev/uhtred
+
+. adopath ++ "~/Stata-dev/uhtred"
+  [1]              "~/Stata-dev/uhtred"
+  [2]  (BASE)      "/Applications/Stata/ado/base/"
+  [3]  (SITE)      "/Applications/Stata/ado/site/"
+  [4]              "."
+  [5]  (PERSONAL)  "/Users/ellessenne/Documents/Stata/ado/personal/"
+  [6]  (PLUS)      "/Users/ellessenne/Library/Application Support/Stata/ado/plus/"
+  [7]  (OLDPLACE)  "~/ado/"
+
+. clear all
+
+. adopath ++ "~/Stata-dev/uhtred/uhtred"
+  [1]              "~/Stata-dev/uhtred/uhtred"
+  [2]              "~/Stata-dev/uhtred"
+  [3]  (BASE)      "/Applications/Stata/ado/base/"
+  [4]  (SITE)      "/Applications/Stata/ado/site/"
+  [5]              "."
+  [6]  (PERSONAL)  "/Users/ellessenne/Documents/Stata/ado/personal/"
+  [7]  (PLUS)      "/Users/ellessenne/Library/Application Support/Stata/ado/plus/"
+  [8]  (OLDPLACE)  "~/ado/"
+
+. clear all
+
+. do ./build/buildmlib.do
+
+. version 17
+
+. 
+. capture erase luhtred.mlib
+
+. mata: mata set matastrict off
+
+. qui {
+
+. 
+end of do-file
+
+. mata mata clear
+
+. // -stdmest-
 . cd "~/Stata-dev/stdmest"
 /Users/ellessenne/Stata-dev/stdmest
 
 . adopath ++ "stdmest"
   [1]              "stdmest"
-  [2]  (BASE)      "/Applications/Stata/ado/base/"
-  [3]  (SITE)      "/Applications/Stata/ado/site/"
-  [4]              "."
-  [5]  (PERSONAL)  "/Users/ellessenne/Documents/Stata/ado/personal/"
-  [6]  (PLUS)      "/Users/ellessenne/Library/Application Support/Stata/ado/plu
-> s/"
-  [7]  (OLDPLACE)  "~/ado/"
+  [2]              "~/Stata-dev/uhtred/uhtred"
+  [3]              "~/Stata-dev/uhtred"
+  [4]  (BASE)      "/Applications/Stata/ado/base/"
+  [5]  (SITE)      "/Applications/Stata/ado/site/"
+  [6]              "."
+  [7]  (PERSONAL)  "/Users/ellessenne/Documents/Stata/ado/personal/"
+  [8]  (PLUS)      "/Users/ellessenne/Library/Application Support/Stata/ado/plus/"
+  [9]  (OLDPLACE)  "~/ado/"
 
 . adopath ++ "stdmestm"
   [1]              "stdmestm"
   [2]              "stdmest"
-  [3]  (BASE)      "/Applications/Stata/ado/base/"
-  [4]  (SITE)      "/Applications/Stata/ado/site/"
-  [5]              "."
-  [6]  (PERSONAL)  "/Users/ellessenne/Documents/Stata/ado/personal/"
-  [7]  (PLUS)      "/Users/ellessenne/Library/Application Support/Stata/ado/plu
-> s/"
-  [8]  (OLDPLACE)  "~/ado/"
+  [3]              "~/Stata-dev/uhtred/uhtred"
+  [4]              "~/Stata-dev/uhtred"
+  [5]  (BASE)      "/Applications/Stata/ado/base/"
+  [6]  (SITE)      "/Applications/Stata/ado/site/"
+  [7]              "."
+  [8]  (PERSONAL)  "/Users/ellessenne/Documents/Stata/ado/personal/"
+  [9]  (PLUS)      "/Users/ellessenne/Library/Application Support/Stata/ado/plus/"
+  [10] (OLDPLACE)  "~/ado/"
 
 . clear all
 
@@ -145,45 +194,28 @@ cluster      |
 LR test vs. exponential model: chibar2(01) = 2.0e+06  Prob >= chibar2 = 0.0000
 
 . 
-. // Mixed-effects exponential PH regression         Number of obs     =    100
-> 0000
-. // Group variable: cluster                         Number of groups  =      1
-> ,000
+. // Mixed-effects exponential PH regression         Number of obs     =    1000000
+. // Group variable: cluster                         Number of groups  =      1,000
 . //
 . //                                                 Obs per group:
-. //                                                               min =      1
-> ,000
-. //                                                               avg =    1,0
-> 00.0
-. //                                                               max =      1
-> ,000
+. //                                                               min =      1,000
+. //                                                               avg =    1,000.0
+. //                                                               max =      1,000
 . //
-. // Integration method: mvaghermite                 Integration pts.  =       
->    7
+. // Integration method: mvaghermite                 Integration pts.  =          7
 . //
-. //                                                 Wald chi2(1)      =   6255
-> 3.76
-. // Log likelihood = -1234512.5                     Prob > chi2       =     0.
-> 0000
-. // --------------------------------------------------------------------------
-> ----
-. //           _t | Coefficient  Std. err.      z    P>|z|     [95% conf. inter
-> val]
-. // -------------+------------------------------------------------------------
-> ----
-. //           X1 |  -.5007131    .002002  -250.11   0.000    -.5046369   -.496
-> 7893
-. //        _cons |   .0194006   .0448248     0.43   0.665    -.0684545    .107
-> 2556
-. // -------------+------------------------------------------------------------
-> ----
+. //                                                 Wald chi2(1)      =   62553.76
+. // Log likelihood = -1234512.5                     Prob > chi2       =     0.0000
+. // ------------------------------------------------------------------------------
+. //           _t | Coefficient  Std. err.      z    P>|z|     [95% conf. interval]
+. // -------------+----------------------------------------------------------------
+. //           X1 |  -.5007131    .002002  -250.11   0.000    -.5046369   -.4967893
+. //        _cons |   .0194006   .0448248     0.43   0.665    -.0684545    .1072556
+. // -------------+----------------------------------------------------------------
 . // cluster      |
-. //    var(_cons)|   2.007918   .0898333                      1.839347    2.19
-> 1938
-. // --------------------------------------------------------------------------
-> ----
-. // LR test vs. exponential model: chibar2(01) = 2.0e+06  Prob >= chibar2 = 0.
-> 0000
+. //    var(_cons)|   2.007918   .0898333                      1.839347    2.191938
+. // ------------------------------------------------------------------------------
+. // LR test vs. exponential model: chibar2(01) = 2.0e+06  Prob >= chibar2 = 0.0000
 . 
 . // timevar
 . capture drop tt
@@ -257,8 +289,7 @@ LR test vs. exponential model: chibar2(01) = 2.0e+06  Prob >= chibar2 = 0.0000
 . // Sa1, for values of t:
 . forvalues t = 0(1)10 {
   2.         mkmat Sa1 if tt == `t', matrix(ref)
-  3.         matrix test = 0.500489 * exp(-exp(_b[_cons] + 0 * _b[X1] + 0.0) * 
-> `t') + 0.499511 * exp(-exp(_b[_cons] + 1 * _b[X1] + 0.0) * `t')
+  3.         matrix test = 0.500489 * exp(-exp(_b[_cons] + 0 * _b[X1] + 0.0) * `t') + 0.499511 * exp(-exp(_b[_cons] + 1 * _b[X1] + 0.0) * `t')
   4.         di mreldif(test, ref)
   5.         assert mreldif(test, ref) < 1e-6
   6. }
@@ -278,8 +309,7 @@ LR test vs. exponential model: chibar2(01) = 2.0e+06  Prob >= chibar2 = 0.0000
 . // Sa1_ref, for values of t:
 . forvalues t = 0(1)10 {
   2.         mkmat Sa1_ref if tt == `t', matrix(ref)
-  3.         matrix test = 0.500489 * exp(-exp(_b[_cons] + 0 * _b[X1] - 2.0) * 
-> `t') + 0.499511 * exp(-exp(_b[_cons] + 1 * _b[X1] - 2.0) * `t')
+  3.         matrix test = 0.500489 * exp(-exp(_b[_cons] + 0 * _b[X1] - 2.0) * `t') + 0.499511 * exp(-exp(_b[_cons] + 1 * _b[X1] - 2.0) * `t')
   4.         di mreldif(test, ref)
   5.         assert mreldif(test, ref) < 1e-6
   6. }
@@ -300,8 +330,7 @@ LR test vs. exponential model: chibar2(01) = 2.0e+06  Prob >= chibar2 = 0.0000
 . // Sa1, for values of t:
 . forvalues t = 0(1)10 {
   2.         mkmat Sa1 if tt == `t', matrix(ref)
-  3.         matrix test = 0.500489 * exp(-exp(0.0 + 0 * (-0.5) + 0.0) * `t') +
->  0.499511 * exp(-exp(0.0 + 1 * (-0.5) + 0.0) * `t')
+  3.         matrix test = 0.500489 * exp(-exp(0.0 + 0 * (-0.5) + 0.0) * `t') + 0.499511 * exp(-exp(0.0 + 1 * (-0.5) + 0.0) * `t')
   4.         di mreldif(test, ref)
   5.         assert mreldif(test, ref) < 1e-2
   6. }
@@ -321,8 +350,7 @@ LR test vs. exponential model: chibar2(01) = 2.0e+06  Prob >= chibar2 = 0.0000
 . // Sa1_ref, for values of t:
 . forvalues t = 0(1)10 {
   2.         mkmat Sa1_ref if tt == `t', matrix(ref)
-  3.         matrix test = 0.500489 * exp(-exp(0.0 + 0 * (-0.5) - 2.0) * `t') +
->  0.499511 * exp(-exp(0.0 + 1 * (-0.5) - 2.0) * `t')
+  3.         matrix test = 0.500489 * exp(-exp(0.0 + 0 * (-0.5) - 2.0) * `t') + 0.499511 * exp(-exp(0.0 + 1 * (-0.5) - 2.0) * `t')
   4.         di mreldif(test, ref)
   5.         assert mreldif(test, ref) < 1e-2
   6. }
