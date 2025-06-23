@@ -2,11 +2,12 @@
 set linesize 255
 clear all
 // clear all is enough to 'refresh' in the same session
+// NOTE: adjust the paths below to the correct location on your computer
+//       before continuing with the example code
 // -uhtred-
 adopath ++ "~/Stata-dev/uhtred/release/version_1_5_1"
 // -stdmest-
 adopath ++ "~/Stata-dev/stdmest/release/version_0_1_0"
-//
 program drop _all
 mata mata mlib index
 
@@ -64,8 +65,8 @@ twoway ///
 	(line S16 tv, lcolor(black) lpattern(solid)) ///
 	(line S1m tv, lcolor(blue) lpattern(solid) lwidth(thick)) ///
 	, legend(off) name("S1", replace)
-//	
-twoway ///	
+//
+twoway ///
 	(line S31 tv, lcolor(black) lpattern(dash)) ///
 	(line S32 tv, lcolor(black) lpattern(dash)) ///
 	(line S33 tv, lcolor(black) lpattern(dash)) ///
@@ -75,7 +76,7 @@ twoway ///
 	(line S3m tv, lcolor(blue) lpattern(dash) lwidth(thick)) ///
 	, legend(off) name("S3", replace)
 //
-twoway ///	
+twoway ///
 	(rarea S1m_lower S1m_upper tv, color(stblue%10)) ///
 	(rarea S3m_lower S3m_upper tv, color(stred%10)) ///
 	(line S1m tv, lcolor(stblue) lpattern(solid)) ///
