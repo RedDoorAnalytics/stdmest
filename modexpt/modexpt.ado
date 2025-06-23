@@ -1,4 +1,4 @@
-*! version 0.0.1-9000  16Jul2024 AG
+*! version 0.0.1 Alessandro Gasparini 16Jul2024
 
 program define modexpt
 	// Version
@@ -8,7 +8,7 @@ program define modexpt
 	if ("`e(cmd2)'" != "mestreg") & ("`e(cmd2)'" != "stmixed") {
 		display as error "This only works after fitting a model with {cmd: mestreg} or {cmd: stmixed}."
 		exit 301
-	}	
+	}
 
 	// Syntax
 	syntax , FILEName(string) [replace]
@@ -68,7 +68,7 @@ program define modexpt
 	if ("`e(cmd2)'" == "stmixed") & ("`e(family1)'" == "rp") {
 		putexcel set "`filename'", modify sheet("e(knots1)", replace)
 		putexcel A1 = "`e(knots1)'"
-		putexcel save		
+		putexcel save
 		//
 		putexcel set "`filename'", modify sheet("e(orthog1)", replace)
 		putexcel A1 = "`e(orthog1)'"
@@ -79,7 +79,7 @@ program define modexpt
 		putexcel set "`filename'", modify sheet("e(rcsrmat_1)", replace)
 		putexcel A1 = matrix(`rcsrmat')
 		putexcel save
-		//		
+		//
 	}
 
 	// If -stmixed- model, export parameters labels
@@ -87,6 +87,6 @@ program define modexpt
 		putexcel set "`filename'", modify sheet("e(cmplabels1)", replace)
 		putexcel A1 = "`e(cmplabels1)'"
 		putexcel save
-	}	
+	}
 
 end
