@@ -1,4 +1,4 @@
-.PHONY: vendor_data cert ex matalib
+.PHONY: vendor_data cert ex matalib release
 
 vendor_data:
 	cp ~/R-dev/stdmest/data-raw/data3CIA.dta ~/Stata-dev/stdmest/data/data3CIA.dta
@@ -29,3 +29,7 @@ ex:
 
 matalib:
 	cd build && stata-mp -e buildmlib.do
+
+release:
+	make matalib
+	cd build && stata-mp -e buildrelease.do

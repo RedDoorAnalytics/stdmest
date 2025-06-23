@@ -1,0 +1,71 @@
+
+  ___  ____  ____  ____  ____ ®
+ /__    /   ____/   /   ____/      StataNow 18.5
+___/   /   /___/   /   /___/       MP—Parallel Edition
+
+ Statistics and Data Science       Copyright 1985-2023 StataCorp LLC
+                                   StataCorp
+                                   4905 Lakeway Drive
+                                   College Station, Texas 77845 USA
+                                   800-782-8272        https://www.stata.com
+                                   979-696-4600        service@stata.com
+
+Stata license: 3-user 2-core network, expiring 12 Sep 2025
+Serial number: 501809300405
+  Licensed to: Alessandro Gasparini
+               Red Door Analytics AB
+
+Notes:
+      1. Stata is running in batch mode.
+      2. Unicode is supported; see help unicode_advice.
+      3. More than 2 billion observations are allowed; see help obs_advice.
+      4. Maximum number of variables is set to 5,000 but can be increased;
+          see help set_maxvar.
+
+. do "buildrelease.do" 
+
+. // Package files for new release
+. local newversion 0_1_0
+
+. capture mkdir ../release/version_`newversion'
+
+. local fdir ../release/version_`newversion'/
+
+. 
+. // -modexpt-
+. copy ../modexpt/modexpt.ado `fdir', replace
+(file ../release/version_0_1_0/modexpt.ado not found)
+
+. copy ../modexpt/modexpt.sthlp `fdir', replace
+(file ../release/version_0_1_0/modexpt.sthlp not found)
+
+. 
+. // -stdmest-
+. copy ../stdmest/stdmest.ado `fdir', replace
+(file ../release/version_0_1_0/stdmest.ado not found)
+
+. copy ../stdmest/stdmest.sthlp `fdir', replace
+(file ../release/version_0_1_0/stdmest.sthlp not found)
+
+. 
+. // -stdmestm-
+. copy ../stdmestm/stdmestm.ado `fdir', replace
+(file ../release/version_0_1_0/stdmestm.ado not found)
+
+. copy ../stdmestm/stdmestm.sthlp `fdir', replace
+(file ../release/version_0_1_0/stdmestm.sthlp not found)
+
+. 
+. // Mata library
+. capture erase `fdir'lstdmest.mlib
+
+. copy ../lstdmest.mlib `fdir', replace
+(file ../release/version_0_1_0/lstdmest.mlib not found)
+
+. 
+. // README
+. copy ../README.md `fdir', replace
+(file ../release/version_0_1_0/README.md not found)
+
+. 
+end of do-file
