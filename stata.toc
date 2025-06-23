@@ -1,5 +1,5 @@
 v 3
-d Post-Estimation Predictions for Standardized Hierarchical Contrasts after -mestreg- Models
+d Post-Estimation Predictions for Standardized Hierarchical Contrasts after -mestreg- and -uhtred- Models
 p stdmest
 p stdmestm
 p modexpt
