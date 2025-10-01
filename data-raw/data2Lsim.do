@@ -3,11 +3,11 @@ cd "~/Stata-dev/stdmest"
 
 //
 set seed 31495673
-set obs 100
+set obs 300
 gen cluster = _n
 gen tmp = 0
 gen b = rnormal(0, `=sqrt(2)')
-expand 100
+expand 300
 gen X1 = rbinomial(1, 0.5)
 sort cluster
 gen id = _n
