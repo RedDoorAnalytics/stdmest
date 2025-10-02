@@ -158,6 +158,7 @@ program define stdmest, sortpreserve
 	if ("`e(cmd)'" == "uhtred") {
 		// from: uhtred_p.ado
 		tempname GML
+		capture mata: rmexternal("`GML'")
 		// Get coefficients and refill struct
 		tempname best
 		mat `best' = e(b)
