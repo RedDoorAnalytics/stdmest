@@ -1,5 +1,5 @@
 // Package files for new release
-local newversion 0_1_0
+local newversion 0_1_1
 capture mkdir ../release/version_`newversion'
 local fdir ../release/version_`newversion'/
 

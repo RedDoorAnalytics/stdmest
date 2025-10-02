@@ -1,17 +1,17 @@
 
   ___  ____  ____  ____  ____ ®
- /__    /   ____/   /   ____/      StataNow 18.5
+ /__    /   ____/   /   ____/      StataNow 19.5
 ___/   /   /___/   /   /___/       MP—Parallel Edition
 
- Statistics and Data Science       Copyright 1985-2023 StataCorp LLC
+ Statistics and Data Science       Copyright 1985-2025 StataCorp LLC
                                    StataCorp
                                    4905 Lakeway Drive
                                    College Station, Texas 77845 USA
                                    800-782-8272        https://www.stata.com
                                    979-696-4600        service@stata.com
 
-Stata license: 3-user 2-core network, expiring 12 Sep 2025
-Serial number: 501809300405
+Stata license: 4-user 2-core network, expiring 12 Sep 2026
+Serial number: 501909317505
   Licensed to: Alessandro Gasparini
                Red Door Analytics AB
 
@@ -25,7 +25,7 @@ Notes:
 . do "buildrelease.do" 
 
 . // Package files for new release
-. local newversion 0_1_0
+. local newversion 0_1_1
 
 . capture mkdir ../release/version_`newversion'
 
@@ -34,38 +34,38 @@ Notes:
 . 
 . // -modexpt-
 . copy ../modexpt/modexpt.ado `fdir', replace
-(file ../release/version_0_1_0/modexpt.ado not found)
+(file ../release/version_0_1_1/modexpt.ado not found)
 
 . copy ../modexpt/modexpt.sthlp `fdir', replace
-(file ../release/version_0_1_0/modexpt.sthlp not found)
+(file ../release/version_0_1_1/modexpt.sthlp not found)
 
 . 
 . // -stdmest-
 . copy ../stdmest/stdmest.ado `fdir', replace
-(file ../release/version_0_1_0/stdmest.ado not found)
+(file ../release/version_0_1_1/stdmest.ado not found)
 
 . copy ../stdmest/stdmest.sthlp `fdir', replace
-(file ../release/version_0_1_0/stdmest.sthlp not found)
+(file ../release/version_0_1_1/stdmest.sthlp not found)
 
 . 
 . // -stdmestm-
 . copy ../stdmestm/stdmestm.ado `fdir', replace
-(file ../release/version_0_1_0/stdmestm.ado not found)
+(file ../release/version_0_1_1/stdmestm.ado not found)
 
 . copy ../stdmestm/stdmestm.sthlp `fdir', replace
-(file ../release/version_0_1_0/stdmestm.sthlp not found)
+(file ../release/version_0_1_1/stdmestm.sthlp not found)
 
 . 
 . // Mata library
 . capture erase `fdir'lstdmest.mlib
 
 . copy ../lstdmest.mlib `fdir', replace
-(file ../release/version_0_1_0/lstdmest.mlib not found)
+(file ../release/version_0_1_1/lstdmest.mlib not found)
 
 . 
 . // README
 . copy ../README.md `fdir', replace
-(file ../release/version_0_1_0/README.md not found)
+(file ../release/version_0_1_1/README.md not found)
 
 . 
 end of do-file

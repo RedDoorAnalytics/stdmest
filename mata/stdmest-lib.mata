@@ -1,4 +1,4 @@
-*! version 0.1.0 Alessandro Gasparini, Michael J. Crowther 23Jun2025
+*! version 0.1.1 Alessandro Gasparini, Michael J. Crowther 01Oct2025
 
 local RS real scalar
 local RC real colvector
