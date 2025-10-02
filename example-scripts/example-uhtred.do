@@ -77,8 +77,8 @@ twoway ///
 	, legend(off) name("S3", replace)
 //
 twoway ///
-	(rarea S1m_lower S1m_upper tv, color(stblue%10)) ///
-	(rarea S3m_lower S3m_upper tv, color(stred%10)) ///
+	(rarea S1m_lci S1m_uci tv, color(stblue%10)) ///
+	(rarea S3m_lci S3m_uci tv, color(stred%10)) ///
 	(line S1m tv, lcolor(stblue) lpattern(solid)) ///
 	(line S3m tv, lcolor(stred) lpattern(dash)) ///
 	, legend(order(3 "Weibull" 4 "RP(3)")) name("S1_vs_S3", replace)

@@ -210,8 +210,8 @@ mata:
 			Sci = Savg[|1,2 \ rows(t),Bp1|]
 			_transpose(Sci)
 			// add variables
-			outi_lower = st_addvar("double", out + "_lower")
-			outi_upper = st_addvar("double", out + "_upper")
+			outi_lci = st_addvar("double", out + "_lci")
+			outi_uci = st_addvar("double", out + "_uci")
 			if (hascinormal) {
 				// use the normal approximation method
 				// (for symmetric CIs)
@@ -219,27 +219,27 @@ mata:
 				Sci = cloglog(Sci)
 				Sci_var = mm_colvar(Sci, 1)
 				_transpose(Sci_var)
-				Sci_lower = cloglog(Savg[, 1]) :- crit * sqrt(Sci_var)
-				Sci_upper = cloglog(Savg[, 1]) :+ crit * sqrt(Sci_var)
-				Sci_lower = invcloglog(Sci_lower)
-				Sci_upper = invcloglog(Sci_upper)
+				Sci_lci = cloglog(Savg[, 1]) :- crit * sqrt(Sci_var)
+				Sci_uci = cloglog(Savg[, 1]) :+ crit * sqrt(Sci_var)
+				Sci_lci = invcloglog(Sci_lci)
+				Sci_uci = invcloglog(Sci_uci)
 				// cloglog is not defined for 0, 1 – deal with that by hand
-				Sci_lower = mm_cond(Savg[, 1] :>= 1, 1, Sci_lower)
-				Sci_upper = mm_cond(Savg[, 1] :>= 1, 1, Sci_upper)
-				Sci_lower = mm_cond(Savg[, 1] :<= 0, 0, Sci_lower)
-				Sci_upper = mm_cond(Savg[, 1] :<= 0, 0, Sci_upper)
+				Sci_lci = mm_cond(Savg[, 1] :>= 1, 1, Sci_lci)
+				Sci_uci = mm_cond(Savg[, 1] :>= 1, 1, Sci_uci)
+				Sci_lci = mm_cond(Savg[, 1] :<= 0, 0, Sci_lci)
+				Sci_uci = mm_cond(Savg[, 1] :<= 0, 0, Sci_uci)
 			}
 			else {
 				// otherwise, confidence intervals using the percentile method
 				// (the default)
-				Sci_lower = mm_quantile(Sci, 1, (1 - level) / 2)
-				Sci_upper = mm_quantile(Sci, 1, (1 - (1 - level) / 2))
+				Sci_lci = mm_quantile(Sci, 1, (1 - level) / 2)
+				Sci_uci = mm_quantile(Sci, 1, (1 - (1 - level) / 2))
 				// transpose them
-				_transpose(Sci_lower)
-				_transpose(Sci_upper)
+				_transpose(Sci_lci)
+				_transpose(Sci_uci)
 			}
-			st_store(., outi_lower, timevartouse, Sci_lower)
-			st_store(., outi_upper, timevartouse, Sci_upper)
+			st_store(., outi_lci, timevartouse, Sci_lci)
+			st_store(., outi_uci, timevartouse, Sci_uci)
 		}
 		if (hascontrast) {
 			// display progress (if required by the user)
@@ -256,8 +256,8 @@ mata:
 				Sciref = Savgref[|1,2 \ rows(t),Bp1|]
 				_transpose(Sciref)
 				// add variables
-				outiref_lower = st_addvar("double", out + "_ref_lower")
-				outiref_upper = st_addvar("double", out + "_ref_upper")
+				outiref_lci = st_addvar("double", out + "_ref_lci")
+				outiref_uci = st_addvar("double", out + "_ref_uci")
 				if (hascinormal) {
 					// use the normal approximation method
 					// (for symmetric CIs)
@@ -265,30 +265,30 @@ mata:
 					Sciref = cloglog(Sciref)
 					Sciref_var = mm_colvar(Sciref, 1)
 					_transpose(Sciref_var)
-					Sciref_lower = cloglog(Savgref[, 1]) :- crit * sqrt(Sciref_var)
-					Sciref_upper = cloglog(Savgref[, 1]) :+ crit * sqrt(Sciref_var)
-					Sciref_lower = invcloglog(Sciref_lower)
-					Sciref_upper = invcloglog(Sciref_upper)
+					Sciref_lci = cloglog(Savgref[, 1]) :- crit * sqrt(Sciref_var)
+					Sciref_uci = cloglog(Savgref[, 1]) :+ crit * sqrt(Sciref_var)
+					Sciref_lci = invcloglog(Sciref_lci)
+					Sciref_uci = invcloglog(Sciref_uci)
 					// cloglog is not defined for 0, 1 – deal with that by hand
-					Sciref_lower = mm_cond(Savgref[, 1] :>= 1, 1, Sciref_lower)
-					Sciref_upper = mm_cond(Savgref[, 1] :>= 1, 1, Sciref_upper)
-					Sciref_lower = mm_cond(Savgref[, 1] :<= 0, 0, Sciref_lower)
-					Sciref_upper = mm_cond(Savgref[, 1] :<= 0, 0, Sciref_upper)
+					Sciref_lci = mm_cond(Savgref[, 1] :>= 1, 1, Sciref_lci)
+					Sciref_uci = mm_cond(Savgref[, 1] :>= 1, 1, Sciref_uci)
+					Sciref_lci = mm_cond(Savgref[, 1] :<= 0, 0, Sciref_lci)
+					Sciref_uci = mm_cond(Savgref[, 1] :<= 0, 0, Sciref_uci)
 				}
 				else {
 					// otherwise, confidence intervals using the percentile method
 					// (the default)
-					Sciref_lower = mm_quantile(Sciref, 1, (1 - level) / 2)
-					Sciref_upper = mm_quantile(Sciref, 1, (1 - (1 - level) / 2))
+					Sciref_lci = mm_quantile(Sciref, 1, (1 - level) / 2)
+					Sciref_uci = mm_quantile(Sciref, 1, (1 - (1 - level) / 2))
 					// transpose them
-					_transpose(Sciref_lower)
-					_transpose(Sciref_upper)
+					_transpose(Sciref_lci)
+					_transpose(Sciref_uci)
 				}
-				st_store(., outiref_lower, timevartouse, Sciref_lower)
-				st_store(., outiref_upper, timevartouse, Sciref_upper)
+				st_store(., outiref_lci, timevartouse, Sciref_lci)
+				st_store(., outiref_uci, timevartouse, Sciref_uci)
 			}
 			Savgcontrast = Savg :- Savgref
-			outicontrast = st_addvar("double", out + "_contrast")
+			outicontrast = st_addvar("double", out + "_diff")
 			st_store(., outicontrast, timevartouse, Savgcontrast[, 1])
 			if (hasci) {
 				// display progress (if required by the user)
@@ -301,29 +301,29 @@ mata:
 				Scicontrast = Savgcontrast[|1,2 \ rows(t),Bp1|]
 				_transpose(Scicontrast)
 				// add variables
-				outicontrast_lower = st_addvar("double", out + "_contrast_lower")
-				outicontrast_upper = st_addvar("double", out + "_contrast_upper")
+				outicontrast_lci = st_addvar("double", out + "_diff_lci")
+				outicontrast_uci = st_addvar("double", out + "_diff_uci")
 				if (hascinormal) {
 					// use the normal approximation method
 					// (for symmetric CIs)
 					crit = invnormal(1 - (1 - level) / 2)
 					Scicontrast_var = mm_colvar(Scicontrast, 1)
 					_transpose(Scicontrast_var)
-					Scicontrast_lower = Savgcontrast[, 1] :- crit * sqrt(Scicontrast_var)
-					Scicontrast_upper = Savgcontrast[, 1] :+ crit * sqrt(Scicontrast_var)
+					Scicontrast_lci = Savgcontrast[, 1] :- crit * sqrt(Scicontrast_var)
+					Scicontrast_uci = Savgcontrast[, 1] :+ crit * sqrt(Scicontrast_var)
 					// note: there is no guarantee that CIs are in the [-1, 1] range
 				}
 				else {
 					// otherwise, confidence intervals using the percentile method
 					// (the default)
-					Scicontrast_lower = mm_quantile(Scicontrast, 1, (1 - level) / 2)
-					Scicontrast_upper = mm_quantile(Scicontrast, 1, (1 - (1 - level) / 2))
+					Scicontrast_lci = mm_quantile(Scicontrast, 1, (1 - level) / 2)
+					Scicontrast_uci = mm_quantile(Scicontrast, 1, (1 - (1 - level) / 2))
 					// transpose them
-					_transpose(Scicontrast_lower)
-					_transpose(Scicontrast_upper)
+					_transpose(Scicontrast_lci)
+					_transpose(Scicontrast_uci)
 				}
-				st_store(., outicontrast_lower, timevartouse, Scicontrast_lower)
-				st_store(., outicontrast_upper, timevartouse, Scicontrast_upper)
+				st_store(., outicontrast_lci, timevartouse, Scicontrast_lci)
+				st_store(., outicontrast_uci, timevartouse, Scicontrast_uci)
 			}
 		}
 

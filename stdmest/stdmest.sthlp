@@ -151,14 +151,14 @@ We can plot this with the following code:
 Next, if we pass the {opt ci} option to {cmd: stdmest} we obtain confidence intervals too:
 
 {phang}{stata . stdmest s2, ci}{p_end}
-{phang}{stata . twoway (rarea s2_lower s2_upper _t, sort color(stblue%10)) (line s2 _t, sort lcolor(stblue))}{p_end}
+{phang}{stata . twoway (rarea s2_lci s2_uci _t, sort color(stblue%10)) (line s2 _t, sort lcolor(stblue))}{p_end}
 
 {pstd}
 This uses the percentile method and 100 repetitions for the confidence intervals algorithm.
 If we wanted to use the normal approximation method, we could use the {opt cinormal} option:
 
 {phang}{stata . stdmest s3, ci cinormal}{p_end}
-{phang}{stata . twoway (rarea s3_lower s3_upper _t, sort color(stgreen%10)) (line s3 _t, sort lcolor(stgreen))}{p_end}
+{phang}{stata . twoway (rarea s3_lci s3_uci _t, sort color(stgreen%10)) (line s3 _t, sort lcolor(stgreen))}{p_end}
 
 {pstd}
 We can also define custom time points to obtain predictions at:

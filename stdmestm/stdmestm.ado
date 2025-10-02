@@ -75,6 +75,14 @@ program define stdmestm, sortpreserve
 		VARMARG(real 0.0) ///
 		]
 
+	// Check that 'newvarname' is not too long
+	// (we will append up to 9 characters: e.g., _diff_lci)
+	local newvarnamelength = strlen("`newvarname'")
+	if (`newvarnamelength' > 23) {
+		display as error "Name `newvarname' is likely too long: please use a shorter name to avoid hitting Stata's 32 characters limit."
+		exit 198
+	}
+
 	// The number of quadrature nodes nk must be greater than zero
 	if (`nk' <= 0) {
 		display as error "'nk' must be > 0."

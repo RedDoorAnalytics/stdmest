@@ -171,7 +171,7 @@ We also request confidence intervals, which are calculated using the default set
 {pstd}
 We can plot the resulting predictions with the following code:
 
-{phang}{stata . twoway (rarea S1930_lower S1930_upper tv, sort color(stblue%10)) (line S1930 tv, sort lcolor(stblue))}{p_end}
+{phang}{stata . twoway (rarea S1930_lci S1930_uci tv, sort color(stblue%10)) (line S1930 tv, sort lcolor(stblue))}{p_end}
 
 {pstd}
 These predictions are interpreted as standardised survival probabilities for study subjects born in 1930, over time, standardising over the observed covariates distribution and marginalising over the subject-level random intercept.
@@ -204,13 +204,13 @@ All these predictions can then be plotted using the following code:
 {break}
 . {space 4} local addplot `addplot' ///
 {break}
-. {space 8} (rarea S1930_`i'_lower S1930_`i'_upper tv, sort color(black%05)) ///
+. {space 8} (rarea S1930_`i'_lci S1930_`i'_uci tv, sort color(black%05)) ///
 {break}
 . {space 8} (line S1930_`i' tv, sort lcolor(black) lpattern(dash))
 {break}
 . }
 {break}
-. local margplot (rarea S1930_lower S1930_upper tv, sort color(stblue%20)) (line S1930 tv, sort lcolor(stblue) lwidth(thick))
+. local margplot (rarea S1930_lci S1930_uci tv, sort color(stblue%20)) (line S1930 tv, sort lcolor(stblue) lwidth(thick))
 {break}
 . twoway `addplot' `margplot', legend(order(25 "95% C.I." 26 "birthyear = 1930"))
 

@@ -59,6 +59,14 @@ program define stdmest, sortpreserve
 		DOTS ///
 		]
 
+	// Check that 'newvarname' is not too long
+	// (we will append up to 9 characters: e.g., _diff_lci)
+	local newvarnamelength = strlen("`newvarname'")
+	if (`newvarnamelength' > 23) {
+		display as error "Name `newvarname' is likely too long: please use a shorter name to avoid hitting Stata's 32 characters limit."
+		exit 198
+	}
+
 	// Mark which rows to use
 	// (useful, e.g., to standardise to a subset of the study data)
 	marksample touse, novarlist
