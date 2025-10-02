@@ -34,10 +34,10 @@ stdmest S1, reat(0.0) reatse(0.0)
 twoway line S1 _t, sort
 
 stdmest S2, reat(0.0) reatse(0.0) ci
-twoway (rarea S2_lower S2_upper _t, sort color(stblue%10)) (line S2 _t, sort lcolor(stblue))
+twoway (rarea S2_lci S2_uci _t, sort color(stblue%10)) (line S2 _t, sort lcolor(stblue))
 
 stdmest S3, reat(0.0) reatse(0.0) ci cinormal
-twoway (rarea S3_lower S3_upper _t, sort color(stgreen%10)) (line S3 _t, sort lcolor(stgreen))
+twoway (rarea S3_lci S3_uci _t, sort color(stgreen%10)) (line S3 _t, sort lcolor(stgreen))
 
 range tt 0 100 5
 stdmest S4, reat(0.0) reatse(0.0) ci timevar(tt) reps(1000) verbose
@@ -66,11 +66,11 @@ stdmest S2, reat(-.0795512 -.1309338) reatse(.1930458 .4605677) ci
 
 //
 twoway ///
-	(rarea S1_lower S1_upper _t, sort color(stblue%10)) ///
-	(rarea S2_lower S2_upper _t, sort color(stred%10)) ///
+	(rarea S1_lci S1_uci _t, sort color(stblue%10)) ///
+	(rarea S2_lci S2_uci _t, sort color(stred%10)) ///
 	(line S1 _t, sort lcolor(stblue)) ///
 	(line S2 _t, sort lcolor(stred))
 
 //
 stdmest S3, reat(-.0795512 -1.39209) reatse(.1930458 .4813395) reatref(-.0795512 -.1309338) reatrefse(.1930458 .4605677) ci contrast
-twoway (rarea S3_contrast_lower S3_contrast_upper _t, sort color(stgreen%10)) (line S3_contrast _t, sort lcolor(stgreen))
+twoway (rarea S3_diff_lci S3_diff_uci _t, sort color(stgreen%10)) (line S3_diff _t, sort lcolor(stgreen))

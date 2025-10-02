@@ -1,17 +1,17 @@
 
   ___  ____  ____  ____  ____ ®
- /__    /   ____/   /   ____/      StataNow 18.5
+ /__    /   ____/   /   ____/      StataNow 19.5
 ___/   /   /___/   /   /___/       MP—Parallel Edition
 
- Statistics and Data Science       Copyright 1985-2023 StataCorp LLC
+ Statistics and Data Science       Copyright 1985-2025 StataCorp LLC
                                    StataCorp
                                    4905 Lakeway Drive
                                    College Station, Texas 77845 USA
                                    800-782-8272        https://www.stata.com
                                    979-696-4600        service@stata.com
 
-Stata license: 3-user 2-core network, expiring 12 Sep 2025
-Serial number: 501809300405
+Stata license: 4-user 2-core network, expiring 12 Sep 2026
+Serial number: 501909317505
   Licensed to: Alessandro Gasparini
                Red Door Analytics AB
 
@@ -32,15 +32,15 @@ Notes:
 . // clear all is enough to 'refresh' in the same session
 . // -uhtred-
 . cd "~/Stata-dev/uhtred"
-/Users/ellessenne/Stata-dev/uhtred
+/Users/alessandro.gasparini/Stata-dev/uhtred
 
 . adopath ++ "~/Stata-dev/uhtred"
   [1]              "~/Stata-dev/uhtred"
-  [2]  (BASE)      "/Applications/Stata/ado/base/"
-  [3]  (SITE)      "/Applications/Stata/ado/site/"
+  [2]  (BASE)      "/Applications/StataNow/ado/base/"
+  [3]  (SITE)      "/Applications/StataNow/ado/site/"
   [4]              "."
-  [5]  (PERSONAL)  "/Users/ellessenne/Documents/Stata/ado/personal/"
-  [6]  (PLUS)      "/Users/ellessenne/Library/Application Support/Stata/ado/plus/"
+  [5]  (PERSONAL)  "/Users/alessandro.gasparini/Documents/Stata/ado/personal/"
+  [6]  (PLUS)      "/Users/alessandro.gasparini/Library/Application Support/Stata/ado/plus/"
   [7]  (OLDPLACE)  "~/ado/"
 
 . clear all
@@ -48,11 +48,11 @@ Notes:
 . adopath ++ "~/Stata-dev/uhtred/uhtred"
   [1]              "~/Stata-dev/uhtred/uhtred"
   [2]              "~/Stata-dev/uhtred"
-  [3]  (BASE)      "/Applications/Stata/ado/base/"
-  [4]  (SITE)      "/Applications/Stata/ado/site/"
+  [3]  (BASE)      "/Applications/StataNow/ado/base/"
+  [4]  (SITE)      "/Applications/StataNow/ado/site/"
   [5]              "."
-  [6]  (PERSONAL)  "/Users/ellessenne/Documents/Stata/ado/personal/"
-  [7]  (PLUS)      "/Users/ellessenne/Library/Application Support/Stata/ado/plus/"
+  [6]  (PERSONAL)  "/Users/alessandro.gasparini/Documents/Stata/ado/personal/"
+  [7]  (PLUS)      "/Users/alessandro.gasparini/Library/Application Support/Stata/ado/plus/"
   [8]  (OLDPLACE)  "~/ado/"
 
 . clear all
@@ -75,23 +75,101 @@ end of do-file
 
 . // -stdmest-
 . cd "~/Stata-dev/stdmest"
-/Users/ellessenne/Stata-dev/stdmest
+/Users/alessandro.gasparini/Stata-dev/stdmest
 
 . adopath ++ "stdmest"
   [1]              "stdmest"
   [2]              "~/Stata-dev/uhtred/uhtred"
   [3]              "~/Stata-dev/uhtred"
-  [4]  (BASE)      "/Applications/Stata/ado/base/"
-  [5]  (SITE)      "/Applications/Stata/ado/site/"
+  [4]  (BASE)      "/Applications/StataNow/ado/base/"
+  [5]  (SITE)      "/Applications/StataNow/ado/site/"
   [6]              "."
-  [7]  (PERSONAL)  "/Users/ellessenne/Documents/Stata/ado/personal/"
-  [8]  (PLUS)      "/Users/ellessenne/Library/Application Support/Stata/ado/plus/"
+  [7]  (PERSONAL)  "/Users/alessandro.gasparini/Documents/Stata/ado/personal/"
+  [8]  (PLUS)      "/Users/alessandro.gasparini/Library/Application Support/Stata/ado/plus/"
   [9]  (OLDPLACE)  "~/ado/"
 
 . clear all
 
 . do ./build/buildmlib.do
 
+. clear all
+
+. // -uhtred-
+. cd "~/Stata-dev/uhtred"
+/Users/alessandro.gasparini/Stata-dev/uhtred
+
+. adopath ++ "~/Stata-dev/uhtred"
+  [1]              "~/Stata-dev/uhtred"
+  [2]              "stdmest"
+  [3]              "~/Stata-dev/uhtred/uhtred"
+  [4]  (BASE)      "/Applications/StataNow/ado/base/"
+  [5]  (SITE)      "/Applications/StataNow/ado/site/"
+  [6]              "."
+  [7]  (PERSONAL)  "/Users/alessandro.gasparini/Documents/Stata/ado/personal/"
+  [8]  (PLUS)      "/Users/alessandro.gasparini/Library/Application Support/Stata/ado/plus/"
+  [9]  (OLDPLACE)  "~/ado/"
+
+. clear all
+
+. adopath ++ "~/Stata-dev/uhtred/uhtred"
+  [1]              "~/Stata-dev/uhtred/uhtred"
+  [2]              "~/Stata-dev/uhtred"
+  [3]              "stdmest"
+  [4]  (BASE)      "/Applications/StataNow/ado/base/"
+  [5]  (SITE)      "/Applications/StataNow/ado/site/"
+  [6]              "."
+  [7]  (PERSONAL)  "/Users/alessandro.gasparini/Documents/Stata/ado/personal/"
+  [8]  (PLUS)      "/Users/alessandro.gasparini/Library/Application Support/Stata/ado/plus/"
+  [9]  (OLDPLACE)  "~/ado/"
+
+. clear all
+
+. do ./build/buildmlib.do
+
+. version 17
+
+. 
+. capture erase luhtred.mlib
+
+. mata: mata set matastrict off
+
+. qui {
+
+. 
+end of do-file
+
+. mata mata clear
+
+. // -stdmest-
+. cd "~/Stata-dev/stdmest"
+/Users/alessandro.gasparini/Stata-dev/stdmest
+
+. adopath ++ "stdmest"
+  [1]              "stdmest"
+  [2]              "~/Stata-dev/uhtred/uhtred"
+  [3]              "~/Stata-dev/uhtred"
+  [4]  (BASE)      "/Applications/StataNow/ado/base/"
+  [5]  (SITE)      "/Applications/StataNow/ado/site/"
+  [6]              "."
+  [7]  (PERSONAL)  "/Users/alessandro.gasparini/Documents/Stata/ado/personal/"
+  [8]  (PLUS)      "/Users/alessandro.gasparini/Library/Application Support/Stata/ado/plus/"
+  [9]  (OLDPLACE)  "~/ado/"
+
+. adopath ++ "stdmestm"
+  [1]              "stdmestm"
+  [2]              "stdmest"
+  [3]              "~/Stata-dev/uhtred/uhtred"
+  [4]              "~/Stata-dev/uhtred"
+  [5]  (BASE)      "/Applications/StataNow/ado/base/"
+  [6]  (SITE)      "/Applications/StataNow/ado/site/"
+  [7]              "."
+  [8]  (PERSONAL)  "/Users/alessandro.gasparini/Documents/Stata/ado/personal/"
+  [9]  (PLUS)      "/Users/alessandro.gasparini/Library/Application Support/Stata/ado/plus/"
+  [10] (OLDPLACE)  "~/ado/"
+
+. clear all
+
+. // Mata
 . capture erase lstdmest.mlib
 
 . quietly {
@@ -112,6 +190,11 @@ end of do-file
 . use "data/data3CIA", clear
 
 . 
+. // round timevar (to speed up computations)
+. replace months = round(months)
+(1,490 real changes made)
+
+. 
 . // stset
 . stset months, failure(status == 1)
 
@@ -127,10 +210,10 @@ Observed time interval: (0, months]
 --------------------------------------------------------------------------
       8,692  observations remaining, representing
       2,449  failures in single-record/single-failure data
- 552,433.42  total analysis time at risk and under observation
+    552,467  total analysis time at risk and under observation
                                                 At risk from t =         0
                                      Earliest observed entry t =         0
-                                          Last observed exit t =    260.88
+                                          Last observed exit t =       261
 
 . 
 . // mestreg Weibull model adjusting for age, FEV1, and dyspnea score
@@ -141,28 +224,28 @@ Observed time interval: (0, months]
 
 Fitting fixed-effects model:
 
-Iteration 0:  Log likelihood =  -51721207  
-Iteration 1:  Log likelihood = -18320.422  
-Iteration 2:  Log likelihood = -15148.234  (not concave)
-Iteration 3:  Log likelihood = -14948.181  
-Iteration 4:  Log likelihood = -14827.051  
-Iteration 5:  Log likelihood = -14803.766  
-Iteration 6:  Log likelihood = -14803.647  
-Iteration 7:  Log likelihood = -14803.647  
+Iteration 0:  Log likelihood =  -51726666  
+Iteration 1:  Log likelihood = -18321.005  
+Iteration 2:  Log likelihood = -15148.213  (not concave)
+Iteration 3:  Log likelihood = -14948.128  
+Iteration 4:  Log likelihood =  -14826.81  
+Iteration 5:  Log likelihood = -14803.488  
+Iteration 6:  Log likelihood = -14803.369  
+Iteration 7:  Log likelihood = -14803.369  
 
 Refining starting values:
 
-Grid node 0:  Log likelihood = -14710.492
+Grid node 0:  Log likelihood = -14710.315
 
 Fitting full model:
 
-Iteration 0:  Log likelihood = -14710.492  (not concave)
-Iteration 1:  Log likelihood = -14705.298  
-Iteration 2:  Log likelihood = -14702.531  
-Iteration 3:  Log likelihood = -14700.879  
-Iteration 4:  Log likelihood = -14700.757  
-Iteration 5:  Log likelihood = -14700.755  
-Iteration 6:  Log likelihood = -14700.755  
+Iteration 0:  Log likelihood = -14710.315  (not concave)
+Iteration 1:  Log likelihood = -14705.119  
+Iteration 2:  Log likelihood = -14702.376  
+Iteration 3:  Log likelihood = -14700.716  
+Iteration 4:  Log likelihood = -14700.591  
+Iteration 5:  Log likelihood = -14700.589  
+Iteration 6:  Log likelihood = -14700.589  
 
 Mixed-effects Weibull PH regression             Number of obs     =      8,692
 Group variable: cohort                          Number of groups  =         23
@@ -174,28 +257,28 @@ Group variable: cohort                          Number of groups  =         23
 
 Integration method: mvaghermite                 Integration pts.  =          7
 
-                                                Wald chi2(6)      =    1289.67
-Log likelihood = -14700.755                     Prob > chi2       =     0.0000
+                                                Wald chi2(6)      =    1289.86
+Log likelihood = -14700.589                     Prob > chi2       =     0.0000
 ------------------------------------------------------------------------------
           _t | Coefficient  Std. err.      z    P>|z|     [95% conf. interval]
 -------------+----------------------------------------------------------------
-         age |   .0607941   .0023694    25.66   0.000     .0561502     .065438
-      fev1pp |  -.0224616   .0012945   -17.35   0.000    -.0249989   -.0199244
+         age |   .0608032   .0023694    25.66   0.000     .0561592    .0654471
+      fev1pp |  -.0224627   .0012945   -17.35   0.000        -.025   -.0199255
              |
         mmrc |
-          1  |  -.0737735    .076011    -0.97   0.332    -.2227524    .0752053
-          2  |   .1898304   .0740251     2.56   0.010     .0447438    .3349169
-          3  |   .3901157   .0788746     4.95   0.000     .2355244    .5447071
-          4  |   .6147957   .0842143     7.30   0.000     .4497387    .7798527
+          1  |    -.07389   .0760115    -0.97   0.331    -.2228698    .0750898
+          2  |   .1898587   .0740257     2.56   0.010      .044771    .3349463
+          3  |   .3901756   .0788767     4.95   0.000     .2355801    .5447711
+          4  |   .6145367   .0842157     7.30   0.000     .4494769    .7795965
              |
-       _cons |  -10.28166   .2477476   -41.50   0.000    -10.76724   -9.796083
+       _cons |  -10.28473   .2477557   -41.51   0.000    -10.77033   -9.799141
 -------------+----------------------------------------------------------------
-       /ln_p |   .3372656   .0174159                      .3031311    .3714002
+       /ln_p |   .3377013   .0174147                      .3035692    .3718334
 -------------+----------------------------------------------------------------
 cohort       |
-   var(_cons)|   .2650788   .0916277                      .1346316    .5219188
+   var(_cons)|   .2649642   .0915885                      .1345729     .521695
 ------------------------------------------------------------------------------
-LR test vs. Weibull model: chibar2(01) = 205.78       Prob >= chibar2 = 0.0000
+LR test vs. Weibull model: chibar2(01) = 205.56       Prob >= chibar2 = 0.0000
 
 . 
 . // predict random effect
@@ -207,19 +290,19 @@ LR test vs. Weibull model: chibar2(01) = 205.78       Prob >= chibar2 = 0.0000
 
 . list b bse if _n == 1 | _n == _N
 
-      +----------------------+
-      |         b        bse |
-      |----------------------|
-   1. | -1.006262   .2222539 |
-8697. |   .995125   .1405887 |
-      +----------------------+
+      +---------------------+
+      |        b        bse |
+      |---------------------|
+   1. | -1.00562   .2222489 |
+8697. | .9954252   .1405902 |
+      +---------------------+
 
-. //       +----------------------+
-. //       |         b        bse |
-. //       |----------------------|
-. //    1. | -1.006262   .2222539 |
-. // 8697. |   .995125   .1405887 |
-. //       +----------------------+
+. //       +---------------------+
+. //       |        b        bse |
+. //       |---------------------|
+. //    1. | -1.00562   .2222489 |
+. // 8697. | .9954252   .1405902 |
+. //       +---------------------+
 . 
 . // without timevar
 . capture drop Smin*
@@ -228,7 +311,7 @@ LR test vs. Weibull model: chibar2(01) = 205.78       Prob >= chibar2 = 0.0000
 
 . timer on 1
 
-. stdmest Smin, reat(-1.006262) reatse(.2222539) reatref(0.0) reatrefse(0.0) contrast verbose ci cinormal
+. stdmest Smin, reat(-1.00562) reatse(.2222489) reatref(0.0) reatrefse(0.0) contrast verbose ci cinormal
 timevar() not specified, _t will be used instead
 
 Deriving point estimates...
@@ -238,7 +321,7 @@ Deriving contrasts...
 Deriving confidence intervals of contrasts...
 Done!
 
-. stdmest Smin2 if cohort == 18, reat(-1.006262) reatse(.2222539) reatref(0.0) reatrefse(0.0) contrast verbose ci cinormal
+. stdmest Smin2 if cohort == 18, reat(-1.00562) reatse(.2222489) reatref(0.0) reatrefse(0.0) contrast verbose ci cinormal
 timevar() not specified, _t will be used instead
 
 Deriving point estimates...
@@ -251,20 +334,20 @@ Done!
 . timer off 1
 
 . timer list 1
-   1:    465.70 /        1 =     465.7010
+   1:     91.19 /        1 =      91.1890
 
 . 
-. // list Smin Smin_ref Smin_contrast if tt != .
+. // list Smin Smin_ref Smin_diff if tt != .
 . twoway ///
->         (rarea Smin2_contrast_lower Smin2_contrast_upper _t, sort color(red%10)) ///
->         (rarea Smin_contrast_lower Smin_contrast_upper _t, sort color(blue%10)) ///
->         (line Smin2_contrast _t, sort lcolor(red)) ///
->         (line Smin_contrast _t, sort lcolor(blue)) ///
+>         (rarea Smin2_diff_lci Smin2_diff_uci _t, sort color(red%10)) ///
+>         (rarea Smin_diff_lci Smin_diff_uci _t, sort color(blue%10)) ///
+>         (line Smin2_diff _t, sort lcolor(red)) ///
+>         (line Smin_diff _t, sort lcolor(blue)) ///
 >         , name("no_timevar", replace)
 
 . 
 . // with timevar
-. range tt 0 260.88 20
+. range tt 0 261 20
 (8,677 missing values generated)
 
 . 
@@ -275,7 +358,7 @@ Done!
 
 . timer on 1
 
-. stdmest Smintt, reat(-1.006262) reatse(.2222539) reatref(0.0) reatrefse(0.0) timevar(tt) contrast verbose ci cinormal
+. stdmest Smintt, reat(-1.00562) reatse(.2222489) reatref(0.0) reatrefse(0.0) timevar(tt) contrast verbose ci cinormal
 
 Deriving point estimates...
 
@@ -284,7 +367,7 @@ Deriving contrasts...
 Deriving confidence intervals of contrasts...
 Done!
 
-. stdmest Smintt2 if cohort == 18, reat(-1.006262) reatse(.2222539) reatref(0.0) reatrefse(0.0) timevar(tt) contrast verbose ci cinormal
+. stdmest Smintt2 if cohort == 18, reat(-1.00562) reatse(.2222489) reatref(0.0) reatrefse(0.0) timevar(tt) contrast verbose ci cinormal
 
 Deriving point estimates...
 
@@ -296,7 +379,7 @@ Done!
 . timer off 1
 
 . timer list 1
-   1:    477.48 /        2 =     238.7380
+   1:    102.03 /        2 =      51.0165
 
 . 
 . list Smintt Smintt2 if tt != .
@@ -305,52 +388,81 @@ Done!
       |    Smintt     Smintt2 |
       |-----------------------|
    1. |         1           1 |
-   2. | .98823057   .98695804 |
-   3. | .96947622   .96616928 |
-   4. | .94729479   .94157688 |
-   5. | .92303639   .91468457 |
+   2. | .98822658   .98695401 |
+   3. | .96945355   .96614516 |
+   4. | .94724415   .94152244 |
+   5. | .92295177   .91459322 |
       |-----------------------|
-   6. | .89752157   .88641337 |
-   7. | .87131354   .85740098 |
-   8. | .84481925   .82811183 |
-   9. | .81833956   .79889138 |
-  10. | .79209859   .76999785 |
+   6. | .89739931   .88628116 |
+   7. | .87115176   .85722595 |
+   8. | .84461738   .82789351 |
+   9. | .81809802   .79863047 |
+  10. | .79181854   .76969586 |
       |-----------------------|
-  11. | .76626308    .7416232 |
-  12. | .74095584   .71390806 |
-  13. | .71626562   .68695269 |
-  14. |  .6922547   .66082585 |
-  15. | .66896464   .63557137 |
+  11. | .76594616   .74128221 |
+  12. | .74060403    .7135305 |
+  13. |  .7158812   .68654135 |
+  14. |    .69184   .66038349 |
+  15. | .66852205   .63510085 |
       |-----------------------|
-  16. | .64642077   .61121369 |
-  17. | .62463582   .58776213 |
-  18. |  .6036126   .56521436 |
-  19. | .58334648   .54355929 |
-  20. | .56382699   .52277922 |
+  16. | .64595271   .61071782 |
+  17. | .62414457   .58724357 |
+  18. | .60310048   .56467572 |
+  19. | .58281566   .54300302 |
+  20. | .56327952   .52220758 |
       +-----------------------+
 
-. 
-. // list Smin Smin_ref Smin_contrast if tt != .
+. list Smin Smin_ref Smin_diff if tt != .
+
+      +-----------------------------------+
+      |      Smin    Smin_ref   Smin_diff |
+      |-----------------------------------|
+   1. | .91366553   .79311765   .12054788 |
+   2. | .91366553   .79311765   .12054788 |
+   3. | .91366553   .79311765   .12054788 |
+   4. | .91366553   .79311765   .12054788 |
+   5. | .91366553   .79311765   .12054788 |
+      |-----------------------------------|
+   6. | .91366553   .79311765   .12054788 |
+   7. | .98418897   .95787481   .02631417 |
+   8. | .91366553   .79311765   .12054788 |
+   9. | .91366553   .79311765   .12054788 |
+  10. | .99444898   .98496327   .00948571 |
+      |-----------------------------------|
+  11. | .99242517   .97954864   .01287653 |
+  12. | .91366553   .79311765   .12054788 |
+  13. | .91366553   .79311765   .12054788 |
+  14. | .99023992    .9737419   .01649802 |
+  15. | .91366553   .79311765   .12054788 |
+      |-----------------------------------|
+  16. | .91366553   .79311765   .12054788 |
+  17. | .91366553   .79311765   .12054788 |
+  18. | .94929974   .87202892   .07727082 |
+  19. | .97603657   .93697543   .03906114 |
+  20. | .91366553   .79311765   .12054788 |
+      +-----------------------------------+
+
 . twoway ///
->         (rarea Smintt2_contrast_lower Smintt2_contrast_upper tt, sort color(red%10)) ///
->         (rarea Smintt_contrast_lower Smintt_contrast_upper tt, sort color(blue%10)) ///
->         (line Smintt2_contrast tt, sort lcolor(red)) ///
->         (line Smintt_contrast tt, sort lcolor(blue)) ///
+>         (rarea Smintt2_diff_lci Smintt2_diff_uci tt, sort color(red%10)) ///
+>         (rarea Smintt_diff_lci Smintt_diff_uci tt, sort color(blue%10)) ///
+>         (line Smintt2_diff tt, sort lcolor(red)) ///
+>         (line Smintt_diff tt, sort lcolor(blue)) ///
 >         , name("with_timevar", replace)
 
 . 
+. //
 . quietly {
 
-. list tt Smin Smin_lower Smin_upper Smin2 Smin2_lower Smin2_upper if tt != .
+. list tt Smin Smin_lci Smin_uci Smin2 Smin2_lci Smin2_uci if tt != .
 
       +-----------------------------------------------------------------------------+
-      |  tt        Smin   Smin_lo~r   Smin_up~r       Smin2   Smin2_l~r   Smin2_u~r |
+      |  tt        Smin    Smin_lci    Smin_uci       Smin2   Smin2_lci   Smin2_uci |
       |-----------------------------------------------------------------------------|
    1. |   0           1           1           1           1           1           1 |
-   2. |  50    .9319127   .89797248   .95722741    .9245237   .88571468   .95339358 |
-   3. | 100   .83731194   .76832804   .89462513   .81982162    .7414637   .88452194 |
-   4. | 150   .74284435   .64856987   .82807162   .71597334   .60992336   .81112252 |
-   5. | 200   .65611022   .54730488    .7623425   .62167184   .49960935   .73978297 |
+   2. |  50   .93187179   .89791381   .95720071   .92447835   .88564926   .95336448 |
+   3. | 100   .83722344   .76821219   .89456349   .81972392   .74133684   .88445425 |
+   4. | 150    .7427189   .64841534   .82797808   .71583613   .60976154   .81101921 |
+   5. | 200   .65596006   .54713823   .76222221   .62150965   .49943416   .73965229 |
       +-----------------------------------------------------------------------------+
 
 . 

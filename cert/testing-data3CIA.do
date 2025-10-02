@@ -24,6 +24,9 @@ set seed 347856
 clear all
 use "data/data3CIA", clear
 
+// round timevar (to speed up computations)
+replace months = round(months)
+
 // stset
 stset months, failure(status == 1)
 
@@ -34,52 +37,52 @@ mestreg c.age c.fev1pp ib0.mmrc || cohort: , dist(wei) nohr
 predict b, reffects reses(bse)
 sort b
 list b bse if _n == 1 | _n == _N
-//       +----------------------+
-//       |         b        bse |
-//       |----------------------|
-//    1. | -1.006262   .2222539 |
-// 8697. |   .995125   .1405887 |
-//       +----------------------+
+//       +---------------------+
+//       |        b        bse |
+//       |---------------------|
+//    1. | -1.00562   .2222489 |
+// 8697. | .9954252   .1405902 |
+//       +---------------------+
 
 // without timevar
 capture drop Smin*
 capture drop Smin2*
 timer on 1
-stdmest Smin, reat(-1.006262) reatse(.2222539) reatref(0.0) reatrefse(0.0) contrast verbose ci cinormal
-stdmest Smin2 if cohort == 18, reat(-1.006262) reatse(.2222539) reatref(0.0) reatrefse(0.0) contrast verbose ci cinormal
+stdmest Smin, reat(-1.00562) reatse(.2222489) reatref(0.0) reatrefse(0.0) contrast verbose ci cinormal
+stdmest Smin2 if cohort == 18, reat(-1.00562) reatse(.2222489) reatref(0.0) reatrefse(0.0) contrast verbose ci cinormal
 timer off 1
 timer list 1
 
-// list Smin Smin_ref Smin_contrast if tt != .
+// list Smin Smin_ref Smin_diff if tt != .
 twoway ///
-	(rarea Smin2_contrast_lower Smin2_contrast_upper _t, sort color(red%10)) ///
-	(rarea Smin_contrast_lower Smin_contrast_upper _t, sort color(blue%10)) ///
-	(line Smin2_contrast _t, sort lcolor(red)) ///
-	(line Smin_contrast _t, sort lcolor(blue)) ///
+	(rarea Smin2_diff_lci Smin2_diff_uci _t, sort color(red%10)) ///
+	(rarea Smin_diff_lci Smin_diff_uci _t, sort color(blue%10)) ///
+	(line Smin2_diff _t, sort lcolor(red)) ///
+	(line Smin_diff _t, sort lcolor(blue)) ///
 	, name("no_timevar", replace)
 
 // with timevar
-range tt 0 260.88 20
+range tt 0 261 20
 
 //
 capture drop Smintt*
 capture drop Smintt2*
 timer on 1
-stdmest Smintt, reat(-1.006262) reatse(.2222539) reatref(0.0) reatrefse(0.0) timevar(tt) contrast verbose ci cinormal
-stdmest Smintt2 if cohort == 18, reat(-1.006262) reatse(.2222539) reatref(0.0) reatrefse(0.0) timevar(tt) contrast verbose ci cinormal
+stdmest Smintt, reat(-1.00562) reatse(.2222489) reatref(0.0) reatrefse(0.0) timevar(tt) contrast verbose ci cinormal
+stdmest Smintt2 if cohort == 18, reat(-1.00562) reatse(.2222489) reatref(0.0) reatrefse(0.0) timevar(tt) contrast verbose ci cinormal
 timer off 1
 timer list 1
 
 list Smintt Smintt2 if tt != .
-
-// list Smin Smin_ref Smin_contrast if tt != .
+list Smin Smin_ref Smin_diff if tt != .
 twoway ///
-	(rarea Smintt2_contrast_lower Smintt2_contrast_upper tt, sort color(red%10)) ///
-	(rarea Smintt_contrast_lower Smintt_contrast_upper tt, sort color(blue%10)) ///
-	(line Smintt2_contrast tt, sort lcolor(red)) ///
-	(line Smintt_contrast tt, sort lcolor(blue)) ///
+	(rarea Smintt2_diff_lci Smintt2_diff_uci tt, sort color(red%10)) ///
+	(rarea Smintt_diff_lci Smintt_diff_uci tt, sort color(blue%10)) ///
+	(line Smintt2_diff tt, sort lcolor(red)) ///
+	(line Smintt_diff tt, sort lcolor(blue)) ///
 	, name("with_timevar", replace)
 
+//
 quietly {
 	clear all
 	cd "~/Stata-dev/stdmest"
@@ -89,7 +92,7 @@ quietly {
 	stset months, failure(status == 1)
 	mestreg c.age c.fev1pp ib0.mmrc || cohort: , dist(wei) nohr
 	range tt 0 200 5
-	stdmest Smin, reat(-1.006262) reatse(.2222539) reatref(0.0) reatrefse(0.0) ci timevar(tt)
-	stdmest Smin2 if cohort == 18, reat(-1.006262) reatse(.2222539) reatref(0.0) reatrefse(0.0) ci timevar(tt)
+	stdmest Smin, reat(-1.00562) reatse(.2222489) reatref(0.0) reatrefse(0.0) ci timevar(tt)
+	stdmest Smin2 if cohort == 18, reat(-1.00562) reatse(.2222489) reatref(0.0) reatrefse(0.0) ci timevar(tt)
 }
-list tt Smin Smin_lower Smin_upper Smin2 Smin2_lower Smin2_upper if tt != .
+list tt Smin Smin_lci Smin_uci Smin2 Smin2_lci Smin2_uci if tt != .

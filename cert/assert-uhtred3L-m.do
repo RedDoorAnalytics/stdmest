@@ -39,4 +39,4 @@ stdmestm Su, reat(-.4603618) reatse(.1427249) reatref(0.0) reatrefse(0.0) varmar
 // ---
 assert reldif(Sm, Su) <= 1e-3
 assert reldif(Sm_ref, Su_ref) <= 1e-3
-assert reldif(Sm_contrast, Su_contrast) <= 1e-3
+assert reldif(Sm_diff, Su_diff) <= 1e-3

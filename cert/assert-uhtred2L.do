@@ -34,4 +34,4 @@ stdmest Su, reat(.7613212) reatse(.6750813) reatref(0.0) reatrefse(0.0) timevar(
 // ---
 assert reldif(Sm, Su) <= 1e-6
 assert reldif(Sm_ref, Su_ref) <= 1e-6
-assert reldif(Sm_contrast, Su_contrast) <= 1e-6
+assert reldif(Sm_diff, Su_diff) <= 1e-6

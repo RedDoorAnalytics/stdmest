@@ -55,7 +55,7 @@ list birthyear id b_by b_by_se b_by_id b_by_id_se if birthyear == 1930 & jobno =
 range tv 0 365 100
 stdmestm S1930, reat(-.0795512) reatse(.1930458) varmarg(.507621) timevar(tv) ci
 twoway ///
-	(rarea S1930_lower S1930_upper tv, sort color(stblue%10)) ///
+	(rarea S1930_lci S1930_uci tv, sort color(stblue%10)) ///
 	(line S1930 tv, sort lcolor(stblue))
 
 // for reference, we want to predict fully conditional for all subjects born in 1930,
@@ -75,7 +75,7 @@ stdmest S1930_161, reat(-.0795512 .3662371) reatse(.1930458 .5660748) timevar(tv
 //
 levelsof id if birthyear == 1930, local(ids_1930)
 foreach i of local ids_1930 {
-	local addplot `addplot' (rarea S1930_`i'_lower S1930_`i'_upper tv, sort color(black%05)) (line S1930_`i' tv, sort lcolor(black) lpattern(dash))
+	local addplot `addplot' (rarea S1930_`i'_lci S1930_`i'_uci tv, sort color(black%05)) (line S1930_`i' tv, sort lcolor(black) lpattern(dash))
 }
-local margplot (rarea S1930_lower S1930_upper tv, sort color(stblue%20)) (line S1930 tv, sort lcolor(stblue) lwidth(thick))
+local margplot (rarea S1930_lci S1930_uci tv, sort color(stblue%20)) (line S1930 tv, sort lcolor(stblue) lwidth(thick))
 twoway `addplot' `margplot', legend(order(25 "95% C.I." 26 "birthyear = 1930"))

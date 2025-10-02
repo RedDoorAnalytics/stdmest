@@ -1,17 +1,17 @@
 
   ___  ____  ____  ____  ____ ®
- /__    /   ____/   /   ____/      StataNow 18.5
+ /__    /   ____/   /   ____/      StataNow 19.5
 ___/   /   /___/   /   /___/       MP—Parallel Edition
 
- Statistics and Data Science       Copyright 1985-2023 StataCorp LLC
+ Statistics and Data Science       Copyright 1985-2025 StataCorp LLC
                                    StataCorp
                                    4905 Lakeway Drive
                                    College Station, Texas 77845 USA
                                    800-782-8272        https://www.stata.com
                                    979-696-4600        service@stata.com
 
-Stata license: 3-user 2-core network, expiring 12 Sep 2025
-Serial number: 501809300405
+Stata license: 4-user 2-core network, expiring 12 Sep 2026
+Serial number: 501909317505
   Licensed to: Alessandro Gasparini
                Red Door Analytics AB
 
@@ -32,15 +32,15 @@ Notes:
 . // clear all is enough to 'refresh' in the same session
 . // -uhtred-
 . cd "~/Stata-dev/uhtred"
-/Users/ellessenne/Stata-dev/uhtred
+/Users/alessandro.gasparini/Stata-dev/uhtred
 
 . adopath ++ "~/Stata-dev/uhtred"
   [1]              "~/Stata-dev/uhtred"
-  [2]  (BASE)      "/Applications/Stata/ado/base/"
-  [3]  (SITE)      "/Applications/Stata/ado/site/"
+  [2]  (BASE)      "/Applications/StataNow/ado/base/"
+  [3]  (SITE)      "/Applications/StataNow/ado/site/"
   [4]              "."
-  [5]  (PERSONAL)  "/Users/ellessenne/Documents/Stata/ado/personal/"
-  [6]  (PLUS)      "/Users/ellessenne/Library/Application Support/Stata/ado/plus/"
+  [5]  (PERSONAL)  "/Users/alessandro.gasparini/Documents/Stata/ado/personal/"
+  [6]  (PLUS)      "/Users/alessandro.gasparini/Library/Application Support/Stata/ado/plus/"
   [7]  (OLDPLACE)  "~/ado/"
 
 . clear all
@@ -48,11 +48,11 @@ Notes:
 . adopath ++ "~/Stata-dev/uhtred/uhtred"
   [1]              "~/Stata-dev/uhtred/uhtred"
   [2]              "~/Stata-dev/uhtred"
-  [3]  (BASE)      "/Applications/Stata/ado/base/"
-  [4]  (SITE)      "/Applications/Stata/ado/site/"
+  [3]  (BASE)      "/Applications/StataNow/ado/base/"
+  [4]  (SITE)      "/Applications/StataNow/ado/site/"
   [5]              "."
-  [6]  (PERSONAL)  "/Users/ellessenne/Documents/Stata/ado/personal/"
-  [7]  (PLUS)      "/Users/ellessenne/Library/Application Support/Stata/ado/plus/"
+  [6]  (PERSONAL)  "/Users/alessandro.gasparini/Documents/Stata/ado/personal/"
+  [7]  (PLUS)      "/Users/alessandro.gasparini/Library/Application Support/Stata/ado/plus/"
   [8]  (OLDPLACE)  "~/ado/"
 
 . clear all
@@ -75,17 +75,17 @@ end of do-file
 
 . // -stdmest-
 . cd "~/Stata-dev/stdmest"
-/Users/ellessenne/Stata-dev/stdmest
+/Users/alessandro.gasparini/Stata-dev/stdmest
 
 . adopath ++ "stdmest"
   [1]              "stdmest"
   [2]              "~/Stata-dev/uhtred/uhtred"
   [3]              "~/Stata-dev/uhtred"
-  [4]  (BASE)      "/Applications/Stata/ado/base/"
-  [5]  (SITE)      "/Applications/Stata/ado/site/"
+  [4]  (BASE)      "/Applications/StataNow/ado/base/"
+  [5]  (SITE)      "/Applications/StataNow/ado/site/"
   [6]              "."
-  [7]  (PERSONAL)  "/Users/ellessenne/Documents/Stata/ado/personal/"
-  [8]  (PLUS)      "/Users/ellessenne/Library/Application Support/Stata/ado/plus/"
+  [7]  (PERSONAL)  "/Users/alessandro.gasparini/Documents/Stata/ado/personal/"
+  [8]  (PLUS)      "/Users/alessandro.gasparini/Library/Application Support/Stata/ado/plus/"
   [9]  (OLDPLACE)  "~/ado/"
 
 . adopath ++ "stdmestm"
@@ -93,17 +93,98 @@ end of do-file
   [2]              "stdmest"
   [3]              "~/Stata-dev/uhtred/uhtred"
   [4]              "~/Stata-dev/uhtred"
-  [5]  (BASE)      "/Applications/Stata/ado/base/"
-  [6]  (SITE)      "/Applications/Stata/ado/site/"
+  [5]  (BASE)      "/Applications/StataNow/ado/base/"
+  [6]  (SITE)      "/Applications/StataNow/ado/site/"
   [7]              "."
-  [8]  (PERSONAL)  "/Users/ellessenne/Documents/Stata/ado/personal/"
-  [9]  (PLUS)      "/Users/ellessenne/Library/Application Support/Stata/ado/plus/"
+  [8]  (PERSONAL)  "/Users/alessandro.gasparini/Documents/Stata/ado/personal/"
+  [9]  (PLUS)      "/Users/alessandro.gasparini/Library/Application Support/Stata/ado/plus/"
   [10] (OLDPLACE)  "~/ado/"
 
 . clear all
 
 . do ./build/buildmlib.do
 
+. clear all
+
+. // -uhtred-
+. cd "~/Stata-dev/uhtred"
+/Users/alessandro.gasparini/Stata-dev/uhtred
+
+. adopath ++ "~/Stata-dev/uhtred"
+  [1]              "~/Stata-dev/uhtred"
+  [2]              "stdmestm"
+  [3]              "stdmest"
+  [4]              "~/Stata-dev/uhtred/uhtred"
+  [5]  (BASE)      "/Applications/StataNow/ado/base/"
+  [6]  (SITE)      "/Applications/StataNow/ado/site/"
+  [7]              "."
+  [8]  (PERSONAL)  "/Users/alessandro.gasparini/Documents/Stata/ado/personal/"
+  [9]  (PLUS)      "/Users/alessandro.gasparini/Library/Application Support/Stata/ado/plus/"
+  [10] (OLDPLACE)  "~/ado/"
+
+. clear all
+
+. adopath ++ "~/Stata-dev/uhtred/uhtred"
+  [1]              "~/Stata-dev/uhtred/uhtred"
+  [2]              "~/Stata-dev/uhtred"
+  [3]              "stdmestm"
+  [4]              "stdmest"
+  [5]  (BASE)      "/Applications/StataNow/ado/base/"
+  [6]  (SITE)      "/Applications/StataNow/ado/site/"
+  [7]              "."
+  [8]  (PERSONAL)  "/Users/alessandro.gasparini/Documents/Stata/ado/personal/"
+  [9]  (PLUS)      "/Users/alessandro.gasparini/Library/Application Support/Stata/ado/plus/"
+  [10] (OLDPLACE)  "~/ado/"
+
+. clear all
+
+. do ./build/buildmlib.do
+
+. version 17
+
+. 
+. capture erase luhtred.mlib
+
+. mata: mata set matastrict off
+
+. qui {
+
+. 
+end of do-file
+
+. mata mata clear
+
+. // -stdmest-
+. cd "~/Stata-dev/stdmest"
+/Users/alessandro.gasparini/Stata-dev/stdmest
+
+. adopath ++ "stdmest"
+  [1]              "stdmest"
+  [2]              "~/Stata-dev/uhtred/uhtred"
+  [3]              "~/Stata-dev/uhtred"
+  [4]              "stdmestm"
+  [5]  (BASE)      "/Applications/StataNow/ado/base/"
+  [6]  (SITE)      "/Applications/StataNow/ado/site/"
+  [7]              "."
+  [8]  (PERSONAL)  "/Users/alessandro.gasparini/Documents/Stata/ado/personal/"
+  [9]  (PLUS)      "/Users/alessandro.gasparini/Library/Application Support/Stata/ado/plus/"
+  [10] (OLDPLACE)  "~/ado/"
+
+. adopath ++ "stdmestm"
+  [1]              "stdmestm"
+  [2]              "stdmest"
+  [3]              "~/Stata-dev/uhtred/uhtred"
+  [4]              "~/Stata-dev/uhtred"
+  [5]  (BASE)      "/Applications/StataNow/ado/base/"
+  [6]  (SITE)      "/Applications/StataNow/ado/site/"
+  [7]              "."
+  [8]  (PERSONAL)  "/Users/alessandro.gasparini/Documents/Stata/ado/personal/"
+  [9]  (PLUS)      "/Users/alessandro.gasparini/Library/Application Support/Stata/ado/plus/"
+  [10] (OLDPLACE)  "~/ado/"
+
+. clear all
+
+. // Mata
 . capture erase lstdmest.mlib
 
 . quietly {

@@ -38,4 +38,4 @@ stdmest Su, reat(-.0921738 -2.028026) reatse(.2263078 .5722969) reatref(0.0 0.0)
 // ---
 assert reldif(Sm, Su) <= 1e-3
 assert reldif(Sm_ref, Su_ref) <= 1e-3
-assert reldif(Sm_contrast, Su_contrast) <= 1e-3
+assert reldif(Sm_diff, Su_diff) <= 1e-3

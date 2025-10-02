@@ -13,27 +13,26 @@ mata mata clear
 // -stdmest-
 cd "~/Stata-dev/stdmest"
 adopath ++ "stdmest"
+adopath ++ "stdmestm"
 clear all
 do ./build/buildmlib.do
 mata mata clear
 
-// seed, for reproducibility
-set seed 347856
+//
+clear
+webuse catheter
 
-// data
+//
+quietly mestreg age female || patient:, distribution(exponential) time
+rcof "stdmest this_name_is_very_very_very_very_very_very_very_very_long, reat(0.0) reatse(0.0) reatref(0.0) reatrefse(0.0) contrast" == 198
+
+//
 webuse jobhistory
 gen tt = tend - tstart
 stset tt, fail(failure)
 
-// model
+//
+gen tv = runiform(0, 365)
+replace tv = . if _n > 10
 quietly mestreg education njobs prestige i.female || birthyear: || id:, distribution(exponential)
-predict b*, reffects reses(bse*)
-sort b1 b2
-list b1 bse1 b2 bse2 if _n == 1 | _n == _N
-
-// error
-capture noisily stdmest Stst, reat(-.4603618  -1.05416) reatse(.1427249 .5097189) ci reps(100) timevar(tt) contrast
-
-// okay
-capture noisily stdmest Stst, reat(-.4603618  -1.05416) reatse(.1427249 .5097189) ci reps(100) timevar(tt) contrast ///
-	reatref(0.0 0.0) reatrefse(0.0 0.0)
+rcof "stdmestm this_name_is_also_very_very_very_very_very_very_very_very_long, reat(-1.0) reatse(0.0) varmarg(.507621) timevar(tv)" == 198

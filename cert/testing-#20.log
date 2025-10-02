@@ -22,7 +22,7 @@ Notes:
       4. Maximum number of variables is set to 5,000 but can be increased;
           see help set_maxvar.
 
-. do "assert-stdmestm.do" 
+. do "testing-#20.do" 
 
 . //
 . set linesize 255
@@ -195,189 +195,134 @@ end of do-file
 . mata mata clear
 
 . 
-. //
-. rcof "stdmestm" == 119
+. // seed, for reproducibility
+. set seed 347856
 
 . 
-. //
-. webuse jobhistory
-(Job history data, Event History Analysis with Stata, Blossfeld et al. 2007)
+. // data3CIA
+. clear all
 
-. gen tt = tend - tstart
+. use "data/data3CIA", clear
 
-. stset tt, fail(failure)
+. 
+. // stset
+. stset months, failure(status == 1)
 
 Survival-time data settings
 
-         Failure event: failure!=0 & failure<.
-Observed time interval: (0, tt]
+         Failure event: status==1
+Observed time interval: (0, months]
      Exit on or before: failure
 
 --------------------------------------------------------------------------
-        600  total observations
-          0  exclusions
+      8,697  total observations
+          5  observations end on or before enter()
 --------------------------------------------------------------------------
-        600  observations remaining, representing
-        458  failures in single-record/single-failure data
-     40,782  total analysis time at risk and under observation
+      8,692  observations remaining, representing
+      2,449  failures in single-record/single-failure data
+ 552,433.42  total analysis time at risk and under observation
                                                 At risk from t =         0
                                      Earliest observed entry t =         0
-                                          Last observed exit t =       428
+                                          Last observed exit t =    260.88
 
 . 
-. // random time variable
-. // I *don't* set the seed to incorporate some randomness
-. // -> all test should pass no matter what
-. gen tv = runiform(0, 365)
-
-. replace tv = . if _n > 10
-(590 real changes made, 590 to missing)
-
-. rcof "stdmestm" == 301
+. // -uhtred- model
+. quietly uhtred (_t c.age c.fev1pp ib0.mmrc M1[cohort]@1, family(rp, df(1) failure(_d)))
 
 . 
 . //
-. quietly mestreg education njobs prestige i.female || birthyear: || id:, distribution(exponential) time
+. set seed 1
 
-. rcof "stdmestm S0, reat(0.0) reatse(0.0) varmarg(.507621)" == 198
+. capture drop tv
 
-. quietly mestreg education njobs prestige i.female || birthyear: || id:, distribution(weibull) time
+. range tv 0 100 10
+(8,687 missing values generated)
 
-. rcof "stdmestm S0, reat(0.0) reatse(0.0) varmarg(.507621)" == 198
+. capture drop S1*
 
-. quietly mestreg education njobs prestige i.female || birthyear: || id:, distribution(loglogistic)
+. stdmest S1, reat(1) reatse(0.1) reatref(0.0) reatrefse(0.0) timevar(tv) ci reps(1000) verbose dots
 
-. rcof "stdmestm S0, reat(0.0) reatse(0.0) varmarg(.507621)" == 198
+Deriving point estimates...
+Calculating standardised survival probabilities for the C.I. algorithm... (1,000)
+----+--- 1 ---+--- 2 ---+--- 3 ---+--- 4 ---+--- 5 
+..................................................    50
+..................................................   100
+..................................................   150
+..................................................   200
+..................................................   250
+..................................................   300
+..................................................   350
+..................................................   400
+..................................................   450
+..................................................   500
+..................................................   550
+..................................................   600
+..................................................   650
+..................................................   700
+..................................................   750
+..................................................   800
+..................................................   850
+..................................................   900
+..................................................   950
+.................................................. 1,000
 
-. quietly mestreg education njobs prestige i.female || birthyear: || id:, distribution(lognormal)
-
-. matrix eb = e(b)
-
-. rcof "stdmestm S0, reat(0.0) reatse(0.0) varmar(.507621)" == 198
-
-. quietly mestreg education njobs prestige i.female || birthyear: || id:, distribution(gamma) from(eb)
-
-. rcof "stdmestm S0, reat(0.0) reatse(0.0) varmarg(.507621)" == 198
-
-. quietly mestreg education njobs prestige i.female || birthyear: || id:, distribution(exponential)
-
-. rcof "stdmestm S0, reat(0.0 0.0) reatse(0.0 0.0) varmarg(.507621)" == 198
-
-. 
-. //
-. quietly mestreg education njobs prestige i.female || id:, distribution(exponential)
-
-. rcof "stdmestm S0, reat(0.0) reatse(0.0) varmarg(.6186797)" == 198
-
-. 
-. //
-. quietly mestreg education njobs prestige i.female || birthyear: || id:, distribution(exponential)
-
-. rcof "stdmestm S0, reat(0.0) reatse(0.0) varmarg(id)" == 198
-
-. 
-. //
-. quietly mestreg education njobs prestige i.female || birthyear: || id:, distribution(exponential)
-
-. stdmestm S1a, reat(-1.0) reatse(0.0) varmarg(.507621) timevar(tv)
-
-. stdmestm S1b, reat( 0.0) reatse(0.0) varmarg(.507621) timevar(tv)
-
-. stdmestm S1c, reat(+1.0) reatse(0.0) varmarg(.507621) timevar(tv)
-
-. assert S1a >= S1b
-
-. assert S1a >= S1c
-
-. assert S1b >= S1c
-
-. drop S1*
+Deriving confidence intervals...
+Done!
 
 . 
 . //
-. stdmestm S2a, reat(0.0) reatse(0.0) varmarg(.507621) timevar(tv) ci reps(10)
+. set seed 1
 
-. stdmestm S2b, reat(0.0) reatse(1.0) varmarg(.507621) timevar(tv) ci reps(10)
+. capture drop S2*
 
-. assert S2a == S2b
+. stdmest S2, reat(1) reatse(0.1) reatref(0.0) reatrefse(0.0) timevar(tv) ci reps(1000) verbose dots
 
-. assert S2a_lci >= S2b_lci
+Deriving point estimates...
+Calculating standardised survival probabilities for the C.I. algorithm... (1,000)
+----+--- 1 ---+--- 2 ---+--- 3 ---+--- 4 ---+--- 5 
+..................................................    50
+..................................................   100
+..................................................   150
+..................................................   200
+..................................................   250
+..................................................   300
+..................................................   350
+..................................................   400
+..................................................   450
+..................................................   500
+..................................................   550
+..................................................   600
+..................................................   650
+..................................................   700
+..................................................   750
+..................................................   800
+..................................................   850
+..................................................   900
+..................................................   950
+.................................................. 1,000
 
-. assert S2a_uci <= S2b_uci
-
-. drop S2*
-
-. 
-. //
-. stdmestm S3a, reat(0.0) reatse(0.0) varmarg(.507621) timevar(tv)
-
-. stdmestm S3b, reat(0.0) reatse(0.0) varmarg(.507621) timevar(tv) nk(15)
-
-. stdmestm S3c, reat(0.0) reatse(0.0) varmarg(.507621) timevar(tv) nk(30)
-
-. stdmestm S3d, reat(0.0) reatse(0.0) varmarg(.507621) timevar(tv) nk(100)
-
-. mkmat S3a, matrix(mS3a) nomissing
-
-. mkmat S3b, matrix(mS3b) nomissing
-
-. mkmat S3c, matrix(mS3c) nomissing
-
-. mkmat S3d, matrix(mS3d) nomissing
-
-. assert mreldif(mS3a, mS3b) < 1e-04
-
-. assert mreldif(mS3a, mS3c) < 1e-04
-
-. assert mreldif(mS3a, mS3d) < 1e-04
-
-. assert mreldif(mS3b, mS3c) < 1e-05
-
-. assert mreldif(mS3b, mS3d) < 1e-05
-
-. assert mreldif(mS3c, mS3d) < 1e-06
-
-. drop S3*
+Deriving confidence intervals...
+Done!
 
 . 
 . //
-. stdmestm S4a, reat(0.0) reatse(0.0) varmarg(.507621) timevar(tv)
+. list tv S1* S2* if tv != .
 
-. stdmest  S4b, reat(0.0 0.0) reatse(0.0 0.0) timevar(tv)
-
-. mkmat S4a, matrix(mS4a) nomissing
-
-. mkmat S4b, matrix(mS4b) nomissing
-
-. assert mreldif(mS4a, mS4b) != 0.0
-
-. drop S4*
-
-. 
-. //
-. set seed 3475
-
-. stdmestm S5a, reat(0.0) reatse(1.0) varmarg(.507621) timevar(tv) ci reps(10)
-
-. set seed 3475
-
-. stdmestm S5b, reat(0.0) reatse(1.0) varmarg(.507621) timevar(tv) ci reps(100)
-
-. assert S5a == S5b
-
-. mkmat S5a_lci, matrix(mS5al) nomissing
-
-. mkmat S5b_lci, matrix(mS5bl) nomissing
-
-. assert mreldif(mS5al, mS5bl) != 0.0
-
-. mkmat S5a_uci, matrix(mS5au) nomissing
-
-. mkmat S5b_uci, matrix(mS5bu) nomissing
-
-. assert mreldif(mS5au, mS5bu) != 0.0
-
-. drop S5*
+      +----------------------------------------------------------------------------------+
+      |       tv          S1      S1_lci      S1_uci          S2      S2_lci      S2_uci |
+      |----------------------------------------------------------------------------------|
+   1. |        0           1           1           1           1           1           1 |
+   2. | 11.11111   .93807722   .91665337   .95394805   .93807722   .91665337   .95394805 |
+   3. | 22.22222   .85076348   .80740911   .88708387   .85076348   .80740911   .88708387 |
+   4. | 33.33333   .76207587   .70184352   .81436354   .76207587   .70184352   .81436354 |
+   5. | 44.44444   .67931009   .60661195   .74473361   .67931009   .60661195   .74473361 |
+      |----------------------------------------------------------------------------------|
+   6. | 55.55556    .6048554   .52581107   .67835533    .6048554   .52581107   .67835533 |
+   7. | 66.66666   .53903644   .45713608   .61754123   .53903644   .45713608   .61754123 |
+   8. | 77.77778   .48131651   .39910289   .56299972   .48131651   .39910289   .56299972 |
+   9. | 88.88889   .43084914   .34986885    .5138765   .43084914   .34986885    .5138765 |
+  10. |      100   .38672948   .30814064   .46975875   .38672948   .30814064   .46975875 |
+      +----------------------------------------------------------------------------------+
 
 . 
 end of do-file

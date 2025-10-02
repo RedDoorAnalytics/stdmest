@@ -38,8 +38,8 @@ range tt 0 10 5
 //
 stdmest Sa1, reat(0.878 0.122) reatse(0.311 0.570) ci timevar(tt) verbose cinormal
 stdmest Sa2, reat(2.65 -0.298) reatse(0.407 0.522) ci timevar(tt) verbose cinormal
-list tt Sa1 Sa1_lower Sa1_upper Sa2 Sa2_lower Sa2_upper if tt != .
+list tt Sa1 Sa1_lci Sa1_uci Sa2 Sa2_lci Sa2_uci if tt != .
 
 // "Partially marginal" version
 stdmestm Sam, reat(0.878) reatse(0.311) varmarg(.4087721) timevar(tt) contrast ci verbose cinormal
-list tt Sam Sam_lower Sam_upper Sam_ref Sam_ref_lower Sam_ref_upper Sam_contrast Sam_contrast_lower Sam_contrast_upper if tt != .
+list tt Sam Sam_lci Sam_uci Sam_ref Sam_ref_lci Sam_ref_uci Sam_diff Sam_diff_lci Sam_diff_uci if tt != .

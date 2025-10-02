@@ -43,8 +43,8 @@ list tt Stst1* Stst2* if tt != .
 
 //
 twoway ///
-	(rarea Stst1_lower Stst1_upper tt, sort color(stblue%10)) ///
-	(rarea Stst2_lower Stst2_upper tt, sort color(stred%10)) ///
+	(rarea Stst1_lci Stst1_uci tt, sort color(stblue%10)) ///
+	(rarea Stst2_lci Stst2_uci tt, sort color(stred%10)) ///
 	(line Stst1 tt, sort lcolor(stblue)) ///
 	(line Stst2 tt, sort lcolor(stred)) ///
 	, legend(order(3 "_n == 1" 4 "_n == _N"))  name("Stst12", replace)
@@ -56,8 +56,8 @@ list tt Stst* if tt != .
 
 //
 twoway ///
-	(rarea Stst_contrast_lower Stst_contrast_upper tt, sort color(stblue%10)) ///
-	(line Stst_contrast tt, sort lcolor(stblue)) ///
+	(rarea Stst_diff_lci Stst_diff_uci tt, sort color(stblue%10)) ///
+	(line Stst_diff tt, sort lcolor(stblue)) ///
 	, name("Ststcontrast", replace)
 
 // percentile vs normal ci method
@@ -67,24 +67,24 @@ list tt StA* StB* if tt != .
 
 //
 twoway ///
-	(rarea StA_lower StA_upper tt, sort color(stblue%10)) ///
-	(rarea StB_lower StB_upper tt, sort color(stred%10)) ///
+	(rarea StA_lci StA_uci tt, sort color(stblue%10)) ///
+	(rarea StB_lci StB_uci tt, sort color(stred%10)) ///
 	(line StA tt, sort lcolor(stblue)) ///
 	(line StB tt, sort lcolor(stred)) ///
 	, legend(order(3 "Percentile Method" 4 "Normal Method")) name("StAB", replace)
 
 //
 twoway ///
-	(rarea StA_ref_lower StA_ref_upper tt, sort color(stblue%10)) ///
-	(rarea StB_ref_lower StB_ref_upper tt, sort color(stred%10)) ///
+	(rarea StA_ref_lci StA_ref_uci tt, sort color(stblue%10)) ///
+	(rarea StB_ref_lci StB_ref_uci tt, sort color(stred%10)) ///
 	(line StA_ref tt, sort lcolor(stblue)) ///
 	(line StB_ref tt, sort lcolor(stred)) ///
 	, legend(order(3 "Percentile Method" 4 "Normal Method")) name("StAB_ref", replace)
 
 //
 twoway ///
-	(rarea StA_contrast_lower StA_contrast_upper tt, sort color(stblue%10)) ///
-	(rarea StB_contrast_lower StB_contrast_upper tt, sort color(stred%10)) ///
-	(line StA_contrast tt, sort lcolor(stblue)) ///
-	(line StB_contrast tt, sort lcolor(stred)) ///
-	, legend(order(3 "Percentile Method" 4 "Normal Method")) name("StAB_contrast", replace)
+	(rarea StA_diff_lci StA_diff_uci tt, sort color(stblue%10)) ///
+	(rarea StB_diff_lci StB_diff_uci tt, sort color(stred%10)) ///
+	(line StA_diff tt, sort lcolor(stblue)) ///
+	(line StB_diff tt, sort lcolor(stred)) ///
+	, legend(order(3 "Percentile Method" 4 "Normal Method")) name("StAB_diff", replace)

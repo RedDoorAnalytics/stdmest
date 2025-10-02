@@ -1,17 +1,17 @@
 
   ___  ____  ____  ____  ____ ®
- /__    /   ____/   /   ____/      StataNow 18.5
+ /__    /   ____/   /   ____/      StataNow 19.5
 ___/   /   /___/   /   /___/       MP—Parallel Edition
 
- Statistics and Data Science       Copyright 1985-2023 StataCorp LLC
+ Statistics and Data Science       Copyright 1985-2025 StataCorp LLC
                                    StataCorp
                                    4905 Lakeway Drive
                                    College Station, Texas 77845 USA
                                    800-782-8272        https://www.stata.com
                                    979-696-4600        service@stata.com
 
-Stata license: 3-user 2-core network, expiring 12 Sep 2025
-Serial number: 501809300405
+Stata license: 4-user 2-core network, expiring 12 Sep 2026
+Serial number: 501909317505
   Licensed to: Alessandro Gasparini
                Red Door Analytics AB
 
@@ -32,15 +32,15 @@ Notes:
 . // clear all is enough to 'refresh' in the same session
 . // -uhtred-
 . cd "~/Stata-dev/uhtred"
-/Users/ellessenne/Stata-dev/uhtred
+/Users/alessandro.gasparini/Stata-dev/uhtred
 
 . adopath ++ "~/Stata-dev/uhtred"
   [1]              "~/Stata-dev/uhtred"
-  [2]  (BASE)      "/Applications/Stata/ado/base/"
-  [3]  (SITE)      "/Applications/Stata/ado/site/"
+  [2]  (BASE)      "/Applications/StataNow/ado/base/"
+  [3]  (SITE)      "/Applications/StataNow/ado/site/"
   [4]              "."
-  [5]  (PERSONAL)  "/Users/ellessenne/Documents/Stata/ado/personal/"
-  [6]  (PLUS)      "/Users/ellessenne/Library/Application Support/Stata/ado/plus/"
+  [5]  (PERSONAL)  "/Users/alessandro.gasparini/Documents/Stata/ado/personal/"
+  [6]  (PLUS)      "/Users/alessandro.gasparini/Library/Application Support/Stata/ado/plus/"
   [7]  (OLDPLACE)  "~/ado/"
 
 . clear all
@@ -48,11 +48,11 @@ Notes:
 . adopath ++ "~/Stata-dev/uhtred/uhtred"
   [1]              "~/Stata-dev/uhtred/uhtred"
   [2]              "~/Stata-dev/uhtred"
-  [3]  (BASE)      "/Applications/Stata/ado/base/"
-  [4]  (SITE)      "/Applications/Stata/ado/site/"
+  [3]  (BASE)      "/Applications/StataNow/ado/base/"
+  [4]  (SITE)      "/Applications/StataNow/ado/site/"
   [5]              "."
-  [6]  (PERSONAL)  "/Users/ellessenne/Documents/Stata/ado/personal/"
-  [7]  (PLUS)      "/Users/ellessenne/Library/Application Support/Stata/ado/plus/"
+  [6]  (PERSONAL)  "/Users/alessandro.gasparini/Documents/Stata/ado/personal/"
+  [7]  (PLUS)      "/Users/alessandro.gasparini/Library/Application Support/Stata/ado/plus/"
   [8]  (OLDPLACE)  "~/ado/"
 
 . clear all
@@ -75,17 +75,17 @@ end of do-file
 
 . // -stdmest-
 . cd "~/Stata-dev/stdmest"
-/Users/ellessenne/Stata-dev/stdmest
+/Users/alessandro.gasparini/Stata-dev/stdmest
 
 . adopath ++ "stdmest"
   [1]              "stdmest"
   [2]              "~/Stata-dev/uhtred/uhtred"
   [3]              "~/Stata-dev/uhtred"
-  [4]  (BASE)      "/Applications/Stata/ado/base/"
-  [5]  (SITE)      "/Applications/Stata/ado/site/"
+  [4]  (BASE)      "/Applications/StataNow/ado/base/"
+  [5]  (SITE)      "/Applications/StataNow/ado/site/"
   [6]              "."
-  [7]  (PERSONAL)  "/Users/ellessenne/Documents/Stata/ado/personal/"
-  [8]  (PLUS)      "/Users/ellessenne/Library/Application Support/Stata/ado/plus/"
+  [7]  (PERSONAL)  "/Users/alessandro.gasparini/Documents/Stata/ado/personal/"
+  [8]  (PLUS)      "/Users/alessandro.gasparini/Library/Application Support/Stata/ado/plus/"
   [9]  (OLDPLACE)  "~/ado/"
 
 . adopath ++ "stdmestm"
@@ -93,17 +93,98 @@ end of do-file
   [2]              "stdmest"
   [3]              "~/Stata-dev/uhtred/uhtred"
   [4]              "~/Stata-dev/uhtred"
-  [5]  (BASE)      "/Applications/Stata/ado/base/"
-  [6]  (SITE)      "/Applications/Stata/ado/site/"
+  [5]  (BASE)      "/Applications/StataNow/ado/base/"
+  [6]  (SITE)      "/Applications/StataNow/ado/site/"
   [7]              "."
-  [8]  (PERSONAL)  "/Users/ellessenne/Documents/Stata/ado/personal/"
-  [9]  (PLUS)      "/Users/ellessenne/Library/Application Support/Stata/ado/plus/"
+  [8]  (PERSONAL)  "/Users/alessandro.gasparini/Documents/Stata/ado/personal/"
+  [9]  (PLUS)      "/Users/alessandro.gasparini/Library/Application Support/Stata/ado/plus/"
   [10] (OLDPLACE)  "~/ado/"
 
 . clear all
 
 . do ./build/buildmlib.do
 
+. clear all
+
+. // -uhtred-
+. cd "~/Stata-dev/uhtred"
+/Users/alessandro.gasparini/Stata-dev/uhtred
+
+. adopath ++ "~/Stata-dev/uhtred"
+  [1]              "~/Stata-dev/uhtred"
+  [2]              "stdmestm"
+  [3]              "stdmest"
+  [4]              "~/Stata-dev/uhtred/uhtred"
+  [5]  (BASE)      "/Applications/StataNow/ado/base/"
+  [6]  (SITE)      "/Applications/StataNow/ado/site/"
+  [7]              "."
+  [8]  (PERSONAL)  "/Users/alessandro.gasparini/Documents/Stata/ado/personal/"
+  [9]  (PLUS)      "/Users/alessandro.gasparini/Library/Application Support/Stata/ado/plus/"
+  [10] (OLDPLACE)  "~/ado/"
+
+. clear all
+
+. adopath ++ "~/Stata-dev/uhtred/uhtred"
+  [1]              "~/Stata-dev/uhtred/uhtred"
+  [2]              "~/Stata-dev/uhtred"
+  [3]              "stdmestm"
+  [4]              "stdmest"
+  [5]  (BASE)      "/Applications/StataNow/ado/base/"
+  [6]  (SITE)      "/Applications/StataNow/ado/site/"
+  [7]              "."
+  [8]  (PERSONAL)  "/Users/alessandro.gasparini/Documents/Stata/ado/personal/"
+  [9]  (PLUS)      "/Users/alessandro.gasparini/Library/Application Support/Stata/ado/plus/"
+  [10] (OLDPLACE)  "~/ado/"
+
+. clear all
+
+. do ./build/buildmlib.do
+
+. version 17
+
+. 
+. capture erase luhtred.mlib
+
+. mata: mata set matastrict off
+
+. qui {
+
+. 
+end of do-file
+
+. mata mata clear
+
+. // -stdmest-
+. cd "~/Stata-dev/stdmest"
+/Users/alessandro.gasparini/Stata-dev/stdmest
+
+. adopath ++ "stdmest"
+  [1]              "stdmest"
+  [2]              "~/Stata-dev/uhtred/uhtred"
+  [3]              "~/Stata-dev/uhtred"
+  [4]              "stdmestm"
+  [5]  (BASE)      "/Applications/StataNow/ado/base/"
+  [6]  (SITE)      "/Applications/StataNow/ado/site/"
+  [7]              "."
+  [8]  (PERSONAL)  "/Users/alessandro.gasparini/Documents/Stata/ado/personal/"
+  [9]  (PLUS)      "/Users/alessandro.gasparini/Library/Application Support/Stata/ado/plus/"
+  [10] (OLDPLACE)  "~/ado/"
+
+. adopath ++ "stdmestm"
+  [1]              "stdmestm"
+  [2]              "stdmest"
+  [3]              "~/Stata-dev/uhtred/uhtred"
+  [4]              "~/Stata-dev/uhtred"
+  [5]  (BASE)      "/Applications/StataNow/ado/base/"
+  [6]  (SITE)      "/Applications/StataNow/ado/site/"
+  [7]              "."
+  [8]  (PERSONAL)  "/Users/alessandro.gasparini/Documents/Stata/ado/personal/"
+  [9]  (PLUS)      "/Users/alessandro.gasparini/Library/Application Support/Stata/ado/plus/"
+  [10] (OLDPLACE)  "~/ado/"
+
+. clear all
+
+. // Mata
 . capture erase lstdmest.mlib
 
 . quietly {
@@ -129,99 +210,88 @@ end of do-file
 
 Fitting fixed-effects model:
 
-Iteration 0:  Log likelihood = -2.688e+08  
-Iteration 1:  Log likelihood = -2792242.8  
-Iteration 2:  Log likelihood = -2226329.1  
-Iteration 3:  Log likelihood = -2220823.8  
-Iteration 4:  Log likelihood = -2220808.4  
-Iteration 5:  Log likelihood = -2220808.4  
+Iteration 0:  Log likelihood =  -27163031  
+Iteration 1:  Log likelihood = -266226.68  
+Iteration 2:  Log likelihood =  -204237.6  
+Iteration 3:  Log likelihood = -204088.83  
+Iteration 4:  Log likelihood = -204088.69  
+Iteration 5:  Log likelihood = -204088.69  
 
 Refining starting values:
 
-Grid node 0:  Log likelihood = -1235159.1
+Grid node 0:  Log likelihood = -110845.71
 
 Fitting full model:
 
-Iteration 0:  Log likelihood = -1235159.1  
-Iteration 1:  Log likelihood = -1235099.6  
-Iteration 2:  Log likelihood = -1235047.1  
-Iteration 3:  Log likelihood = -1234956.5  
-Iteration 4:  Log likelihood = -1234884.2  
-Iteration 5:  Log likelihood = -1234825.1  
-Iteration 6:  Log likelihood = -1234776.2  
-Iteration 7:  Log likelihood = -1234735.4  
-Iteration 8:  Log likelihood =   -1234701  
-Iteration 9:  Log likelihood = -1234671.9  
-Iteration 10: Log likelihood = -1234647.2  
-Iteration 11: Log likelihood = -1234626.1  
-Iteration 12: Log likelihood = -1234608.2  
-Iteration 13: Log likelihood = -1234592.9  
-Iteration 14: Log likelihood = -1234579.9  
-Iteration 15: Log likelihood = -1234568.8  
-Iteration 16: Log likelihood = -1234559.4  
-Iteration 17: Log likelihood = -1234544.4  
-Iteration 18: Log likelihood = -1234533.9  
-Iteration 19: Log likelihood = -1234526.6  
-Iteration 20: Log likelihood = -1234521.6  
-Iteration 21: Log likelihood = -1234518.2  
-Iteration 22: Log likelihood = -1234516.1  
-Iteration 23: Log likelihood = -1234513.6  
-Iteration 24: Log likelihood = -1234512.8  
-Iteration 25: Log likelihood = -1234512.5  
-Iteration 26: Log likelihood = -1234512.5  
+Iteration 0:  Log likelihood = -110845.71  
+Iteration 1:  Log likelihood = -110807.12  
+Iteration 2:  Log likelihood = -110777.13  
+Iteration 3:  Log likelihood = -110732.14  
+Iteration 4:  Log likelihood = -110702.16  
+Iteration 5:  Log likelihood = -110681.04  
+Iteration 6:  Log likelihood = -110665.77  
+Iteration 7:  Log likelihood = -110654.58  
+Iteration 8:  Log likelihood = -110646.37  
+Iteration 9:  Log likelihood = -110640.37  
+Iteration 10: Log likelihood = -110632.73  
+Iteration 11: Log likelihood = -110629.05  
+Iteration 12: Log likelihood = -110627.44  
+Iteration 13: Log likelihood = -110626.55  
+Iteration 14: Log likelihood = -110626.52  
+Iteration 15: Log likelihood = -110626.52  
 
-Mixed-effects exponential PH regression         Number of obs     =    1000000
-Group variable: cluster                         Number of groups  =      1,000
+Mixed-effects exponential PH regression         Number of obs     =     90,000
+Group variable: cluster                         Number of groups  =        300
 
                                                 Obs per group:
-                                                              min =      1,000
-                                                              avg =    1,000.0
-                                                              max =      1,000
+                                                              min =        300
+                                                              avg =      300.0
+                                                              max =        300
 
 Integration method: mvaghermite                 Integration pts.  =          7
 
-                                                Wald chi2(1)      =   62553.76
-Log likelihood = -1234512.5                     Prob > chi2       =     0.0000
+                                                Wald chi2(1)      =    5490.19
+Log likelihood = -110626.52                     Prob > chi2       =     0.0000
 ------------------------------------------------------------------------------
           _t | Coefficient  Std. err.      z    P>|z|     [95% conf. interval]
 -------------+----------------------------------------------------------------
-          X1 |  -.5007131    .002002  -250.11   0.000    -.5046369   -.4967893
-       _cons |   .0194006   .0448248     0.43   0.665    -.0684545    .1072556
+          X1 |  -.4956912   .0066899   -74.10   0.000    -.5088031   -.4825793
+       _cons |   .0288104   .0840111     0.34   0.732    -.1358484    .1934692
 -------------+----------------------------------------------------------------
 cluster      |
-   var(_cons)|   2.007918   .0898333                      1.839347    2.191938
+   var(_cons)|   2.113091   .1727567                       1.80023    2.480325
 ------------------------------------------------------------------------------
-LR test vs. exponential model: chibar2(01) = 2.0e+06  Prob >= chibar2 = 0.0000
+LR test vs. exponential model: chibar2(01) = 1.9e+05  Prob >= chibar2 = 0.0000
 
 . 
-. // Mixed-effects exponential PH regression         Number of obs     =    1000000
-. // Group variable: cluster                         Number of groups  =      1,000
+. // Mixed-effects exponential PH regression         Number of obs     =     90,000
+. // Group variable: cluster                         Number of groups  =        300
 . //
 . //                                                 Obs per group:
-. //                                                               min =      1,000
-. //                                                               avg =    1,000.0
-. //                                                               max =      1,000
+. //                                                               min =        300
+. //                                                               avg =      300.0
+. //                                                               max =        300
 . //
 . // Integration method: mvaghermite                 Integration pts.  =          7
 . //
-. //                                                 Wald chi2(1)      =   62553.76
-. // Log likelihood = -1234512.5                     Prob > chi2       =     0.0000
+. //                                                 Wald chi2(1)      =    5490.19
+. // Log likelihood = -110626.52                     Prob > chi2       =     0.0000
 . // ------------------------------------------------------------------------------
 . //           _t | Coefficient  Std. err.      z    P>|z|     [95% conf. interval]
 . // -------------+----------------------------------------------------------------
-. //           X1 |  -.5007131    .002002  -250.11   0.000    -.5046369   -.4967893
-. //        _cons |   .0194006   .0448248     0.43   0.665    -.0684545    .1072556
+. //           X1 |  -.4956912   .0066899   -74.10   0.000    -.5088031   -.4825793
+. //        _cons |   .0288104   .0840111     0.34   0.732    -.1358484    .1934692
 . // -------------+----------------------------------------------------------------
 . // cluster      |
-. //    var(_cons)|   2.007918   .0898333                      1.839347    2.191938
+. //    var(_cons)|   2.113091   .1727567                       1.80023    2.480325
 . // ------------------------------------------------------------------------------
-. // LR test vs. exponential model: chibar2(01) = 2.0e+06  Prob >= chibar2 = 0.0000
+. // LR test vs. exponential model: chibar2(01) = 1.9e+05  Prob >= chibar2 = 0.0000
 . 
 . // timevar
 . capture drop tt
 
 . range tt 0 10 11
-(999,989 missing values generated)
+(89,989 missing values generated)
 
 . 
 . //
@@ -231,140 +301,141 @@ LR test vs. exponential model: chibar2(01) = 2.0e+06  Prob >= chibar2 = 0.0000
 
 . list Sa1* tt if tt != .
 
-         +-----------------------------------------+
-         |       Sa1     Sa1_ref   Sa1_cont~t   tt |
-         |-----------------------------------------|
-      1. |         1           1            0    0 |
-      2. | .44980254   .89541563   -.44561309    1 |
-      3. | .21026949   .80236105   -.59209156    2 |
-      4. | .10173044   .71950665    -.6177762    3 |
-      5. |  .0506473   .64568162   -.59503432    4 |
-         |-----------------------------------------|
-      6. | .02578955   .57985454   -.55406499    5 |
-      7. | .01335636   .52111629   -.50775993    6 |
-      8. | .00700291   .46866517   -.46166226    7 |
-      9. | .00370388   .42179382   -.41808994    8 |
-     10. | .00197093   .37987778   -.37790684    9 |
-         |-----------------------------------------|
-     11. | .00105317    .3423655   -.34131232   10 |
-         +-----------------------------------------+
+       +-----------------------------------------+
+       |       Sa1     Sa1_ref     Sa1_diff   tt |
+       |-----------------------------------------|
+    1. |         1           1            0    0 |
+    2. | .44553288   .89425334   -.44872046    1 |
+    3. |  .2063259   .80028137   -.59395547    2 |
+    4. | .09890216   .71671376    -.6178116    3 |
+    5. | .04879053   .64234527   -.59355475    4 |
+       |-----------------------------------------|
+    6. | .02461962   .57611538   -.55149576    5 |
+    7. |  .0126359   .51709042   -.50445452    6 |
+    8. | .00656584     .464448   -.45788216    7 |
+    9. | .00344167   .41746334   -.41402167    8 |
+   10. | .00181505   .37549736   -.37368231    9 |
+       |-----------------------------------------|
+   11. | .00096122   .33798623   -.33702501   10 |
+       +-----------------------------------------+
 
 . 
-. //          +----------------------------------------+
-. //          |       Sa1     Sa1_ref   Sa1_con~t   tt |
-. //          |----------------------------------------|
-. //       1. |         1           1           0    0 |
-. //       2. | .44980254   .89541563   -.4456131    1 |
-. //       3. | .21026949   .80236105   -.5920916    2 |
-. //       4. | .10173044   .71950665   -.6177762    3 |
-. //       5. |  .0506473   .64568162   -.5950343    4 |
-. //          |----------------------------------------|
-. //       6. | .02578955   .57985454    -.554065    5 |
-. //       7. | .01335636   .52111629   -.5077599    6 |
-. //       8. | .00700291   .46866517   -.4616623    7 |
-. //       9. | .00370388   .42179382   -.4180899    8 |
-. //      10. | .00197093   .37987778   -.3779069    9 |
-. //          |----------------------------------------|
-. //      11. | .00105317    .3423655   -.3413123   10 |
-. //          +----------------------------------------+
+. //        +-----------------------------------------+
+. //        |       Sa1     Sa1_ref     Sa1_diff   tt |
+. //        |-----------------------------------------|
+. //     1. |         1           1            0    0 |
+. //     2. | .44553288   .89425334   -.44872046    1 |
+. //     3. |  .2063259   .80028137   -.59395547    2 |
+. //     4. | .09890216   .71671376    -.6178116    3 |
+. //     5. | .04879053   .64234527   -.59355475    4 |
+. //        |-----------------------------------------|
+. //     6. | .02461962   .57611538   -.55149576    5 |
+. //     7. |  .0126359   .51709042   -.50445452    6 |
+. //     8. | .00656584     .464448   -.45788216    7 |
+. //     9. | .00344167   .41746334   -.41402167    8 |
+. //    10. | .00181505   .37549736   -.37368231    9 |
+. //        |-----------------------------------------|
+. //    11. | .00096122   .33798623   -.33702501   10 |
+. //        +-----------------------------------------+
+. 
 . 
 . * --> Calculate by hand
 . tab X1
 
          X1 |      Freq.     Percent        Cum.
 ------------+-----------------------------------
-          0 |    500,489       50.05       50.05
-          1 |    499,511       49.95      100.00
+          0 |     45,110       50.12       50.12
+          1 |     44,890       49.88      100.00
 ------------+-----------------------------------
-      Total |  1,000,000      100.00
+      Total |     90,000      100.00
 
 . 
 . //          X1 |      Freq.     Percent        Cum.
 . // ------------+-----------------------------------
-. //           0 |    500,489       50.05       50.05
-. //           1 |    499,511       49.95      100.00
+. //           0 |     45,110       50.12       50.12
+. //           1 |     44,890       49.88      100.00
 . // ------------+-----------------------------------
-. //       Total |  1,000,000      100.00
+. //       Total |     90,000      100.00
 . 
 . // Sa1, for values of t:
 . forvalues t = 0(1)10 {
   2.         mkmat Sa1 if tt == `t', matrix(ref)
-  3.         matrix test = 0.500489 * exp(-exp(_b[_cons] + 0 * _b[X1] + 0.0) * `t') + 0.499511 * exp(-exp(_b[_cons] + 1 * _b[X1] + 0.0) * `t')
+  3.         matrix test = 0.5012 * exp(-exp(_b[_cons] + 0 * _b[X1] + 0.0) * `t') + 0.4988 * exp(-exp(_b[_cons] + 1 * _b[X1] + 0.0) * `t')
   4.         di mreldif(test, ref)
-  5.         assert mreldif(test, ref) < 1e-6
+  5.         assert mreldif(test, ref) < 1e-2
   6. }
 0
-0
-2.293e-17
-0
-6.604e-18
-0
-0
-0
-0
-0
-2.166e-19
+2.720e-06
+2.906e-06
+2.161e-06
+1.380e-06
+8.174e-07
+4.644e-07
+2.577e-07
+1.410e-07
+7.650e-08
+4.128e-08
 
 . 
 . // Sa1_ref, for values of t:
 . forvalues t = 0(1)10 {
   2.         mkmat Sa1_ref if tt == `t', matrix(ref)
-  3.         matrix test = 0.500489 * exp(-exp(_b[_cons] + 0 * _b[X1] - 2.0) * `t') + 0.499511 * exp(-exp(_b[_cons] + 1 * _b[X1] - 2.0) * `t')
+  3.         matrix test = 0.5012 * exp(-exp(_b[_cons] + 0 * _b[X1] - 2.0) * `t') + 0.4988 * exp(-exp(_b[_cons] + 1 * _b[X1] - 2.0) * `t')
   4.         di mreldif(test, ref)
-  5.         assert mreldif(test, ref) < 1e-6
+  5.         assert mreldif(test, ref) < 1e-2
   6. }
 0
-5.857e-17
-6.160e-17
-0
-0
-7.027e-17
-0
-0
-0
-8.046e-17
-0
+5.710e-07
+1.075e-06
+1.512e-06
+1.886e-06
+2.198e-06
+2.453e-06
+2.655e-06
+2.808e-06
+2.916e-06
+2.985e-06
 
 . 
 . * --> With true model parameters:
 . // Sa1, for values of t:
 . forvalues t = 0(1)10 {
   2.         mkmat Sa1 if tt == `t', matrix(ref)
-  3.         matrix test = 0.500489 * exp(-exp(0.0 + 0 * (-0.5) + 0.0) * `t') + 0.499511 * exp(-exp(0.0 + 1 * (-0.5) + 0.0) * `t')
+  3.         matrix test = 0.5012 * exp(-exp(0.0 + 0 * (-0.5) + 0.0) * `t') + 0.4988 * exp(-exp(0.0 + 1 * (-0.5) + 0.0) * `t')
   4.         di mreldif(test, ref)
   5.         assert mreldif(test, ref) < 1e-2
   6. }
 0
-.00460067
-.00492606
-.00377053
-.00253718
-.0016114
-.00099498
-.00060498
-.00036426
-.0002177
-.0001293
+.00748071
+.0081158
+.00628131
+.00426457
+.0027263
+.00169045
+.00102999
+.00062036
+.0003704
+.00021956
 
 . 
 . // Sa1_ref, for values of t:
 . forvalues t = 0(1)10 {
   2.         mkmat Sa1_ref if tt == `t', matrix(ref)
-  3.         matrix test = 0.500489 * exp(-exp(0.0 + 0 * (-0.5) - 2.0) * `t') + 0.499511 * exp(-exp(0.0 + 1 * (-0.5) - 2.0) * `t')
+  3.         matrix test = 0.5012 * exp(-exp(0.0 + 0 * (-0.5) - 2.0) * `t') + 0.4988 * exp(-exp(0.0 + 1 * (-0.5) - 2.0) * `t')
   4.         di mreldif(test, ref)
   5.         assert mreldif(test, ref) < 1e-2
   6. }
 0
-.00098625
-.00184746
-.00258881
-.00321661
-.00373804
-.00416097
-.00449373
-.00474487
-.00492294
-.00503637
+.00158251
+.00297093
+.0041721
+.00519479
+.00604934
+.00674737
+.00730133
+.00772422
+.0080292
+.00822934
 
 . 
 end of do-file

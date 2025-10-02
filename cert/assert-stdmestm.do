@@ -70,8 +70,8 @@ drop S1*
 stdmestm S2a, reat(0.0) reatse(0.0) varmarg(.507621) timevar(tv) ci reps(10)
 stdmestm S2b, reat(0.0) reatse(1.0) varmarg(.507621) timevar(tv) ci reps(10)
 assert S2a == S2b
-assert S2a_lower >= S2b_lower
-assert S2a_upper <= S2b_upper
+assert S2a_lci >= S2b_lci
+assert S2a_uci <= S2b_uci
 drop S2*
 
 //
@@ -105,10 +105,10 @@ stdmestm S5a, reat(0.0) reatse(1.0) varmarg(.507621) timevar(tv) ci reps(10)
 set seed 3475
 stdmestm S5b, reat(0.0) reatse(1.0) varmarg(.507621) timevar(tv) ci reps(100)
 assert S5a == S5b
-mkmat S5a_lower, matrix(mS5al) nomissing
-mkmat S5b_lower, matrix(mS5bl) nomissing
+mkmat S5a_lci, matrix(mS5al) nomissing
+mkmat S5b_lci, matrix(mS5bl) nomissing
 assert mreldif(mS5al, mS5bl) != 0.0
-mkmat S5a_upper, matrix(mS5au) nomissing
-mkmat S5b_upper, matrix(mS5bu) nomissing
+mkmat S5a_uci, matrix(mS5au) nomissing
+mkmat S5b_uci, matrix(mS5bu) nomissing
 assert mreldif(mS5au, mS5bu) != 0.0
 drop S5*

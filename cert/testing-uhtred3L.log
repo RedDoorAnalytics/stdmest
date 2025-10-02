@@ -1,17 +1,17 @@
 
   ___  ____  ____  ____  ____ ®
- /__    /   ____/   /   ____/      StataNow 18.5
+ /__    /   ____/   /   ____/      StataNow 19.5
 ___/   /   /___/   /   /___/       MP—Parallel Edition
 
- Statistics and Data Science       Copyright 1985-2023 StataCorp LLC
+ Statistics and Data Science       Copyright 1985-2025 StataCorp LLC
                                    StataCorp
                                    4905 Lakeway Drive
                                    College Station, Texas 77845 USA
                                    800-782-8272        https://www.stata.com
                                    979-696-4600        service@stata.com
 
-Stata license: 3-user 2-core network, expiring 12 Sep 2025
-Serial number: 501809300405
+Stata license: 4-user 2-core network, expiring 12 Sep 2026
+Serial number: 501909317505
   Licensed to: Alessandro Gasparini
                Red Door Analytics AB
 
@@ -32,15 +32,15 @@ Notes:
 . // clear all is enough to 'refresh' in the same session
 . // -uhtred-
 . cd "~/Stata-dev/uhtred"
-/Users/ellessenne/Stata-dev/uhtred
+/Users/alessandro.gasparini/Stata-dev/uhtred
 
 . adopath ++ "~/Stata-dev/uhtred"
   [1]              "~/Stata-dev/uhtred"
-  [2]  (BASE)      "/Applications/Stata/ado/base/"
-  [3]  (SITE)      "/Applications/Stata/ado/site/"
+  [2]  (BASE)      "/Applications/StataNow/ado/base/"
+  [3]  (SITE)      "/Applications/StataNow/ado/site/"
   [4]              "."
-  [5]  (PERSONAL)  "/Users/ellessenne/Documents/Stata/ado/personal/"
-  [6]  (PLUS)      "/Users/ellessenne/Library/Application Support/Stata/ado/plus/"
+  [5]  (PERSONAL)  "/Users/alessandro.gasparini/Documents/Stata/ado/personal/"
+  [6]  (PLUS)      "/Users/alessandro.gasparini/Library/Application Support/Stata/ado/plus/"
   [7]  (OLDPLACE)  "~/ado/"
 
 . clear all
@@ -48,11 +48,11 @@ Notes:
 . adopath ++ "~/Stata-dev/uhtred/uhtred"
   [1]              "~/Stata-dev/uhtred/uhtred"
   [2]              "~/Stata-dev/uhtred"
-  [3]  (BASE)      "/Applications/Stata/ado/base/"
-  [4]  (SITE)      "/Applications/Stata/ado/site/"
+  [3]  (BASE)      "/Applications/StataNow/ado/base/"
+  [4]  (SITE)      "/Applications/StataNow/ado/site/"
   [5]              "."
-  [6]  (PERSONAL)  "/Users/ellessenne/Documents/Stata/ado/personal/"
-  [7]  (PLUS)      "/Users/ellessenne/Library/Application Support/Stata/ado/plus/"
+  [6]  (PERSONAL)  "/Users/alessandro.gasparini/Documents/Stata/ado/personal/"
+  [7]  (PLUS)      "/Users/alessandro.gasparini/Library/Application Support/Stata/ado/plus/"
   [8]  (OLDPLACE)  "~/ado/"
 
 . clear all
@@ -75,23 +75,101 @@ end of do-file
 
 . // -stdmest-
 . cd "~/Stata-dev/stdmest"
-/Users/ellessenne/Stata-dev/stdmest
+/Users/alessandro.gasparini/Stata-dev/stdmest
 
 . adopath ++ "stdmest"
   [1]              "stdmest"
   [2]              "~/Stata-dev/uhtred/uhtred"
   [3]              "~/Stata-dev/uhtred"
-  [4]  (BASE)      "/Applications/Stata/ado/base/"
-  [5]  (SITE)      "/Applications/Stata/ado/site/"
+  [4]  (BASE)      "/Applications/StataNow/ado/base/"
+  [5]  (SITE)      "/Applications/StataNow/ado/site/"
   [6]              "."
-  [7]  (PERSONAL)  "/Users/ellessenne/Documents/Stata/ado/personal/"
-  [8]  (PLUS)      "/Users/ellessenne/Library/Application Support/Stata/ado/plus/"
+  [7]  (PERSONAL)  "/Users/alessandro.gasparini/Documents/Stata/ado/personal/"
+  [8]  (PLUS)      "/Users/alessandro.gasparini/Library/Application Support/Stata/ado/plus/"
   [9]  (OLDPLACE)  "~/ado/"
 
 . clear all
 
 . do ./build/buildmlib.do
 
+. clear all
+
+. // -uhtred-
+. cd "~/Stata-dev/uhtred"
+/Users/alessandro.gasparini/Stata-dev/uhtred
+
+. adopath ++ "~/Stata-dev/uhtred"
+  [1]              "~/Stata-dev/uhtred"
+  [2]              "stdmest"
+  [3]              "~/Stata-dev/uhtred/uhtred"
+  [4]  (BASE)      "/Applications/StataNow/ado/base/"
+  [5]  (SITE)      "/Applications/StataNow/ado/site/"
+  [6]              "."
+  [7]  (PERSONAL)  "/Users/alessandro.gasparini/Documents/Stata/ado/personal/"
+  [8]  (PLUS)      "/Users/alessandro.gasparini/Library/Application Support/Stata/ado/plus/"
+  [9]  (OLDPLACE)  "~/ado/"
+
+. clear all
+
+. adopath ++ "~/Stata-dev/uhtred/uhtred"
+  [1]              "~/Stata-dev/uhtred/uhtred"
+  [2]              "~/Stata-dev/uhtred"
+  [3]              "stdmest"
+  [4]  (BASE)      "/Applications/StataNow/ado/base/"
+  [5]  (SITE)      "/Applications/StataNow/ado/site/"
+  [6]              "."
+  [7]  (PERSONAL)  "/Users/alessandro.gasparini/Documents/Stata/ado/personal/"
+  [8]  (PLUS)      "/Users/alessandro.gasparini/Library/Application Support/Stata/ado/plus/"
+  [9]  (OLDPLACE)  "~/ado/"
+
+. clear all
+
+. do ./build/buildmlib.do
+
+. version 17
+
+. 
+. capture erase luhtred.mlib
+
+. mata: mata set matastrict off
+
+. qui {
+
+. 
+end of do-file
+
+. mata mata clear
+
+. // -stdmest-
+. cd "~/Stata-dev/stdmest"
+/Users/alessandro.gasparini/Stata-dev/stdmest
+
+. adopath ++ "stdmest"
+  [1]              "stdmest"
+  [2]              "~/Stata-dev/uhtred/uhtred"
+  [3]              "~/Stata-dev/uhtred"
+  [4]  (BASE)      "/Applications/StataNow/ado/base/"
+  [5]  (SITE)      "/Applications/StataNow/ado/site/"
+  [6]              "."
+  [7]  (PERSONAL)  "/Users/alessandro.gasparini/Documents/Stata/ado/personal/"
+  [8]  (PLUS)      "/Users/alessandro.gasparini/Library/Application Support/Stata/ado/plus/"
+  [9]  (OLDPLACE)  "~/ado/"
+
+. adopath ++ "stdmestm"
+  [1]              "stdmestm"
+  [2]              "stdmest"
+  [3]              "~/Stata-dev/uhtred/uhtred"
+  [4]              "~/Stata-dev/uhtred"
+  [5]  (BASE)      "/Applications/StataNow/ado/base/"
+  [6]  (SITE)      "/Applications/StataNow/ado/site/"
+  [7]              "."
+  [8]  (PERSONAL)  "/Users/alessandro.gasparini/Documents/Stata/ado/personal/"
+  [9]  (PLUS)      "/Users/alessandro.gasparini/Library/Application Support/Stata/ado/plus/"
+  [10] (OLDPLACE)  "~/ado/"
+
+. clear all
+
+. // Mata
 . capture erase lstdmest.mlib
 
 . quietly {
@@ -219,7 +297,7 @@ Note: LR test is conservative and provided only for reference.
 . list tv Sm* if tv != .
 
      +----------------------------------------------+
-     |       tv          Sm    Sm_lower    Sm_upper |
+     |       tv          Sm      Sm_lci      Sm_uci |
      |----------------------------------------------|
   1. |        0           1           1           1 |
   2. | 40.55556   .94737379   .83339419      .98431 |
@@ -290,19 +368,19 @@ id:          |
 . list tv Su* Sm* if tv != .
 
      +----------------------------------------------------------------------------------+
-     |       tv          Su    Su_lower    Su_upper          Sm    Sm_lower    Sm_upper |
+     |       tv          Su      Su_lci      Su_uci          Sm      Sm_lci      Sm_uci |
      |----------------------------------------------------------------------------------|
   1. |        0           1           1           1           1           1           1 |
-  2. | 40.55556   .94739672   .83399344   .98462537   .94737379   .83339419      .98431 |
-  3. | 81.11111   .88634013   .67981317   .96612581    .8862377   .67845853   .96391789 |
-  4. | 121.6667   .82568827   .54721372   .94660937   .82549496   .54720526   .94243698 |
-  5. | 162.2222    .7676376   .44521676   .92679887   .76735635   .44825681   .91991785 |
+  2. | 40.55556   .94739672   .83318321   .98451009   .94737379   .83339419      .98431 |
+  3. | 81.11111   .88634013   .68028637   .96593363    .8862377   .67845853   .96391789 |
+  4. | 121.6667   .82568827   .55078219   .94570224   .82549496   .54720526   .94243698 |
+  5. | 162.2222    .7676376   .45222266   .92529394   .76735635   .44825681   .91991785 |
      |----------------------------------------------------------------------------------|
-  6. | 202.7778   .71304029   .36467103   .90644941   .71268016   .37305907   .89717192 |
-  7. | 243.3333   .66219265   .30278883   .88593184   .66176513   .31236978   .87512934 |
-  8. | 283.8889   .61511801   .25228334   .86567431    .6146351   .26058257   .85282158 |
-  9. | 324.4445   .57169715   .21089116   .84558708   .57117035   .21985504   .83156486 |
- 10. |      365   .53173696   .17918717   .82626249   .53117678   .18632383   .81051998 |
+  6. | 202.7778   .71304029   .37142369   .90515248   .71268016   .37305907   .89717192 |
+  7. | 243.3333   .66219265   .30895739   .88441356   .66176513   .31236978   .87512934 |
+  8. | 283.8889   .61511801   .26226645   .86309823    .6146351   .26058257   .85282158 |
+  9. | 324.4445   .57169715   .22266992   .84272577   .57117035   .21985504   .83156486 |
+ 10. |      365   .53173696   .19170704   .82288963   .53117678   .18632383   .81051998 |
      +----------------------------------------------------------------------------------+
 
 . 

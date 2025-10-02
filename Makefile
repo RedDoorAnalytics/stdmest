@@ -5,6 +5,7 @@ vendor_data:
 	cp ~/R-dev/stdmest/data-raw/data3Lsim.dta ~/Stata-dev/stdmest/data/data3Lsim.dta
 
 cert:
+	cd cert && stata-mp -e assert-namelength.do
 	cd cert && stata-mp -e assert-data2Lsim.do
 	cd cert && stata-mp -e assert-modexpt.do
 	cd cert && stata-mp -e assert-stdmest.do
@@ -23,6 +24,7 @@ ex:
 	cd cert && stata-mp -e testing-stdmestm-examples.do
 	cd cert && stata-mp -e testing-verbose.do
 	cd cert && stata-mp -e testing-#7.do
+	cd cert && stata-mp -e testing-#20.do
 	cd cert && stata-mp -e testing-uhtred2L.do
 	cd cert && stata-mp -e testing-uhtred3L.do
 	cd cert && stata-mp -e testing-uhtred3L-m.do

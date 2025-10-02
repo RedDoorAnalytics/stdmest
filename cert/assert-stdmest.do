@@ -48,9 +48,9 @@ quietly mestreg age female || patient:, distribution(exponential)
 //
 stdmest S1, reat(0.0) reatse(0.0) reatref(0.0) reatrefse(0.0) contrast
 gen S1_exp = 0
-mkmat S1_contrast, matrix(S1_contrast)
+mkmat S1_diff, matrix(S1_diff)
 mkmat S1_exp, matrix(S1_exp)
-assert mreldif(S1_contrast, S1_exp) < 1e-16
+assert mreldif(S1_diff, S1_exp) < 1e-16
 drop S1*
 
 //
@@ -79,8 +79,8 @@ drop S3*
 //
 stdmest S4a, reat(-1.0) reatse(0.0) reatref(0.0) reatrefse(0.0) contrast
 stdmest S4b, reat(+1.0) reatse(0.0) reatref(0.0) reatrefse(0.0) contrast
-assert S4a_contrast >= 0
-assert S4b_contrast <= 0
+assert S4a_diff >= 0
+assert S4b_diff <= 0
 drop S4*
 
 //
@@ -106,12 +106,12 @@ set seed 487
 stdmest S7a, reat(0.0) reatse(0.0) ci reps(10)
 set seed 487
 stdmest S7b, reat(0.0) reatse(1.0) ci reps(10)
-assert S7a_lower <= S7a
-assert S7a <= S7a_upper
-assert S7b_lower <= S7b
-assert S7b <= S7b_upper
-assert S7b_lower <= S7a_lower
-assert S7a_upper <= S7b_upper
+assert S7a_lci <= S7a
+assert S7a <= S7a_uci
+assert S7b_lci <= S7b
+assert S7b <= S7b_uci
+assert S7b_lci <= S7a_lci
+assert S7a_uci <= S7b_uci
 drop S7*
 
 //

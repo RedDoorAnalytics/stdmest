@@ -41,17 +41,17 @@ list tv Smin_norm* Smax_norm* if tv != .
 
 //
 twoway ///
-	(rarea Smin_perc_ref_lower Smin_perc_ref_upper tv, sort color(stblue%10)) ///
-	(rarea Smin_perc_lower Smin_perc_upper tv, sort color(stgreen%10)) ///
-	(rarea Smax_perc_lower Smax_perc_upper tv, sort color(stred%10)) ///
+	(rarea Smin_perc_ref_lci Smin_perc_ref_uci tv, sort color(stblue%10)) ///
+	(rarea Smin_perc_lci Smin_perc_uci tv, sort color(stgreen%10)) ///
+	(rarea Smax_perc_lci Smax_perc_uci tv, sort color(stred%10)) ///
 	(line Smin_perc_ref tv, sort lcolor(stblue)) ///
 	(line Smin_perc tv, sort lcolor(stgreen)) ///
 	(line Smax_perc tv, sort lcolor(stred)) ///
 	, name("cipercentile", replace)
 twoway ///
-	(rarea Smin_norm_ref_lower Smin_norm_ref_upper tv, sort color(stblue%10)) ///
-	(rarea Smin_norm_lower Smin_norm_upper tv, sort color(stgreen%10)) ///
-	(rarea Smax_norm_lower Smax_norm_upper tv, sort color(stred%10)) ///
+	(rarea Smin_norm_ref_lci Smin_norm_ref_uci tv, sort color(stblue%10)) ///
+	(rarea Smin_norm_lci Smin_norm_uci tv, sort color(stgreen%10)) ///
+	(rarea Smax_norm_lci Smax_norm_uci tv, sort color(stred%10)) ///
 	(line Smin_norm_ref tv, sort lcolor(stblue)) ///
 	(line Smin_norm tv, sort lcolor(stgreen)) ///
 	(line Smax_norm tv, sort lcolor(stred)) ///

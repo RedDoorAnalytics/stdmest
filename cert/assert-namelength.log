@@ -22,7 +22,7 @@ Notes:
       4. Maximum number of variables is set to 5,000 but can be increased;
           see help set_maxvar.
 
-. do "assert-uhtred3L.do" 
+. do "assert-namelength.do" 
 
 . //
 . set linesize 255
@@ -88,6 +88,18 @@ end of do-file
   [8]  (PLUS)      "/Users/alessandro.gasparini/Library/Application Support/Stata/ado/plus/"
   [9]  (OLDPLACE)  "~/ado/"
 
+. adopath ++ "stdmestm"
+  [1]              "stdmestm"
+  [2]              "stdmest"
+  [3]              "~/Stata-dev/uhtred/uhtred"
+  [4]              "~/Stata-dev/uhtred"
+  [5]  (BASE)      "/Applications/StataNow/ado/base/"
+  [6]  (SITE)      "/Applications/StataNow/ado/site/"
+  [7]              "."
+  [8]  (PERSONAL)  "/Users/alessandro.gasparini/Documents/Stata/ado/personal/"
+  [9]  (PLUS)      "/Users/alessandro.gasparini/Library/Application Support/Stata/ado/plus/"
+  [10] (OLDPLACE)  "~/ado/"
+
 . clear all
 
 . do ./build/buildmlib.do
@@ -100,27 +112,29 @@ end of do-file
 
 . adopath ++ "~/Stata-dev/uhtred"
   [1]              "~/Stata-dev/uhtred"
-  [2]              "stdmest"
-  [3]              "~/Stata-dev/uhtred/uhtred"
-  [4]  (BASE)      "/Applications/StataNow/ado/base/"
-  [5]  (SITE)      "/Applications/StataNow/ado/site/"
-  [6]              "."
-  [7]  (PERSONAL)  "/Users/alessandro.gasparini/Documents/Stata/ado/personal/"
-  [8]  (PLUS)      "/Users/alessandro.gasparini/Library/Application Support/Stata/ado/plus/"
-  [9]  (OLDPLACE)  "~/ado/"
+  [2]              "stdmestm"
+  [3]              "stdmest"
+  [4]              "~/Stata-dev/uhtred/uhtred"
+  [5]  (BASE)      "/Applications/StataNow/ado/base/"
+  [6]  (SITE)      "/Applications/StataNow/ado/site/"
+  [7]              "."
+  [8]  (PERSONAL)  "/Users/alessandro.gasparini/Documents/Stata/ado/personal/"
+  [9]  (PLUS)      "/Users/alessandro.gasparini/Library/Application Support/Stata/ado/plus/"
+  [10] (OLDPLACE)  "~/ado/"
 
 . clear all
 
 . adopath ++ "~/Stata-dev/uhtred/uhtred"
   [1]              "~/Stata-dev/uhtred/uhtred"
   [2]              "~/Stata-dev/uhtred"
-  [3]              "stdmest"
-  [4]  (BASE)      "/Applications/StataNow/ado/base/"
-  [5]  (SITE)      "/Applications/StataNow/ado/site/"
-  [6]              "."
-  [7]  (PERSONAL)  "/Users/alessandro.gasparini/Documents/Stata/ado/personal/"
-  [8]  (PLUS)      "/Users/alessandro.gasparini/Library/Application Support/Stata/ado/plus/"
-  [9]  (OLDPLACE)  "~/ado/"
+  [3]              "stdmestm"
+  [4]              "stdmest"
+  [5]  (BASE)      "/Applications/StataNow/ado/base/"
+  [6]  (SITE)      "/Applications/StataNow/ado/site/"
+  [7]              "."
+  [8]  (PERSONAL)  "/Users/alessandro.gasparini/Documents/Stata/ado/personal/"
+  [9]  (PLUS)      "/Users/alessandro.gasparini/Library/Application Support/Stata/ado/plus/"
+  [10] (OLDPLACE)  "~/ado/"
 
 . clear all
 
@@ -148,12 +162,13 @@ end of do-file
   [1]              "stdmest"
   [2]              "~/Stata-dev/uhtred/uhtred"
   [3]              "~/Stata-dev/uhtred"
-  [4]  (BASE)      "/Applications/StataNow/ado/base/"
-  [5]  (SITE)      "/Applications/StataNow/ado/site/"
-  [6]              "."
-  [7]  (PERSONAL)  "/Users/alessandro.gasparini/Documents/Stata/ado/personal/"
-  [8]  (PLUS)      "/Users/alessandro.gasparini/Library/Application Support/Stata/ado/plus/"
-  [9]  (OLDPLACE)  "~/ado/"
+  [4]              "stdmestm"
+  [5]  (BASE)      "/Applications/StataNow/ado/base/"
+  [6]  (SITE)      "/Applications/StataNow/ado/site/"
+  [7]              "."
+  [8]  (PERSONAL)  "/Users/alessandro.gasparini/Documents/Stata/ado/personal/"
+  [9]  (PLUS)      "/Users/alessandro.gasparini/Library/Application Support/Stata/ado/plus/"
+  [10] (OLDPLACE)  "~/ado/"
 
 . adopath ++ "stdmestm"
   [1]              "stdmestm"
@@ -180,9 +195,20 @@ end of do-file
 . mata mata clear
 
 . 
-. // ---
-. clear all
+. //
+. clear
 
+. webuse catheter
+(Kidney data, McGilchrist and Aisbett, Biometrics, 1991)
+
+. 
+. //
+. quietly mestreg age female || patient:, distribution(exponential) time
+
+. rcof "stdmest this_name_is_very_very_very_very_very_very_very_very_long, reat(0.0) reatse(0.0) reatref(0.0) reatrefse(0.0) contrast" == 198
+
+. 
+. //
 . webuse jobhistory
 (Job history data, Event History Analysis with Stata, Blossfeld et al. 2007)
 
@@ -208,31 +234,15 @@ Observed time interval: (0, tt]
                                           Last observed exit t =       428
 
 . 
-. // ---
-. capture drop tv
+. //
+. gen tv = runiform(0, 365)
 
-. range tv 0 365 10
-(590 missing values generated)
+. replace tv = . if _n > 10
+(590 real changes made, 590 to missing)
 
-. 
-. // ---
-. quietly mestreg education njobs prestige i.female || birthyear: || id:, distribution(weibull) nohr
+. quietly mestreg education njobs prestige i.female || birthyear: || id:, distribution(exponential)
 
-. stdmest Sm, reat(-.0921738 -2.028026) reatse(.2263078 .5722969) reatref(0.0 0.0) reatrefse(0.0 0.0) timevar(tv) contrast
-
-. 
-. // ---
-. quietly uhtred (_t education njobs prestige i.female M1[birthyear]@1 M2[birthyear>id]@1, family(rp, df(1) failure(_d)))
-
-. stdmest Su, reat(-.0921738 -2.028026) reatse(.2263078 .5722969) reatref(0.0 0.0) reatrefse(0.0 0.0) timevar(tv) contrast
-
-. 
-. // ---
-. assert reldif(Sm, Su) <= 1e-3
-
-. assert reldif(Sm_ref, Su_ref) <= 1e-3
-
-. assert reldif(Sm_diff, Su_diff) <= 1e-3
+. rcof "stdmestm this_name_is_also_very_very_very_very_very_very_very_very_long, reat(-1.0) reatse(0.0) varmarg(.507621) timevar(tv)" == 198
 
 . 
 end of do-file
