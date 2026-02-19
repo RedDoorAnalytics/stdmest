@@ -25,3 +25,7 @@ The development version of -stdmest- can be installed from this GitHub repositor
 ```{stata}
 net install stdmest, from("https://raw.githubusercontent.com/RedDoorAnalytics/stdmest/main/")
 ```
+
+## References
+
+* Gasparini, A., Crowther, M.J. & Schaffer, J.M. Standardized survival probabilities and contrasts between hierarchical units in multilevel survival models. BMC Med Res Methodol (2026). https://doi.org/10.1186/s12874-026-02782-8
