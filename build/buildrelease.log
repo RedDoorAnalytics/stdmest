@@ -25,7 +25,7 @@ Notes:
 . do "buildrelease.do" 
 
 . // Package files for new release
-. local newversion 0_1_1
+. local newversion 0_1_2
 
 . capture mkdir ../release/version_`newversion'
 
@@ -34,38 +34,38 @@ Notes:
 . 
 . // -modexpt-
 . copy ../modexpt/modexpt.ado `fdir', replace
-(file ../release/version_0_1_1/modexpt.ado not found)
+(file ../release/version_0_1_2/modexpt.ado not found)
 
 . copy ../modexpt/modexpt.sthlp `fdir', replace
-(file ../release/version_0_1_1/modexpt.sthlp not found)
+(file ../release/version_0_1_2/modexpt.sthlp not found)
 
 . 
 . // -stdmest-
 . copy ../stdmest/stdmest.ado `fdir', replace
-(file ../release/version_0_1_1/stdmest.ado not found)
+(file ../release/version_0_1_2/stdmest.ado not found)
 
 . copy ../stdmest/stdmest.sthlp `fdir', replace
-(file ../release/version_0_1_1/stdmest.sthlp not found)
+(file ../release/version_0_1_2/stdmest.sthlp not found)
 
 . 
 . // -stdmestm-
 . copy ../stdmestm/stdmestm.ado `fdir', replace
-(file ../release/version_0_1_1/stdmestm.ado not found)
+(file ../release/version_0_1_2/stdmestm.ado not found)
 
 . copy ../stdmestm/stdmestm.sthlp `fdir', replace
-(file ../release/version_0_1_1/stdmestm.sthlp not found)
+(file ../release/version_0_1_2/stdmestm.sthlp not found)
 
 . 
 . // Mata library
 . capture erase `fdir'lstdmest.mlib
 
 . copy ../lstdmest.mlib `fdir', replace
-(file ../release/version_0_1_1/lstdmest.mlib not found)
+(file ../release/version_0_1_2/lstdmest.mlib not found)
 
 . 
 . // README
 . copy ../README.md `fdir', replace
-(file ../release/version_0_1_1/README.md not found)
+(file ../release/version_0_1_2/README.md not found)
 
 . 
 end of do-file
