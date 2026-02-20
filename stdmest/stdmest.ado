@@ -216,6 +216,7 @@ program define stdmest, sortpreserve
 	}
 
 	// Run algorithm in Mata
+	display "before stdmest_wf()"
 	mata: stdmest_wf("`GML'", "`newvarname'", `reat_sum', `reatref_sum', (`vreat'), (`vreatse'), (`vreatref'), (`vreatrefse'), 0.0)
 
 	// Restore estimation results after (possibly) fiddling with stuff in Mata
