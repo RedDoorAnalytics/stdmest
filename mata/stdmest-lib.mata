@@ -22,6 +22,8 @@ mata:
 	`RS' integrate
 	)
 	{
+		printf("Started!")
+
 		// model flags
 		i_am_mestreg = (st_global("e(cmd)") == "gsem") & (st_global("e(cmd2)") == "mestreg")
 		i_am_uhtred = st_global("e(cmd)") == "uhtred"
