@@ -31,6 +31,7 @@ mata:
 			`gml' gml
 			swap(gml, *findexternal(object))
 		}
+		printf("After swap()")
 
 		// read in locals from Stata
 		// strings:
@@ -128,6 +129,7 @@ mata:
 				xbmat[., i] = st_data(., new_xbname, touse) // copy back into Mata – might be inefficient?
 			}
 		}
+		printf("After xbmat for -mestreg-")
 
 		// do calculations for the std. survival, looping over timevar
 		// actually, we loop over _unique_ values of timevar to be more efficient
