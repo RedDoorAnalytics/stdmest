@@ -53,7 +53,7 @@ program define stdmestm, sortpreserve
 
 	// Must be a three-levels model
 	if (`nlevels' != 3) {
-		display as error "Only three-level models are supported, but `nlevels' were detected.
+		display as error "Only three-level models are supported, but `nlevels' were detected."
 		exit 198
 	}
 
