@@ -1,4 +1,4 @@
-*! version 0.0.1 Alessandro Gasparini 16Jul2024
+*! version 0.1.3 Alessandro Gasparini 20Feb2026
 
 program define modexpt
 	// Version
