@@ -1,4 +1,4 @@
-*! version 0.1.1 Alessandro Gasparini, Michael J. Crowther 01Oct2025
+*! version 0.2.0 Alessandro Gasparini, Michael J. Crowther 11Mar2026
 
 program define stdmest, sortpreserve
 	// Version
@@ -7,7 +7,7 @@ program define stdmest, sortpreserve
 	// Check that dataset is still stset
 	st_is 2 analysis
 
-	// Check that erepost is installed
+	// Check that -erepost- is installed
 	capture which erepost
 	if _rc > 0 {
 		display as error "The -erepost- command is required for -stdmest- to function properly. You can install it using:"
@@ -15,7 +15,15 @@ program define stdmest, sortpreserve
 		exit  198
 	}
 
-	// Check that moremata is installed
+	// Check that -uhtred- is installed
+	capture which uhtred
+	if _rc > 0 {
+		display as error "The -uhtred- command is required for -stdmest- to function properly. You can install it using:"
+		display as error ". {net install uhtred, from(https://raw.githubusercontent.com/RedDoorAnalytics/uhtred/main/)}"
+		exit  198
+	}
+
+	// Check that -moremata- is installed
 	capture findfile lmoremata.mlib
 	if _rc > 0 {
 		display as error "The -moremata- package is required for -stdmest- to function properly. You can install it using:"

@@ -1,7 +1,8 @@
 //
 set linesize 255
 clear all
-cd "~/Stata-dev/stdmest"
+local drive = "~/Stata-dev"
+cd "`drive'/stdmest"
 adopath ++ "modexpt"
 clear all
 

@@ -29,7 +29,9 @@ Notes:
 
 . clear all
 
-. cd "~/Stata-dev/stdmest"
+. local drive = "~/Stata-dev"
+
+. cd "`drive'/stdmest"
 /Users/alessandro.gasparini/Stata-dev/stdmest
 
 . adopath ++ "modexpt"
@@ -115,23 +117,23 @@ LR test vs. Weibull model: chibar2(01) = 9.40         Prob >= chibar2 = 0.0011
 . tempfile test1
 
 . modexpt, filename(`test1')
-file /var/folders/1_/qzlbybm54031h2qfl9n7thvw0000gs/T//St62668.000001 saved
-file /var/folders/1_/qzlbybm54031h2qfl9n7thvw0000gs/T//St62668.000001 saved
-file /var/folders/1_/qzlbybm54031h2qfl9n7thvw0000gs/T//St62668.000001 saved
-file /var/folders/1_/qzlbybm54031h2qfl9n7thvw0000gs/T//St62668.000001 saved
-file /var/folders/1_/qzlbybm54031h2qfl9n7thvw0000gs/T//St62668.000001 saved
-file /var/folders/1_/qzlbybm54031h2qfl9n7thvw0000gs/T//St62668.000001 saved
+file /var/folders/1_/qzlbybm54031h2qfl9n7thvw0000gs/T//St16397.000001 saved
+file /var/folders/1_/qzlbybm54031h2qfl9n7thvw0000gs/T//St16397.000001 saved
+file /var/folders/1_/qzlbybm54031h2qfl9n7thvw0000gs/T//St16397.000001 saved
+file /var/folders/1_/qzlbybm54031h2qfl9n7thvw0000gs/T//St16397.000001 saved
+file /var/folders/1_/qzlbybm54031h2qfl9n7thvw0000gs/T//St16397.000001 saved
+file /var/folders/1_/qzlbybm54031h2qfl9n7thvw0000gs/T//St16397.000001 saved
 
 . modexpt, filename(`test1') replace
-file /var/folders/1_/qzlbybm54031h2qfl9n7thvw0000gs/T//St62668.000001 saved
-file /var/folders/1_/qzlbybm54031h2qfl9n7thvw0000gs/T//St62668.000001 saved
-file /var/folders/1_/qzlbybm54031h2qfl9n7thvw0000gs/T//St62668.000001 saved
-file /var/folders/1_/qzlbybm54031h2qfl9n7thvw0000gs/T//St62668.000001 saved
-file /var/folders/1_/qzlbybm54031h2qfl9n7thvw0000gs/T//St62668.000001 saved
-file /var/folders/1_/qzlbybm54031h2qfl9n7thvw0000gs/T//St62668.000001 saved
+file /var/folders/1_/qzlbybm54031h2qfl9n7thvw0000gs/T//St16397.000001 saved
+file /var/folders/1_/qzlbybm54031h2qfl9n7thvw0000gs/T//St16397.000001 saved
+file /var/folders/1_/qzlbybm54031h2qfl9n7thvw0000gs/T//St16397.000001 saved
+file /var/folders/1_/qzlbybm54031h2qfl9n7thvw0000gs/T//St16397.000001 saved
+file /var/folders/1_/qzlbybm54031h2qfl9n7thvw0000gs/T//St16397.000001 saved
+file /var/folders/1_/qzlbybm54031h2qfl9n7thvw0000gs/T//St16397.000001 saved
 
 . capture noisily modexpt, filename(`test1')
-File /var/folders/1_/qzlbybm54031h2qfl9n7thvw0000gs/T//St62668.000001 already exists; you might want to specify the replace option.
+File /var/folders/1_/qzlbybm54031h2qfl9n7thvw0000gs/T//St16397.000001 already exists; you might want to specify the replace option.
 
 . 
 . //
@@ -173,12 +175,12 @@ patient:     |
 . tempfile test2
 
 . modexpt, filename(`test2')
-file /var/folders/1_/qzlbybm54031h2qfl9n7thvw0000gs/T//St62668.000002 saved
-file /var/folders/1_/qzlbybm54031h2qfl9n7thvw0000gs/T//St62668.000002 saved
-file /var/folders/1_/qzlbybm54031h2qfl9n7thvw0000gs/T//St62668.000002 saved
-file /var/folders/1_/qzlbybm54031h2qfl9n7thvw0000gs/T//St62668.000002 saved
-file /var/folders/1_/qzlbybm54031h2qfl9n7thvw0000gs/T//St62668.000002 saved
-file /var/folders/1_/qzlbybm54031h2qfl9n7thvw0000gs/T//St62668.000002 saved
+file /var/folders/1_/qzlbybm54031h2qfl9n7thvw0000gs/T//St16397.000002 saved
+file /var/folders/1_/qzlbybm54031h2qfl9n7thvw0000gs/T//St16397.000002 saved
+file /var/folders/1_/qzlbybm54031h2qfl9n7thvw0000gs/T//St16397.000002 saved
+file /var/folders/1_/qzlbybm54031h2qfl9n7thvw0000gs/T//St16397.000002 saved
+file /var/folders/1_/qzlbybm54031h2qfl9n7thvw0000gs/T//St16397.000002 saved
+file /var/folders/1_/qzlbybm54031h2qfl9n7thvw0000gs/T//St16397.000002 saved
 
 . 
 end of do-file

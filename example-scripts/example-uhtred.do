@@ -4,10 +4,9 @@ clear all
 // clear all is enough to 'refresh' in the same session
 // NOTE: adjust the paths below to the correct location on your computer
 //       before continuing with the example code
-// -uhtred-
-adopath ++ "~/Stata-dev/uhtred/release/version_1_5_1"
 // -stdmest-
-adopath ++ "~/Stata-dev/stdmest/release/version_0_1_0"
+local drive = "~/Stata-dev"
+adopath ++ "`drive'/stdmest/release/version_0_1_0"
 program drop _all
 mata mata mlib index
 
