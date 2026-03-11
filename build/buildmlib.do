@@ -1,16 +1,6 @@
 clear all
-// -uhtred-
-cd "~/Stata-dev/uhtred"
-adopath ++ "~/Stata-dev/uhtred"
-clear all
-adopath ++ "~/Stata-dev/uhtred/uhtred"
-clear all
-do ./build/buildmlib.do
-mata mata clear
-// -stdmest-
-cd "~/Stata-dev/stdmest"
-adopath ++ "stdmest"
-adopath ++ "stdmestm"
+local drive = "~/Stata-dev"
+cd "`drive'/stdmest"
 clear all
 // Mata
 capture erase lstdmest.mlib
