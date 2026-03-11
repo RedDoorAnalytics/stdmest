@@ -74,7 +74,7 @@ mata:
 			// random effects:
 			newreat = draw_newreat(B, vreat, vreatse)
 			newreat = rowsum(newreat)
-			if (contrast != "") {
+			if (hascontrast != "") {
 				newreatref = draw_newreat(B, vreatref, vreatrefse)
 				newreatref = rowsum(newreatref)
 			}
